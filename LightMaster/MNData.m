@@ -22,7 +22,7 @@
 - (void)saveSequenceLibrary;
 - (void)saveCommandClusterLibrary;
 - (void)saveGroupLibrary;
-- (void)saveEffectLibrary;
+- (void)saveEffectClusterLibrary;
 - (void)saveAudioClipLibrary;
 - (void)saveDictionaryToItsFilePath:(NSMutableDictionary *)dictionary;
 - (NSString *)nextAvailableNumberForFilePaths:(NSMutableArray *)filePaths;
@@ -224,18 +224,18 @@
         createdLibrary = YES;
     }
     
-    // Effect Library
-    filePath = [NSString stringWithFormat:@"%@/effectLibrary.lmlib", libraryFolder];
+    // EffectCluster Library
+    filePath = [NSString stringWithFormat:@"%@/effectClusterLibrary.lmlib", libraryFolder];
     if([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory])
     {
-        effectLibrary = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
+        effectClusterLibrary = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
     }
     else
     {
-        effectLibrary = [[NSMutableDictionary alloc] init];
-        NSMutableArray *effectFilePaths = [[NSMutableArray alloc] init];
-        [effectLibrary setObject:effectFilePaths forKey:@"effectFilePaths"];
-        [self setVersionNumberForEffectLibraryTo:LIBRARY_VERSION_NUMBER];
+        effectClusterLibrary = [[NSMutableDictionary alloc] init];
+        NSMutableArray *effectClusterFilePaths = [[NSMutableArray alloc] init];
+        [effectClusterLibrary setObject:effectClusterFilePaths forKey:@"effectClusterFilePaths"];
+        [self setVersionNumberForEffectClusterLibraryTo:LIBRARY_VERSION_NUMBER];
         // Create the folder
         NSError *error = nil;
         if(![[NSFileManager defaultManager] createDirectoryAtPath:[filePath stringByDeletingPathExtension] withIntermediateDirectories:YES attributes:nil error:&error])
@@ -257,7 +257,7 @@
     [self saveSequenceLibrary];
     [self saveCommandClusterLibrary];
     [self saveGroupLibrary];
-    [self saveEffectLibrary];
+    [self saveEffectClusterLibrary];
     [self saveAudioClipLibrary];
 }
 
@@ -285,10 +285,10 @@
     [groupLibrary writeToFile:filePath atomically:YES];
 }
 
-- (void)saveEffectLibrary
+- (void)saveEffectClusterLibrary
 {
-    NSString *filePath = [NSString stringWithFormat:@"%@/effectLibrary.lmlib", libraryFolder];
-    [effectLibrary writeToFile:filePath atomically:YES];
+    NSString *filePath = [NSString stringWithFormat:@"%@/effectClusterLibrary.lmlib", libraryFolder];
+    [effectClusterLibrary writeToFile:filePath atomically:YES];
 }
 
 - (void)saveAudioClipLibrary
@@ -1704,136 +1704,136 @@
     [self saveDictionaryToItsFilePath:group];
 }
 
-#pragma mark - EffectLibrary Methods
+#pragma mark - EffectClusterLibrary Methods
 // Getter Methods
 
-- (float)versionNumberForEffectLibrary
+- (float)versionNumberForEffectClusterLibrary
 {
-    return [self versionNumberForDictionary:effectLibrary];
+    return [self versionNumberForDictionary:effectClusterLibrary];
 }
 
-- (NSMutableArray *)effectFilePaths
+- (NSMutableArray *)effectClusterFilePaths
 {
-    return [effectLibrary objectForKey:@"effectFilePaths"];
+    return [effectClusterLibrary objectForKey:@"effectClusterFilePaths"];
 }
 
-- (NSString *)effectFilePathAtIndex:(int)index
+- (NSString *)effectClusterFilePathAtIndex:(int)index
 {
-    return [[self effectFilePaths] objectAtIndex:index];
+    return [[self effectClusterFilePaths] objectAtIndex:index];
 }
 
-- (int)effectFilePathsCount
+- (int)effectClusterFilePathsCount
 {
-    return (int)[[self effectFilePaths] count];
+    return (int)[[self effectClusterFilePaths] count];
 }
 
 // Setter Methods
-- (void)setVersionNumberForEffectLibraryTo:(float)newVersionNumber
+- (void)setVersionNumberForEffectClusterLibraryTo:(float)newVersionNumber
 {
-    [self setVersionNumber:newVersionNumber forDictionary:effectLibrary];
-    [self saveEffectLibrary];
+    [self setVersionNumber:newVersionNumber forDictionary:effectClusterLibrary];
+    [self saveEffectClusterLibrary];
 }
 
-- (void)addEffectFilePathToEffectLibrary:(NSString *)filePath
+- (void)addEffectClusterFilePathToEffectClusterLibrary:(NSString *)filePath
 {
-    NSMutableArray *filePaths = [self effectFilePaths];
+    NSMutableArray *filePaths = [self effectClusterFilePaths];
     [filePaths addObject:filePath];
-    [effectLibrary setObject:filePaths forKey:@"effectFilePaths"];
-    [self saveEffectLibrary];
+    [effectClusterLibrary setObject:filePaths forKey:@"effectClusterFilePaths"];
+    [self saveEffectClusterLibrary];
 }
 
-#pragma mark - Effect Methods
+#pragma mark - EffectCluster Methods
 // Getter Methods
 
-- (float)versionNumberforEffect:(NSMutableDictionary *)effect
+- (float)versionNumberforEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    return [self versionNumberForDictionary:effect];
+    return [self versionNumberForDictionary:effectCluster];
 }
 
-- (NSString *)filePathForEffect:(NSMutableDictionary *)effect
+- (NSString *)filePathForEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    return [self filePathForDictionary:effect];
+    return [self filePathForDictionary:effectCluster];
 }
 
-- (NSMutableDictionary *)effectFromFilePath:(NSString *)filePath
+- (NSMutableDictionary *)effectClusterFromFilePath:(NSString *)filePath
 {
     return [self dictionaryFromFilePath:filePath];
 }
 
-- (NSString *)descriptionForEffect:(NSMutableDictionary *)effect
+- (NSString *)descriptionForEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    return [effect objectForKey:@"description"];
+    return [effectCluster objectForKey:@"description"];
 }
 
-- (NSString *)parametersForEffect:(NSMutableDictionary *)effect
+- (NSString *)parametersForEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    return [effect objectForKey:@"parameters"];
+    return [effectCluster objectForKey:@"parameters"];
 }
 
-- (NSString *)scriptForEffect:(NSMutableDictionary *)effect
+- (NSString *)scriptForEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    return [effect objectForKey:@"script"];
+    return [effectCluster objectForKey:@"script"];
 }
 
 // Setter Methods
 
-- (void)setVersionNumber:(float)newVersionNumber forEffect:(NSMutableDictionary *)effect
+- (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    [self setVersionNumber:newVersionNumber forDictionary:effect];
-    [self saveDictionaryToItsFilePath:effect];
+    [self setVersionNumber:newVersionNumber forDictionary:effectCluster];
+    [self saveDictionaryToItsFilePath:effectCluster];
 }
 
-- (NSString *)createEffectAndReturnFilePath
+- (NSString *)createEffectClusterAndReturnFilePath
 {
-    NSMutableDictionary *newEffect = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *newEffectCluster = [[NSMutableDictionary alloc] init];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"effectLibrary/%@.lmef", [self nextAvailableNumberForFilePaths:[self effectFilePaths]]];
-    [self addEffectFilePathToEffectLibrary:filePath];
-    [self setFilePath:filePath forDictionary:newEffect];
+    NSString *filePath = [NSString stringWithFormat:@"effectClusterLibrary/%@.lmef", [self nextAvailableNumberForFilePaths:[self effectClusterFilePaths]]];
+    [self addEffectClusterFilePathToEffectClusterLibrary:filePath];
+    [self setFilePath:filePath forDictionary:newEffectCluster];
     
-    [newEffect writeToFile:[NSString stringWithFormat:@"%@/%@", libraryFolder, filePath] atomically:YES];
-    [self setVersionNumber:DATA_VERSION_NUMBER forEffect:newEffect];
-    [self setDescription:@"New Effect" forEffect:newEffect];
+    [newEffectCluster writeToFile:[NSString stringWithFormat:@"%@/%@", libraryFolder, filePath] atomically:YES];
+    [self setVersionNumber:DATA_VERSION_NUMBER forEffectCluster:newEffectCluster];
+    [self setDescription:@"New EffectCluster" forEffectCluster:newEffectCluster];
     
     return filePath;
 }
 
-- (NSString *)createCopyOfEffectAndReturnFilePath:(NSMutableDictionary *)effect
+- (NSString *)createCopyOfEffectClusterAndReturnFilePath:(NSMutableDictionary *)effectCluster
 {
-    NSString *newEffectFilePath = [self createEffectAndReturnFilePath];
-    NSMutableDictionary *newEffect = [self dictionaryFromFilePath:newEffectFilePath];
-    [self setDescription:[NSString stringWithFormat:@"%@ Copy", [self descriptionForEffect:effect]] forEffect:newEffect];
-    [self setScript:[self scriptForEffect:effect] forEffect:newEffect];
+    NSString *newEffectClusterFilePath = [self createEffectClusterAndReturnFilePath];
+    NSMutableDictionary *newEffectCluster = [self dictionaryFromFilePath:newEffectClusterFilePath];
+    [self setDescription:[NSString stringWithFormat:@"%@ Copy", [self descriptionForEffectCluster:effectCluster]] forEffectCluster:newEffectCluster];
+    [self setScript:[self scriptForEffectCluster:effectCluster] forEffectCluster:newEffectCluster];
     
-    return newEffectFilePath;
+    return newEffectClusterFilePath;
 }
 
-- (void)removeEffectFromLibrary:(NSMutableDictionary *)effect
+- (void)removeEffectClusterFromLibrary:(NSMutableDictionary *)effectCluster
 {
-    NSMutableArray *filePaths = [self effectFilePaths];
-    [filePaths removeObject:[self filePathForEffect:effect]];
-    [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForEffect:effect]] error:NULL];
-    [effectLibrary setObject:filePaths forKey:@"effectFilePaths"];
-    [self saveEffectLibrary];
+    NSMutableArray *filePaths = [self effectClusterFilePaths];
+    [filePaths removeObject:[self filePathForEffectCluster:effectCluster]];
+    [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForEffectCluster:effectCluster]] error:NULL];
+    [effectClusterLibrary setObject:filePaths forKey:@"effectClusterFilePaths"];
+    [self saveEffectClusterLibrary];
 }
 
-- (void)setDescription:(NSString *)description forEffect:(NSMutableDictionary *)effect
+- (void)setDescription:(NSString *)description forEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    [effect setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:effect];
+    [effectCluster setObject:description forKey:@"description"];
+    [self saveDictionaryToItsFilePath:effectCluster];
 }
 
-- (void)setParameters:(NSString *)parameters forEffect:(NSMutableDictionary *)effect
+- (void)setParameters:(NSString *)parameters forEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    [effect setObject:parameters forKey:@"parameters"];
-    [self saveDictionaryToItsFilePath:effect];
+    [effectCluster setObject:parameters forKey:@"parameters"];
+    [self saveDictionaryToItsFilePath:effectCluster];
 }
 
-- (void)setScript:(NSString *)script forEffect:(NSMutableDictionary *)effect
+- (void)setScript:(NSString *)script forEffectCluster:(NSMutableDictionary *)effectCluster
 {
-    [effect setObject:script forKey:@"script"];
-    [self saveDictionaryToItsFilePath:effect];
+    [effectCluster setObject:script forKey:@"script"];
+    [self saveDictionaryToItsFilePath:effectCluster];
 }
 
 @end

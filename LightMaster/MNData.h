@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-// See 'Data Model Description'
+// See 'MNData_Model_Description'
 
 #define PIXEL_TO_ZOOM_RATIO 1000
 
@@ -19,7 +19,7 @@
     NSMutableDictionary *commandClusterLibrary;
     NSMutableDictionary *audioClipLibrary;
     NSMutableDictionary *groupLibrary;
-    NSMutableDictionary *effectLibrary;
+    NSMutableDictionary *effectClusterLibrary;
     
     NSString *libraryFolder;
     
@@ -260,33 +260,33 @@
 - (void)setControlBoxFilePath:(NSString *)filePath forItemDataAtIndex:(int)index whichIsPartOfGroup:(NSMutableDictionary *)group;
 - (void)setChannelIndex:(int)channelIndex forItemDataAtIndex:(int)index whichIsPartOfGroup:(NSMutableDictionary *)group;
 
-//#pragma mark - EffectLibrary Methods
+//#pragma mark - EffectClusterLibrary Methods
 // Getter Methods
-- (float)versionNumberForEffectLibrary;
-- (NSMutableArray *)effectFilePaths;
-- (NSString *)effectFilePathAtIndex:(int)index;
-- (int)effectFilePathsCount;
+- (float)versionNumberForEffectClusterLibrary;
+- (NSMutableArray *)effectClusterFilePaths;
+- (NSString *)effectClusterFilePathAtIndex:(int)index;
+- (int)effectClusterFilePathsCount;
 
 // Setter Methods
-- (void)setVersionNumberForEffectLibraryTo:(float)newVersionNumber;
-- (void)addEffectFilePathToEffectLibrary:(NSString *)filePath;
+- (void)setVersionNumberForEffectClusterLibraryTo:(float)newVersionNumber;
+- (void)addEffectClusterFilePathToEffectClusterLibrary:(NSString *)filePath;
 
-//#pragma mark - Effect Methods
+//#pragma mark - EffectCluster Methods
 // Getter Methods
-- (float)versionNumberforEffect:(NSMutableDictionary *)effect;
-- (NSString *)filePathForEffect:(NSMutableDictionary *)effect;
-- (NSMutableDictionary *)effectFromFilePath:(NSString *)filePath;
-- (NSString *)descriptionForEffect:(NSMutableDictionary *)effect;
-- (NSString *)parametersForEffect:(NSMutableDictionary *)effect;
-- (NSString *)scriptForEffect:(NSMutableDictionary *)effect;
+- (float)versionNumberforEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)filePathForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSMutableDictionary *)effectClusterFromFilePath:(NSString *)filePath;
+- (NSString *)descriptionForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)parametersForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)scriptForEffectCluster:(NSMutableDictionary *)effectCluster;
 
 // Setter Methods
-- (void)setVersionNumber:(float)newVersionNumber forEffect:(NSMutableDictionary *)effect;
-- (NSString *)createEffectAndReturnFilePath;
-- (NSString *)createCopyOfEffectAndReturnFilePath:(NSMutableDictionary *)effect;
-- (void)removeEffectFromLibrary:(NSMutableDictionary *)effect;
-- (void)setDescription:(NSString *)description forEffect:(NSMutableDictionary *)effect;
-- (void)setParameters:(NSString *)parameters forEffect:(NSMutableDictionary *)effect;
-- (void)setScript:(NSString *)script forEffect:(NSMutableDictionary *)effect;
+- (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)createEffectClusterAndReturnFilePath;
+- (NSString *)createCopyOfEffectClusterAndReturnFilePath:(NSMutableDictionary *)effectCluster;
+- (void)removeEffectClusterFromLibrary:(NSMutableDictionary *)effectCluster;
+- (void)setDescription:(NSString *)description forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (void)setParameters:(NSString *)parameters forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (void)setScript:(NSString *)script forEffectCluster:(NSMutableDictionary *)effectCluster;
 
 @end
