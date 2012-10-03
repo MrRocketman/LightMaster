@@ -50,6 +50,7 @@
 		1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */; };
 		1A028AD1161CDAA800B97A5B /* MNCommandClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */; };
 		1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */; };
+		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,8 @@
 		1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterView.m; sourceTree = "<group>"; };
 		1A028AD2161CDAE100B97A5B /* MNCommandClusterChannelsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterChannelsView.h; sourceTree = "<group>"; };
 		1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelsView.m; sourceTree = "<group>"; };
+		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
+		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +249,8 @@
 				1A028A2C161CD23D00B97A5B /* MNTimelineViewController.m */,
 				1A028AAD161CD91C00B97A5B /* MNCommandClusterEditorViewController.h */,
 				1A028AAE161CD91C00B97A5B /* MNCommandClusterEditorViewController.m */,
+				1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */,
+				1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */,
 				1A028A98161CD45700B97A5B /* MNToolbarViewController.h */,
 				1A028A99161CD45700B97A5B /* MNToolbarViewController.m */,
 				1A028AB3161CD93B00B97A5B /* Library Managers */,
@@ -470,6 +475,7 @@
 				1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */,
 				1A028AD1161CDAA800B97A5B /* MNCommandClusterView.m in Sources */,
 				1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */,
+				1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,6 +659,7 @@
 				1A028A23161CD20800B97A5B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1A028A24161CD20800B97A5B /* Build configuration list for PBXNativeTarget "LightMasterTests" */ = {
 			isa = XCConfigurationList;
@@ -661,6 +668,7 @@
 				1A028A26161CD20800B97A5B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -10,9 +10,44 @@
 
 @implementation MNAppDelegate
 
+@synthesize data;
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    MNData *dataObject = [[MNData alloc] init];
+    self.data = dataObject;
+}
+
+#pragma mark - Menu Items
+
+- (IBAction)newSequence:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewSequence" object:nil userInfo:nil];
+}
+
+- (IBAction)newControlBox:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewControlBox" object:nil userInfo:nil];
+}
+
+- (IBAction)newChannelGroup:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewChanelGroup" object:nil userInfo:nil];
+}
+
+- (IBAction)newCommandCluster:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewCommandCluster" object:nil userInfo:nil];
+}
+
+- (IBAction)newEffectCluster:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewEffectCluster" object:nil userInfo:nil];
+}
+
+- (IBAction)newAudioClip:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewAudioClip" object:nil userInfo:nil];
 }
 
 @end
