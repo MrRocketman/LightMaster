@@ -203,7 +203,6 @@
 				1A028A4F161CD34A00B97A5B /* View Controllers */,
 				1A028A65161CD36300B97A5B /* Views */,
 				1A028A88161CD37400B97A5B /* Images */,
-				1A028A08161CD20800B97A5B /* MainMenu.xib */,
 				1A0289FA161CD20800B97A5B /* Supporting Files */,
 			);
 			path = LightMaster;
@@ -267,6 +266,7 @@
 				1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */,
 				1A028AD2161CDAE100B97A5B /* MNCommandClusterChannelsView.h */,
 				1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */,
+				1A028A08161CD20800B97A5B /* MainMenu.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
