@@ -14,7 +14,7 @@
         *endTime (NSNumber) float in seconds
         *audioClipFilePaths (NSMutableArray)
         *controlBoxFilePaths (NSMutableArray)
-        *groupFilePaths (NSMutableArray)
+        *channGroupFilePaths (NSMutableArray)
         *commandClusterFilePaths (NSMutableArray)
  
  *controlBoxLibrary (NSMutableDictionary)
@@ -45,14 +45,14 @@
         *beingUsedInSequenceFilePaths (NSMutableArray)
         *description (NSString)
         *controlBoxFilePath (NSString)
-        *groupFilePath (NSString)
+        *channelGroupFilePath (NSString)
         *startTime (NSNumber) (float in seconds)
         *endTime (NSNumber)
         *commands (NSMutableArray)
             *command (NSMutableDictionary)
                 *startTime (NSNumber) (float in seconds)
                 *endTime (NSNumber) (float in seconds)
-                *channelIndex (NSNumber) (channelIndex can also be though of as itemData index when the command is for a group)
+                *channelIndex (NSNumber) (channelIndex can also be though of as itemData index when the command is for a channelGroup)
                 *brightness (NSNumber) (int 0-100)
                 *fadeInDuration (NSNumber) (float in seconds)
                 *fadeOutDuration (NSNumber) (float in seconds)
@@ -71,12 +71,12 @@
         *startTime (NSNumber) float
         *endTime (NSNumber) float
  
- *groupLibrary (NSMutableDictionary)
+ *channelGroupLibrary (NSMutableDictionary)
     *versionNumber (NSNumber)
-    *groupFilePaths (NSMutableArray)
-        *groupFilePath (NSString)
+    *channelGroupFilePaths (NSMutableArray)
+        *channelGroupFilePath (NSString)
  
-    *group (NSMutableDictionary)
+    *channelGroup (NSMutableDictionary)
         *versionNumber (NSNumber)
         *filePath (NSString)
         *beingUsedInSequenceFilePaths (NSMutableArray)

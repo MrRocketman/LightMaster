@@ -18,7 +18,7 @@
     NSMutableDictionary *controlBoxLibrary;
     NSMutableDictionary *commandClusterLibrary;
     NSMutableDictionary *audioClipLibrary;
-    NSMutableDictionary *groupLibrary;
+    NSMutableDictionary *channelGroupLibrary;
     NSMutableDictionary *effectClusterLibrary;
     
     NSString *libraryFolder;
@@ -68,9 +68,9 @@
 - (NSMutableArray *)controlBoxFilePathsForSequence:(NSMutableDictionary *)sequence;
 - (int)controlBoxFilePathsCountForSequence:(NSMutableDictionary *)sequence;
 - (NSString *)controlBoxFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
-- (NSMutableArray *)groupFilePathsForSequence:(NSMutableDictionary *)sequence;
-- (int)groupFilePathsCountForSequence:(NSMutableDictionary *)sequence;
-- (NSString *)groupFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
+- (NSMutableArray *)channelGroupFilePathsForSequence:(NSMutableDictionary *)sequence;
+- (int)channelGroupFilePathsCountForSequence:(NSMutableDictionary *)sequence;
+- (NSString *)channelGroupFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
 - (NSMutableArray *)commandClusterFilePathsForSequence:(NSMutableDictionary *)sequence;
 - (int)commandClusterFilePathsCountForSequence:(NSMutableDictionary *)sequence;
 - (NSString *)commandClusterFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
@@ -87,8 +87,8 @@
 - (void)removeAudioClipFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 - (void)addControlBoxFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 - (void)removeControlBoxFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
-- (void)addGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
-- (void)removeGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
+- (void)addChannelGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
+- (void)removeChannelGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 - (void)addCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 - (void)removeCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 
@@ -155,7 +155,7 @@
 - (int)commandClusterBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)commandCluster;
 - (NSString *)commandCluster:(NSMutableDictionary *)commandCluster beingUsedInSequenceFilePathAtIndex:(int)index;
 - (NSString *)controlBoxFilePathForCommandCluster:(NSMutableDictionary *)commandCluster;
-- (NSString *)groupFilePathForCommandCluster:(NSMutableDictionary *)commandCluster;
+- (NSString *)channelGroupFilePathForCommandCluster:(NSMutableDictionary *)commandCluster;
 - (float)startTimeForCommandCluster:(NSMutableDictionary *)commandCluster;
 - (float)endTimeForCommandCluster:(NSMutableDictionary *)commandCluster;
 - (NSMutableArray *)commandsFromCommandCluster:(NSMutableDictionary *)commandCluster;
@@ -175,7 +175,7 @@
 - (void)removeCommandClusterFromLibrary:(NSMutableDictionary *)commandCluster;
 - (void)setDescription:(NSString *)description forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setControlBoxFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster;
-- (void)setGroupFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster;
+- (void)setChannelGroupFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setStartTime:(float)time forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setEndTime:(float)time forCommandcluster:(NSMutableDictionary *)commandCluster;
 - (void)moveCluster:(NSMutableDictionary *)commandCluster byTime:(float)time;
@@ -223,42 +223,42 @@
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 
-//#pragma mark - GroupLibrary Methods
+//#pragma mark - ChannelGroupLibrary Methods
 // Getter Methods
-- (float)groupLibraryVersionNumber;
-- (NSMutableArray *)groupFilePaths;
-- (NSString *)groupFilePathAtIndex:(int)index;
-- (int)groupFilePathsCount;
+- (float)channelGroupLibraryVersionNumber;
+- (NSMutableArray *)channelGroupFilePaths;
+- (NSString *)channelGroupFilePathAtIndex:(int)index;
+- (int)channelGroupFilePathsCount;
 
 // Setter Methods
-- (void)setVersionNumberForGroupLibraryTo:(float)newVersionNumber;
-- (void)addGroupFilePathToGroupLibrary:(NSString *)filePath;
+- (void)setVersionNumberForChannelGroupLibraryTo:(float)newVersionNumber;
+- (void)addChannelGroupFilePathToChannelGroupLibrary:(NSString *)filePath;
 
-//#pragma mark - Group Methods
+//#pragma mark - ChannelGroup Methods
 // Getter Methods
-- (float)versionNumberForGroup:(NSMutableDictionary *)group;
-- (NSString *)filePathForGroup:(NSMutableDictionary *)group;
-- (NSMutableDictionary *)groupFromFilePath:(NSString *)filePath;
-- (NSString *)descriptionForGroup:(NSMutableDictionary *)group;
-- (NSMutableArray *)groupBeingUsedInSequenceFilePaths:(NSMutableDictionary *)group;
-- (int)groupBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)group;
-- (NSString *)group:(NSMutableDictionary *)group beingUsedInSequenceFilePathAtIndex:(int)index;
-- (NSMutableArray *)itemsForGroup:(NSMutableDictionary *)group;
-- (int)itemsCountForGroup:(NSMutableDictionary *)group;
-- (NSMutableDictionary *)itemDataAtIndex:(int)index forGroup:(NSMutableDictionary *)group;
+- (float)versionNumberForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSString *)filePathForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSMutableDictionary *)channelGroupFromFilePath:(NSString *)filePath;
+- (NSString *)descriptionForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSMutableArray *)channelGroupBeingUsedInSequenceFilePaths:(NSMutableDictionary *)channelGroup;
+- (int)channelGroupBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)channelGroup;
+- (NSString *)channelGroup:(NSMutableDictionary *)channelGroup beingUsedInSequenceFilePathAtIndex:(int)index;
+- (NSMutableArray *)itemsForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (int)itemsCountForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSMutableDictionary *)itemDataAtIndex:(int)index forChannelGroup:(NSMutableDictionary *)channelGroup;
 - (NSString *)controlBoxFilePathForItemData:(NSMutableDictionary *)itemData;
 - (int)channelIndexForItemData:(NSMutableDictionary *)itemData;
 
 // Setter Methods
-- (void)setVersionNumber:(float)newVersionNumber forGroup:(NSMutableDictionary *)group;
-- (NSString *)createGroupAndReturnFilePath;
-- (NSString *)createCopyOfGroupAndReturnFilePath:(NSMutableDictionary *)group;
-- (void)removeGroupFromLibrary:(NSMutableDictionary *)group;
-- (void)setDescription:(NSString *)description forGroup:(NSMutableDictionary *)group;
-- (int)createItemDataAndReturnNewItemIndexForGroup:(NSMutableDictionary *)group;
-- (void)removeItemData:(NSMutableDictionary *)itemData forGroup:(NSMutableDictionary *)group;
-- (void)setControlBoxFilePath:(NSString *)filePath forItemDataAtIndex:(int)index whichIsPartOfGroup:(NSMutableDictionary *)group;
-- (void)setChannelIndex:(int)channelIndex forItemDataAtIndex:(int)index whichIsPartOfGroup:(NSMutableDictionary *)group;
+- (void)setVersionNumber:(float)newVersionNumber forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSString *)createChannelGroupAndReturnFilePath;
+- (NSString *)createCopyOfChannelGroupAndReturnFilePath:(NSMutableDictionary *)channelGroup;
+- (void)removeChannelGroupFromLibrary:(NSMutableDictionary *)channelGroup;
+- (void)setDescription:(NSString *)description forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (int)createItemDataAndReturnNewItemIndexForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)removeItemData:(NSMutableDictionary *)itemData forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)setControlBoxFilePath:(NSString *)filePath forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)setChannelIndex:(int)channelIndex forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup;
 
 //#pragma mark - EffectClusterLibrary Methods
 // Getter Methods
