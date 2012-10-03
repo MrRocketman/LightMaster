@@ -17,6 +17,43 @@
 		1A028A13161CD20800B97A5B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0289F3161CD20800B97A5B /* Cocoa.framework */; };
 		1A028A1B161CD20800B97A5B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A19161CD20800B97A5B /* InfoPlist.strings */; };
 		1A028A1E161CD20800B97A5B /* LightMasterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A1D161CD20800B97A5B /* LightMasterTests.m */; };
+		1A028A2D161CD23D00B97A5B /* MNTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A2C161CD23D00B97A5B /* MNTimelineViewController.m */; };
+		1A028A44161CD34400B97A5B /* CommandEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A2F161CD34400B97A5B /* CommandEditorViewController.m */; };
+		1A028A45161CD34400B97A5B /* LibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A31161CD34400B97A5B /* LibraryViewController.m */; };
+		1A028A46161CD34400B97A5B /* ToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A33161CD34400B97A5B /* ToolbarViewController.m */; };
+		1A028A47161CD34400B97A5B /* ControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A35161CD34400B97A5B /* ControlBoxSelectorViewController.m */; };
+		1A028A48161CD34400B97A5B /* GroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A37161CD34400B97A5B /* GroupSelectorViewController.m */; };
+		1A028A49161CD34400B97A5B /* ChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A39161CD34400B97A5B /* ChannelSelectorViewController.m */; };
+		1A028A4A161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A3B161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.m */; };
+		1A028A4B161CD34400B97A5B /* SequenceSoundSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A3D161CD34400B97A5B /* SequenceSoundSelectorViewController.m */; };
+		1A028A4C161CD34400B97A5B /* SequenceControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A3F161CD34400B97A5B /* SequenceControlBoxSelectorViewController.m */; };
+		1A028A4D161CD34400B97A5B /* SequenceGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A41161CD34400B97A5B /* SequenceGroupSelectorViewController.m */; };
+		1A028A4E161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A43161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.m */; };
+		1A028A5E161CD35C00B97A5B /* SynchronizedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A51161CD35B00B97A5B /* SynchronizedScrollView.m */; };
+		1A028A5F161CD35C00B97A5B /* TimelineTracksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A53161CD35B00B97A5B /* TimelineTracksView.m */; };
+		1A028A60161CD35C00B97A5B /* TimelineClustersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A55161CD35C00B97A5B /* TimelineClustersView.m */; };
+		1A028A61161CD35C00B97A5B /* CommandClusterDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A57161CD35C00B97A5B /* CommandClusterDetailView.m */; };
+		1A028A62161CD35C00B97A5B /* CommandChannelsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A59161CD35C00B97A5B /* CommandChannelsView.m */; };
+		1A028A63161CD35C00B97A5B /* LibraryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A5B161CD35C00B97A5B /* LibraryView.m */; };
+		1A028A64161CD35C00B97A5B /* ToolbarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A5D161CD35C00B97A5B /* ToolbarView.m */; };
+		1A028A77161CD36E00B97A5B /* Toolbar.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A66161CD36E00B97A5B /* Toolbar.tiff */; };
+		1A028A78161CD36E00B97A5B /* FastForwardAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A67161CD36E00B97A5B /* FastForwardAlternate.tiff */; };
+		1A028A79161CD36E00B97A5B /* PlayAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A68161CD36E00B97A5B /* PlayAlternate.tiff */; };
+		1A028A7A161CD36E00B97A5B /* RecordAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A69161CD36E00B97A5B /* RecordAlternate.tiff */; };
+		1A028A7B161CD36E00B97A5B /* RewindAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A6A161CD36E00B97A5B /* RewindAlternate.tiff */; };
+		1A028A7C161CD36E00B97A5B /* SkipBackAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A6B161CD36E00B97A5B /* SkipBackAlternate.tiff */; };
+		1A028A7D161CD36E00B97A5B /* Record.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A6C161CD36E00B97A5B /* Record.tiff */; };
+		1A028A7E161CD36E00B97A5B /* FastForward.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A6D161CD36E00B97A5B /* FastForward.tiff */; };
+		1A028A7F161CD36E00B97A5B /* Play.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A6E161CD36E00B97A5B /* Play.tiff */; };
+		1A028A80161CD36E00B97A5B /* Rewind.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A6F161CD36E00B97A5B /* Rewind.tiff */; };
+		1A028A81161CD36E00B97A5B /* SkipBack.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A70161CD36E00B97A5B /* SkipBack.tiff */; };
+		1A028A82161CD36E00B97A5B /* TrackRecord.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A71161CD36E00B97A5B /* TrackRecord.tiff */; };
+		1A028A83161CD36E00B97A5B /* TrackRecordBlank.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A72161CD36E00B97A5B /* TrackRecordBlank.tiff */; };
+		1A028A84161CD36E00B97A5B /* CommandClusterBackground.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A73161CD36E00B97A5B /* CommandClusterBackground.tiff */; };
+		1A028A85161CD36E00B97A5B /* MNControlBoxStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A74161CD36E00B97A5B /* MNControlBoxStyle.tiff */; };
+		1A028A86161CD36E00B97A5B /* MNGroupStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A75161CD36E00B97A5B /* MNGroupStyle.tiff */; };
+		1A028A87161CD36E00B97A5B /* MNSoundStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A76161CD36E00B97A5B /* MNSoundStyle.tiff */; };
+		1A028A8C161CD38000B97A5B /* Data.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A8A161CD38000B97A5B /* Data.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +86,64 @@
 		1A028A1A161CD20800B97A5B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1A028A1C161CD20800B97A5B /* LightMasterTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LightMasterTests.h; sourceTree = "<group>"; };
 		1A028A1D161CD20800B97A5B /* LightMasterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LightMasterTests.m; sourceTree = "<group>"; };
+		1A028A2B161CD23D00B97A5B /* MNTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineViewController.h; sourceTree = "<group>"; };
+		1A028A2C161CD23D00B97A5B /* MNTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineViewController.m; sourceTree = "<group>"; };
+		1A028A2E161CD34400B97A5B /* CommandEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandEditorViewController.h; sourceTree = "<group>"; };
+		1A028A2F161CD34400B97A5B /* CommandEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandEditorViewController.m; sourceTree = "<group>"; };
+		1A028A30161CD34400B97A5B /* LibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryViewController.h; sourceTree = "<group>"; };
+		1A028A31161CD34400B97A5B /* LibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryViewController.m; sourceTree = "<group>"; };
+		1A028A32161CD34400B97A5B /* ToolbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolbarViewController.h; sourceTree = "<group>"; };
+		1A028A33161CD34400B97A5B /* ToolbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolbarViewController.m; sourceTree = "<group>"; };
+		1A028A34161CD34400B97A5B /* ControlBoxSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlBoxSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A35161CD34400B97A5B /* ControlBoxSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ControlBoxSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A36161CD34400B97A5B /* GroupSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A37161CD34400B97A5B /* GroupSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A38161CD34400B97A5B /* ChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A39161CD34400B97A5B /* ChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A3A161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelAndControlBoxSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A3B161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelAndControlBoxSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A3C161CD34400B97A5B /* SequenceSoundSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SequenceSoundSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A3D161CD34400B97A5B /* SequenceSoundSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SequenceSoundSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A3E161CD34400B97A5B /* SequenceControlBoxSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SequenceControlBoxSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A3F161CD34400B97A5B /* SequenceControlBoxSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SequenceControlBoxSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A40161CD34400B97A5B /* SequenceGroupSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SequenceGroupSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A41161CD34400B97A5B /* SequenceGroupSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SequenceGroupSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A42161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SequenceCommandClusterSelectorViewController.h; sourceTree = "<group>"; };
+		1A028A43161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SequenceCommandClusterSelectorViewController.m; sourceTree = "<group>"; };
+		1A028A50161CD35B00B97A5B /* SynchronizedScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizedScrollView.h; sourceTree = "<group>"; };
+		1A028A51161CD35B00B97A5B /* SynchronizedScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizedScrollView.m; sourceTree = "<group>"; };
+		1A028A52161CD35B00B97A5B /* TimelineTracksView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineTracksView.h; sourceTree = "<group>"; };
+		1A028A53161CD35B00B97A5B /* TimelineTracksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineTracksView.m; sourceTree = "<group>"; };
+		1A028A54161CD35C00B97A5B /* TimelineClustersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineClustersView.h; sourceTree = "<group>"; };
+		1A028A55161CD35C00B97A5B /* TimelineClustersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineClustersView.m; sourceTree = "<group>"; };
+		1A028A56161CD35C00B97A5B /* CommandClusterDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandClusterDetailView.h; sourceTree = "<group>"; };
+		1A028A57161CD35C00B97A5B /* CommandClusterDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandClusterDetailView.m; sourceTree = "<group>"; };
+		1A028A58161CD35C00B97A5B /* CommandChannelsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandChannelsView.h; sourceTree = "<group>"; };
+		1A028A59161CD35C00B97A5B /* CommandChannelsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandChannelsView.m; sourceTree = "<group>"; };
+		1A028A5A161CD35C00B97A5B /* LibraryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryView.h; sourceTree = "<group>"; };
+		1A028A5B161CD35C00B97A5B /* LibraryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibraryView.m; sourceTree = "<group>"; };
+		1A028A5C161CD35C00B97A5B /* ToolbarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolbarView.h; sourceTree = "<group>"; };
+		1A028A5D161CD35C00B97A5B /* ToolbarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolbarView.m; sourceTree = "<group>"; };
+		1A028A66161CD36E00B97A5B /* Toolbar.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Toolbar.tiff; sourceTree = "<group>"; };
+		1A028A67161CD36E00B97A5B /* FastForwardAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FastForwardAlternate.tiff; sourceTree = "<group>"; };
+		1A028A68161CD36E00B97A5B /* PlayAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PlayAlternate.tiff; sourceTree = "<group>"; };
+		1A028A69161CD36E00B97A5B /* RecordAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RecordAlternate.tiff; sourceTree = "<group>"; };
+		1A028A6A161CD36E00B97A5B /* RewindAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RewindAlternate.tiff; sourceTree = "<group>"; };
+		1A028A6B161CD36E00B97A5B /* SkipBackAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SkipBackAlternate.tiff; sourceTree = "<group>"; };
+		1A028A6C161CD36E00B97A5B /* Record.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Record.tiff; sourceTree = "<group>"; };
+		1A028A6D161CD36E00B97A5B /* FastForward.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FastForward.tiff; sourceTree = "<group>"; };
+		1A028A6E161CD36E00B97A5B /* Play.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Play.tiff; sourceTree = "<group>"; };
+		1A028A6F161CD36E00B97A5B /* Rewind.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Rewind.tiff; sourceTree = "<group>"; };
+		1A028A70161CD36E00B97A5B /* SkipBack.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SkipBack.tiff; sourceTree = "<group>"; };
+		1A028A71161CD36E00B97A5B /* TrackRecord.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TrackRecord.tiff; sourceTree = "<group>"; };
+		1A028A72161CD36E00B97A5B /* TrackRecordBlank.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TrackRecordBlank.tiff; sourceTree = "<group>"; };
+		1A028A73161CD36E00B97A5B /* CommandClusterBackground.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CommandClusterBackground.tiff; sourceTree = "<group>"; };
+		1A028A74161CD36E00B97A5B /* MNControlBoxStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNControlBoxStyle.tiff; sourceTree = "<group>"; };
+		1A028A75161CD36E00B97A5B /* MNGroupStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNGroupStyle.tiff; sourceTree = "<group>"; };
+		1A028A76161CD36E00B97A5B /* MNSoundStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNSoundStyle.tiff; sourceTree = "<group>"; };
+		1A028A89161CD38000B97A5B /* Data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Data.h; sourceTree = "<group>"; };
+		1A028A8A161CD38000B97A5B /* Data.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Data.m; sourceTree = "<group>"; };
+		1A028A8B161CD38000B97A5B /* Data Model Description.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Data Model Description.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +211,10 @@
 			children = (
 				1A028A05161CD20800B97A5B /* MNAppDelegate.h */,
 				1A028A06161CD20800B97A5B /* MNAppDelegate.m */,
+				1A028A8D161CD38400B97A5B /* Data */,
+				1A028A4F161CD34A00B97A5B /* View Controllers */,
+				1A028A65161CD36300B97A5B /* Views */,
+				1A028A88161CD37400B97A5B /* Images */,
 				1A028A08161CD20800B97A5B /* MainMenu.xib */,
 				1A0289FA161CD20800B97A5B /* Supporting Files */,
 			);
@@ -151,6 +250,92 @@
 				1A028A19161CD20800B97A5B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1A028A4F161CD34A00B97A5B /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1A028A2B161CD23D00B97A5B /* MNTimelineViewController.h */,
+				1A028A2C161CD23D00B97A5B /* MNTimelineViewController.m */,
+				1A028A2E161CD34400B97A5B /* CommandEditorViewController.h */,
+				1A028A2F161CD34400B97A5B /* CommandEditorViewController.m */,
+				1A028A30161CD34400B97A5B /* LibraryViewController.h */,
+				1A028A31161CD34400B97A5B /* LibraryViewController.m */,
+				1A028A32161CD34400B97A5B /* ToolbarViewController.h */,
+				1A028A33161CD34400B97A5B /* ToolbarViewController.m */,
+				1A028A34161CD34400B97A5B /* ControlBoxSelectorViewController.h */,
+				1A028A35161CD34400B97A5B /* ControlBoxSelectorViewController.m */,
+				1A028A36161CD34400B97A5B /* GroupSelectorViewController.h */,
+				1A028A37161CD34400B97A5B /* GroupSelectorViewController.m */,
+				1A028A38161CD34400B97A5B /* ChannelSelectorViewController.h */,
+				1A028A39161CD34400B97A5B /* ChannelSelectorViewController.m */,
+				1A028A3A161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.h */,
+				1A028A3B161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.m */,
+				1A028A3C161CD34400B97A5B /* SequenceSoundSelectorViewController.h */,
+				1A028A3D161CD34400B97A5B /* SequenceSoundSelectorViewController.m */,
+				1A028A3E161CD34400B97A5B /* SequenceControlBoxSelectorViewController.h */,
+				1A028A3F161CD34400B97A5B /* SequenceControlBoxSelectorViewController.m */,
+				1A028A40161CD34400B97A5B /* SequenceGroupSelectorViewController.h */,
+				1A028A41161CD34400B97A5B /* SequenceGroupSelectorViewController.m */,
+				1A028A42161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.h */,
+				1A028A43161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		1A028A65161CD36300B97A5B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1A028A50161CD35B00B97A5B /* SynchronizedScrollView.h */,
+				1A028A51161CD35B00B97A5B /* SynchronizedScrollView.m */,
+				1A028A52161CD35B00B97A5B /* TimelineTracksView.h */,
+				1A028A53161CD35B00B97A5B /* TimelineTracksView.m */,
+				1A028A54161CD35C00B97A5B /* TimelineClustersView.h */,
+				1A028A55161CD35C00B97A5B /* TimelineClustersView.m */,
+				1A028A56161CD35C00B97A5B /* CommandClusterDetailView.h */,
+				1A028A57161CD35C00B97A5B /* CommandClusterDetailView.m */,
+				1A028A58161CD35C00B97A5B /* CommandChannelsView.h */,
+				1A028A59161CD35C00B97A5B /* CommandChannelsView.m */,
+				1A028A5A161CD35C00B97A5B /* LibraryView.h */,
+				1A028A5B161CD35C00B97A5B /* LibraryView.m */,
+				1A028A5C161CD35C00B97A5B /* ToolbarView.h */,
+				1A028A5D161CD35C00B97A5B /* ToolbarView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		1A028A88161CD37400B97A5B /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				1A028A66161CD36E00B97A5B /* Toolbar.tiff */,
+				1A028A67161CD36E00B97A5B /* FastForwardAlternate.tiff */,
+				1A028A68161CD36E00B97A5B /* PlayAlternate.tiff */,
+				1A028A69161CD36E00B97A5B /* RecordAlternate.tiff */,
+				1A028A6A161CD36E00B97A5B /* RewindAlternate.tiff */,
+				1A028A6B161CD36E00B97A5B /* SkipBackAlternate.tiff */,
+				1A028A6C161CD36E00B97A5B /* Record.tiff */,
+				1A028A6D161CD36E00B97A5B /* FastForward.tiff */,
+				1A028A6E161CD36E00B97A5B /* Play.tiff */,
+				1A028A6F161CD36E00B97A5B /* Rewind.tiff */,
+				1A028A70161CD36E00B97A5B /* SkipBack.tiff */,
+				1A028A71161CD36E00B97A5B /* TrackRecord.tiff */,
+				1A028A72161CD36E00B97A5B /* TrackRecordBlank.tiff */,
+				1A028A73161CD36E00B97A5B /* CommandClusterBackground.tiff */,
+				1A028A74161CD36E00B97A5B /* MNControlBoxStyle.tiff */,
+				1A028A75161CD36E00B97A5B /* MNGroupStyle.tiff */,
+				1A028A76161CD36E00B97A5B /* MNSoundStyle.tiff */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		1A028A8D161CD38400B97A5B /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				1A028A89161CD38000B97A5B /* Data.h */,
+				1A028A8A161CD38000B97A5B /* Data.m */,
+				1A028A8B161CD38000B97A5B /* Data Model Description.h */,
+			);
+			name = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,6 +413,23 @@
 				1A0289FE161CD20800B97A5B /* InfoPlist.strings in Resources */,
 				1A028A04161CD20800B97A5B /* Credits.rtf in Resources */,
 				1A028A0A161CD20800B97A5B /* MainMenu.xib in Resources */,
+				1A028A77161CD36E00B97A5B /* Toolbar.tiff in Resources */,
+				1A028A78161CD36E00B97A5B /* FastForwardAlternate.tiff in Resources */,
+				1A028A79161CD36E00B97A5B /* PlayAlternate.tiff in Resources */,
+				1A028A7A161CD36E00B97A5B /* RecordAlternate.tiff in Resources */,
+				1A028A7B161CD36E00B97A5B /* RewindAlternate.tiff in Resources */,
+				1A028A7C161CD36E00B97A5B /* SkipBackAlternate.tiff in Resources */,
+				1A028A7D161CD36E00B97A5B /* Record.tiff in Resources */,
+				1A028A7E161CD36E00B97A5B /* FastForward.tiff in Resources */,
+				1A028A7F161CD36E00B97A5B /* Play.tiff in Resources */,
+				1A028A80161CD36E00B97A5B /* Rewind.tiff in Resources */,
+				1A028A81161CD36E00B97A5B /* SkipBack.tiff in Resources */,
+				1A028A82161CD36E00B97A5B /* TrackRecord.tiff in Resources */,
+				1A028A83161CD36E00B97A5B /* TrackRecordBlank.tiff in Resources */,
+				1A028A84161CD36E00B97A5B /* CommandClusterBackground.tiff in Resources */,
+				1A028A85161CD36E00B97A5B /* MNControlBoxStyle.tiff in Resources */,
+				1A028A86161CD36E00B97A5B /* MNGroupStyle.tiff in Resources */,
+				1A028A87161CD36E00B97A5B /* MNSoundStyle.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +466,7 @@
 			files = (
 				1A028A00161CD20800B97A5B /* main.m in Sources */,
 				1A028A07161CD20800B97A5B /* MNAppDelegate.m in Sources */,
+				1A028A2D161CD23D00B97A5B /* MNTimelineViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +475,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A028A1E161CD20800B97A5B /* LightMasterTests.m in Sources */,
+				1A028A44161CD34400B97A5B /* CommandEditorViewController.m in Sources */,
+				1A028A45161CD34400B97A5B /* LibraryViewController.m in Sources */,
+				1A028A46161CD34400B97A5B /* ToolbarViewController.m in Sources */,
+				1A028A47161CD34400B97A5B /* ControlBoxSelectorViewController.m in Sources */,
+				1A028A48161CD34400B97A5B /* GroupSelectorViewController.m in Sources */,
+				1A028A49161CD34400B97A5B /* ChannelSelectorViewController.m in Sources */,
+				1A028A4A161CD34400B97A5B /* ChannelAndControlBoxSelectorViewController.m in Sources */,
+				1A028A4B161CD34400B97A5B /* SequenceSoundSelectorViewController.m in Sources */,
+				1A028A4C161CD34400B97A5B /* SequenceControlBoxSelectorViewController.m in Sources */,
+				1A028A4D161CD34400B97A5B /* SequenceGroupSelectorViewController.m in Sources */,
+				1A028A4E161CD34400B97A5B /* SequenceCommandClusterSelectorViewController.m in Sources */,
+				1A028A5E161CD35C00B97A5B /* SynchronizedScrollView.m in Sources */,
+				1A028A5F161CD35C00B97A5B /* TimelineTracksView.m in Sources */,
+				1A028A60161CD35C00B97A5B /* TimelineClustersView.m in Sources */,
+				1A028A61161CD35C00B97A5B /* CommandClusterDetailView.m in Sources */,
+				1A028A62161CD35C00B97A5B /* CommandChannelsView.m in Sources */,
+				1A028A63161CD35C00B97A5B /* LibraryView.m in Sources */,
+				1A028A64161CD35C00B97A5B /* ToolbarView.m in Sources */,
+				1A028A8C161CD38000B97A5B /* Data.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
