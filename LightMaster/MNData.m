@@ -57,7 +57,7 @@
     {
         // Custom initialization here
         [self loadLibaries];
-        zoomLevel = 1.0;
+        zoomLevel = 3.0;
         [self setCurrentTime:1.0];
     }
     
