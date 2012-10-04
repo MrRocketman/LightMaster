@@ -9,5 +9,13 @@
 #import <Cocoa/Cocoa.h>
 
 @interface MNSynchronizedScrollView : NSScrollView
+{
+    NSScrollView *__weak synchronizedScrollView; // not retained
+}
+
+@property(readwrite, weak, nonatomic) IBOutlet NSScrollView *synchronizedScrollView;
+//Scroll synchronization methods
+- (void)stopSynchronizing;
+- (void)synchronizedViewContentBoundsDidChange:(NSNotification *)notification;
 
 @end

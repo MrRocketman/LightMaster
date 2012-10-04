@@ -7,15 +7,20 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#include "MNData.h"
-#include "MNTimelineViewController.h"
-#include "MNCommandClusterEditorViewController.h"
-#include "MNLibrariesViewController.h"
-#include "MNToolbarViewController.h"
+#import "MNData.h"
+#import "MNTimelineViewController.h"
+#import "MNCommandClusterEditorViewController.h"
+#import "MNLibrariesViewController.h"
+#import "MNToolbarViewController.h"
 
 @interface MNAppDelegate : NSObject <NSApplicationDelegate>
 {
     MNData *data;
+    
+    IBOutlet MNTimelineViewController *timelineViewController;
+    IBOutlet MNCommandClusterEditorViewController *commandClusterEditorViewController;
+    IBOutlet MNLibrariesViewController *librariesViewController;
+    IBOutlet MNToolbarViewController *toolbarViewController;
 }
 
 @property (assign) IBOutlet NSWindow *window;

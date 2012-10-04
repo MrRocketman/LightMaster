@@ -7,7 +7,22 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MNData.h"
+#import "MNTimelineTrackHeadersView.h"
+#import "MNTimelineTracksView.h"
 
 @interface MNTimelineViewController : NSViewController
+{
+    MNData *__weak data;
+    IBOutlet MNTimelineTrackHeadersView *timelineTrackHeadersView;
+    IBOutlet MNTimelineTracksView *timelineTracksView;
+    
+    float zoomLevel;
+}
+
+@property(readwrite, weak) MNData *data;
+
+@property(readwrite, assign) float zoomLevel;
+- (IBAction)zoomLevelChange:(id)sender;
 
 @end

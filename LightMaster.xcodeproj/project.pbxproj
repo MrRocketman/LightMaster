@@ -33,8 +33,8 @@
 		1A028A83161CD36E00B97A5B /* TrackRecordBlank.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A72161CD36E00B97A5B /* TrackRecordBlank.tiff */; };
 		1A028A84161CD36E00B97A5B /* CommandClusterBackground.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A73161CD36E00B97A5B /* CommandClusterBackground.tiff */; };
 		1A028A85161CD36E00B97A5B /* MNControlBoxStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A74161CD36E00B97A5B /* MNControlBoxStyle.tiff */; };
-		1A028A86161CD36E00B97A5B /* MNGroupStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A75161CD36E00B97A5B /* MNGroupStyle.tiff */; };
-		1A028A87161CD36E00B97A5B /* MNSoundStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A76161CD36E00B97A5B /* MNSoundStyle.tiff */; };
+		1A028A86161CD36E00B97A5B /* MNChannelGroupStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A75161CD36E00B97A5B /* MNChannelGroupStyle.tiff */; };
+		1A028A87161CD36E00B97A5B /* MNAudioClipStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A76161CD36E00B97A5B /* MNAudioClipStyle.tiff */; };
 		1A028A90161CD40000B97A5B /* MNData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A8F161CD40000B97A5B /* MNData.m */; };
 		1A028A9A161CD45700B97A5B /* MNToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A99161CD45700B97A5B /* MNToolbarViewController.m */; };
 		1A028AAF161CD91C00B97A5B /* MNCommandClusterEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AAE161CD91C00B97A5B /* MNCommandClusterEditorViewController.m */; };
@@ -100,8 +100,8 @@
 		1A028A72161CD36E00B97A5B /* TrackRecordBlank.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TrackRecordBlank.tiff; sourceTree = "<group>"; };
 		1A028A73161CD36E00B97A5B /* CommandClusterBackground.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CommandClusterBackground.tiff; sourceTree = "<group>"; };
 		1A028A74161CD36E00B97A5B /* MNControlBoxStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNControlBoxStyle.tiff; sourceTree = "<group>"; };
-		1A028A75161CD36E00B97A5B /* MNGroupStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNGroupStyle.tiff; sourceTree = "<group>"; };
-		1A028A76161CD36E00B97A5B /* MNSoundStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNSoundStyle.tiff; sourceTree = "<group>"; };
+		1A028A75161CD36E00B97A5B /* MNChannelGroupStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNChannelGroupStyle.tiff; sourceTree = "<group>"; };
+		1A028A76161CD36E00B97A5B /* MNAudioClipStyle.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MNAudioClipStyle.tiff; sourceTree = "<group>"; };
 		1A028A8E161CD40000B97A5B /* MNData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MNData.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1A028A8F161CD40000B97A5B /* MNData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MNData.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1A028A91161CD41B00B97A5B /* MNData_Model_Description.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MNData_Model_Description.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -252,7 +252,6 @@
 				1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */,
 				1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */,
 				1A028A98161CD45700B97A5B /* MNToolbarViewController.h */,
-				1A028A99161CD45700B97A5B /* MNToolbarViewController.m */,
 				1A028AB3161CD93B00B97A5B /* Library Managers */,
 			);
 			name = "View Controllers";
@@ -294,8 +293,8 @@
 				1A028A72161CD36E00B97A5B /* TrackRecordBlank.tiff */,
 				1A028A73161CD36E00B97A5B /* CommandClusterBackground.tiff */,
 				1A028A74161CD36E00B97A5B /* MNControlBoxStyle.tiff */,
-				1A028A75161CD36E00B97A5B /* MNGroupStyle.tiff */,
-				1A028A76161CD36E00B97A5B /* MNSoundStyle.tiff */,
+				1A028A75161CD36E00B97A5B /* MNChannelGroupStyle.tiff */,
+				1A028A76161CD36E00B97A5B /* MNAudioClipStyle.tiff */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -327,6 +326,7 @@
 				1A028AC1161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m */,
 				1A028AC3161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.h */,
 				1A028AC4161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.m */,
+				1A028A99161CD45700B97A5B /* MNToolbarViewController.m */,
 			);
 			name = "Library Managers";
 			sourceTree = "<group>";
@@ -421,8 +421,8 @@
 				1A028A83161CD36E00B97A5B /* TrackRecordBlank.tiff in Resources */,
 				1A028A84161CD36E00B97A5B /* CommandClusterBackground.tiff in Resources */,
 				1A028A85161CD36E00B97A5B /* MNControlBoxStyle.tiff in Resources */,
-				1A028A86161CD36E00B97A5B /* MNGroupStyle.tiff in Resources */,
-				1A028A87161CD36E00B97A5B /* MNSoundStyle.tiff in Resources */,
+				1A028A86161CD36E00B97A5B /* MNChannelGroupStyle.tiff in Resources */,
+				1A028A87161CD36E00B97A5B /* MNAudioClipStyle.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,20 +8,44 @@
 
 #import "MNTimelineViewController.h"
 
-@interface MNTimelineViewController ()
+@interface MNTimelineViewController()
+
+- (void)loadSequence:(NSNotification *)aNotification;
 
 @end
 
 @implementation MNTimelineViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+//@synthesize timelineTracksView, timelineClustersView;
+@synthesize data, zoomLevel;
+
+- (id)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Initialization code here.
+    if(self = [super initWithCoder:aDecoder])
+    {
+        // Init Code Here
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSequence:) name:@"LoadSequence" object:nil];
+        
+        /*[timelineTracksView setData:self.data];
+         [timelineTrackHeadersView setData:self.data];
+         [timelineTracksView setNeedsDisplay:YES];
+         [timelineTrackHeadersView setNeedsDisplay:YES];*/
     }
     
     return self;
+}
+
+- (IBAction)zoomLevelChange:(id)sender
+{
+    self.zoomLevel = [sender floatValue];
+    [data setZoomLevel:self.zoomLevel];
+    [timelineTrackHeadersView setNeedsDisplay:YES];
+}
+
+- (void)loadSequence:(NSNotification *)aNotification
+{
+    [timelineTracksView setNeedsDisplay:YES];
+    [timelineTrackHeadersView setNeedsDisplay:YES];
 }
 
 @end
