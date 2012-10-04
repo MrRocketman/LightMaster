@@ -280,7 +280,33 @@
     [attributes setObject:font forKey:NSFontAttributeName];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
     float timeMarkerDifference = 0.0;
-    if(timeSpan >= 10.0)
+    
+//    timeMarkerDifference = timeSpan / 10.0; // This doesn't give a visual scaling effect, the below code does
+    if(timeSpan >= 60.0)
+    {
+        timeMarkerDifference = 6.0;
+    }
+    else if(timeSpan >= 50.0)
+    {
+        timeMarkerDifference = 5.0;
+    }
+    else if(timeSpan >= 40.0)
+    {
+        timeMarkerDifference = 4.0;
+    }
+    else if(timeSpan >= 30.0)
+    {
+        timeMarkerDifference = 3.0;
+    }
+    else if(timeSpan >= 20.0)
+    {
+        timeMarkerDifference = 2.0;
+    }
+    else if(timeSpan >= 15.0)
+    {
+        timeMarkerDifference = 1.5;
+    }
+    else if(timeSpan >= 10.0)
     {
         timeMarkerDifference = 1.0;
     }
