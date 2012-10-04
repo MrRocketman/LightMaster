@@ -252,6 +252,7 @@
 				1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */,
 				1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */,
 				1A028A98161CD45700B97A5B /* MNToolbarViewController.h */,
+				1A028A99161CD45700B97A5B /* MNToolbarViewController.m */,
 				1A028AB3161CD93B00B97A5B /* Library Managers */,
 			);
 			name = "View Controllers";
@@ -326,7 +327,6 @@
 				1A028AC1161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m */,
 				1A028AC3161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.h */,
 				1A028AC4161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.m */,
-				1A028A99161CD45700B97A5B /* MNToolbarViewController.m */,
 			);
 			name = "Library Managers";
 			sourceTree = "<group>";

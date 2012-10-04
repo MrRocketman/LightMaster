@@ -22,6 +22,7 @@
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height;
 
 - (void)updateTimeAtLeftEdgeOfTimelineView:(NSTimer*)theTimer;
+- (float)roundUpNumber:(float)numberToRound toNearestMultipleOfNumber:(float)multiple;
 
 @end
 
@@ -164,13 +165,14 @@
         {
             NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
             
-            // Command Cluster Mouse Checking here
+            // Command Cluster is selected
             if([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
             {
                 [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
                 selectedCommandCluster = currentCommandCluster;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
             }
+            // Normal comand cluster
             else
             {
                 [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.7] andStroke:YES];
@@ -262,7 +264,6 @@
 {
     // Draw the Top Bar
     NSRect superViewFrame = [[self superview] frame];
-    //NSRect topBarFrame = NSMakeRect(0, self.frame.size.height - TOP_BAR_HEIGHT, self.frame.size.width, TOP_BAR_HEIGHT);
     NSRect topBarFrame = NSMakeRect(0, scrollViewOrigin.y + superViewFrame.size.height - TOP_BAR_HEIGHT, self.frame.size.width, TOP_BAR_HEIGHT);
     NSSize imageSize = [topBarBackgroundImage size];
     [topBarBackgroundImage drawInRect:topBarFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
@@ -274,14 +275,12 @@
         mouseEvent = nil;
     }
     
-    // Draw timeline
+    // Determine the grid spacing
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-    NSFont *font = [NSFont fontWithName:@"Helvetica" size:12];
+    NSFont *font = [NSFont fontWithName:@"Helvetica" size:10];
     [attributes setObject:font forKey:NSFontAttributeName];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
     float timeMarkerDifference = 0.0;
-    
-//    timeMarkerDifference = timeSpan / 10.0; // This doesn't give a visual scaling effect, the below code does
     if(timeSpan >= 60.0)
     {
         timeMarkerDifference = 6.0;
@@ -326,11 +325,15 @@
     {
         timeMarkerDifference = 0.0625;
     }
-	for(int i = 0; i < timeSpan / timeMarkerDifference + 5; i ++)
+    
+    // Draw the grid (+ 5 extras so the user doesn't see blank areas)
+    float leftEdgeNearestTimeMaker = [self roundUpNumber:[data timeAtLeftEdgeOfTimelineView] toNearestMultipleOfNumber:timeMarkerDifference];
+	for(int i = 0; i < timeSpan / timeMarkerDifference + 6; i ++)
 	{
-        float someTime = ((int)[data timeAtLeftEdgeOfTimelineView] - timeMarkerDifference + i * timeMarkerDifference);
-        NSString *time = [NSString stringWithFormat:@"%.03f", someTime];
-        NSRect textFrame = NSMakeRect([data timeToX:someTime], topBarFrame.origin.y, 40, topBarFrame.size.height);
+        float timeMarker = (leftEdgeNearestTimeMaker - (timeMarkerDifference * 3) + i * timeMarkerDifference);
+        // Draw the times
+        NSString *time = [NSString stringWithFormat:@"%.03f", timeMarker];
+        NSRect textFrame = NSMakeRect([data timeToX:timeMarker], topBarFrame.origin.y, 40, topBarFrame.size.height);
         [time drawInRect:textFrame withAttributes:attributes];
         
         // Draw grid lines
@@ -343,27 +346,15 @@
     if(mouseAction == MNMouseDragged && [data currentTimeMarkerIsSelected] && mouseEvent != nil)
     {
         float newCurrentTime = [data xToTime:mousePoint.x];
+        
         // Bind the minimum time to 0
         if(newCurrentTime < 0.0)
         {
             newCurrentTime = 0.0;
         }
-        [data setCurrentTime:newCurrentTime];
         
-        if([data timeToX:newCurrentTime] > superViewFrame.size.width - AUTO_SCROLL_PIXEL_BUFFER || [data timeToX:newCurrentTime] < AUTO_SCROLL_PIXEL_BUFFER)
-        {
-            [autoScrollTimer invalidate];
-            autoScrollTimer = nil;
-            [[self superview] autoscroll:mouseEvent];
-            autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:AUTO_SCROLL_REFRESH_RATE target:self selector:@selector(updateTimeAtLeftEdgeOfTimelineView:) userInfo:nil repeats:YES];
-            timerIsRunning = YES;
-        }
-    }
-    else if(timerIsRunning)
-    {
-        [autoScrollTimer invalidate];
-        autoScrollTimer = nil;
-        timerIsRunning = NO;
+        // Move the cursor to the new position
+        [data setCurrentTime:newCurrentTime];
     }
     
     // Draw the currentTime marker
@@ -412,8 +403,32 @@
 
 - (void)updateTimeAtLeftEdgeOfTimelineView:(NSTimer *)theTimer;
 {
-    [[self superview] autoscroll:mouseEvent];
-    [self setNeedsDisplay:YES];
+    BOOL didAutoscroll = [[self superview] autoscroll:mouseEvent];
+    if(didAutoscroll)
+    {
+        [data setCurrentTime:[data xToTime:[data currentTime] + mouseEvent.deltaX]];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (float)roundUpNumber:(float)numberToRound toNearestMultipleOfNumber:(float)multiple
+{
+    // Only works to the nearest thousandth
+    int intNumberToRound = (int)(numberToRound * 1000000);
+    int intMultiple = (int)(multiple * 1000000);
+    
+    if(multiple == 0)
+    {
+        return intNumberToRound / 1000000;
+    }
+    
+    int remainder = intNumberToRound % intMultiple;
+    if(remainder == 0)
+    {
+        return intNumberToRound / 1000000;
+    }
+    
+    return (intNumberToRound + intMultiple - remainder) / 1000000.0;
 }
 
 #pragma mark Mouse Methods
@@ -424,6 +439,12 @@
 	mousePoint = [self convertPoint:eventLocation fromView:nil];
     mouseAction = MNMouseDown;
     mouseEvent = theEvent;
+    
+    [autoScrollTimer invalidate];
+    autoScrollTimer = nil;
+    autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:AUTO_SCROLL_REFRESH_RATE target:self selector:@selector(updateTimeAtLeftEdgeOfTimelineView:) userInfo:nil repeats:YES];
+    timerIsRunning = YES;
+    
     [self setNeedsDisplay:YES];
 }
 
@@ -442,7 +463,14 @@
 	mousePoint = [self convertPoint:eventLocation fromView:nil];
     mouseAction = MNMouseUp;
     mouseEvent = theEvent;
+    
+    [autoScrollTimer invalidate];
+    autoScrollTimer = nil;
+    timerIsRunning = NO;
+    
     [self setNeedsDisplay:YES];
 }
+
+
 
 @end

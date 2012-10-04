@@ -15,10 +15,6 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     
-//    timelineViewController = [[MNTimelineViewController alloc] init];
-//    commandClusterEditorViewController = [[MNCommandClusterEditorViewController alloc] init];
-//    librariesViewController = [[MNLibrariesViewController alloc] init];
-//    toolbarViewController = [[MNToolbarViewController alloc] init];
 }
 
 #pragma mark - Menu Items

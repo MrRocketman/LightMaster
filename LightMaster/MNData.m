@@ -46,11 +46,6 @@
 
 #pragma mark - System
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    return [self init];
-}
-
 - (id)init
 {
     if(self = [super init])
@@ -433,7 +428,7 @@
 - (int)timeToX:(float)time
 {
     int x = [self widthForTimeInterval:time];
-	
+    
 	return x;
 }
 

@@ -1067,7 +1067,6 @@
 													<string key="NSFrame">{{71, 13}, {119, 25}}</string>
 													<reference key="NSSuperview" ref="914746911"/>
 													<reference key="NSWindow"/>
-													<reference key="NSNextKeyView"/>
 													<string key="NSReuseIdentifierKey">_NS:1535</string>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSTextFieldCell" key="NSCell" id="418175622">
@@ -1320,6 +1319,9 @@
 			<object class="NSCustomObject" id="755631768">
 				<string key="NSClassName">NSFontManager</string>
 			</object>
+			<object class="NSCustomObject" id="683593973">
+				<string key="NSClassName">MNData</string>
+			</object>
 			<object class="NSCustomObject" id="1045347373">
 				<string key="NSClassName">MNTimelineViewController</string>
 			</object>
@@ -1331,9 +1333,6 @@
 			</object>
 			<object class="NSCustomObject" id="296989176">
 				<string key="NSClassName">MNToolbarViewController</string>
-			</object>
-			<object class="NSCustomObject" id="683593973">
-				<string key="NSClassName">MNData</string>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -1555,22 +1554,6 @@
 					<int key="connectionID">1202</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">timelineTrackHeadersView</string>
-						<reference key="source" ref="1045347373"/>
-						<reference key="destination" ref="40825984"/>
-					</object>
-					<int key="connectionID">1203</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">timelineTracksView</string>
-						<reference key="source" ref="1045347373"/>
-						<reference key="destination" ref="1070565575"/>
-					</object>
-					<int key="connectionID">1204</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">zoomLevelChange:</string>
 						<reference key="source" ref="1045347373"/>
@@ -1580,11 +1563,27 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">data</string>
+						<reference key="source" ref="1045347373"/>
+						<reference key="destination" ref="683593973"/>
+					</object>
+					<int key="connectionID">1214</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">timelineTrackHeadersScrollView</string>
 						<reference key="source" ref="1045347373"/>
 						<reference key="destination" ref="40825984"/>
 					</object>
-					<int key="connectionID">1208</int>
+					<int key="connectionID">1231</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">timelineTrackHeadersView</string>
+						<reference key="source" ref="1045347373"/>
+						<reference key="destination" ref="36556066"/>
+					</object>
+					<int key="connectionID">1232</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1592,15 +1591,119 @@
 						<reference key="source" ref="1045347373"/>
 						<reference key="destination" ref="1070565575"/>
 					</object>
-					<int key="connectionID">1209</int>
+					<int key="connectionID">1233</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">timelineTracksView</string>
+						<reference key="source" ref="1045347373"/>
+						<reference key="destination" ref="220284193"/>
+					</object>
+					<int key="connectionID">1234</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">currentTimeTextField</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="162857044"/>
+					</object>
+					<int key="connectionID">1217</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">data</string>
-						<reference key="source" ref="1045347373"/>
+						<reference key="source" ref="296989176"/>
 						<reference key="destination" ref="683593973"/>
 					</object>
-					<int key="connectionID">1214</int>
+					<int key="connectionID">1218</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">fastForwardButton</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="154843349"/>
+					</object>
+					<int key="connectionID">1219</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">playButton</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="1000645208"/>
+					</object>
+					<int key="connectionID">1220</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">recordButton</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="406250150"/>
+					</object>
+					<int key="connectionID">1221</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">rewindButton</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="26893392"/>
+					</object>
+					<int key="connectionID">1222</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">skipBackButton</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="32965540"/>
+					</object>
+					<int key="connectionID">1223</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">view</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="491735150"/>
+					</object>
+					<int key="connectionID">1224</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">fastForwardButtonPress:</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="154843349"/>
+					</object>
+					<int key="connectionID">1225</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">playButtonPress:</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="1000645208"/>
+					</object>
+					<int key="connectionID">1226</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">recordButtonPress:</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="406250150"/>
+					</object>
+					<int key="connectionID">1227</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">rewindButtonPress:</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="26893392"/>
+					</object>
+					<int key="connectionID">1228</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">skipBackButtonPress:</string>
+						<reference key="source" ref="296989176"/>
+						<reference key="destination" ref="32965540"/>
+					</object>
+					<int key="connectionID">1229</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4917,7 +5020,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1216</int>
+			<int key="maxID">1234</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5129,6 +5232,74 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">MNToolbarViewController</string>
 					<string key="superclassName">NSViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="fastForwardButtonPress:">id</string>
+						<string key="playButtonPress:">id</string>
+						<string key="recordButtonPress:">id</string>
+						<string key="rewindButtonPress:">id</string>
+						<string key="skipBackButtonPress:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="fastForwardButtonPress:">
+							<string key="name">fastForwardButtonPress:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="playButtonPress:">
+							<string key="name">playButtonPress:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="recordButtonPress:">
+							<string key="name">recordButtonPress:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="rewindButtonPress:">
+							<string key="name">rewindButtonPress:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="skipBackButtonPress:">
+							<string key="name">skipBackButtonPress:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="currentTimeTextField">NSTextField</string>
+						<string key="data">MNData</string>
+						<string key="fastForwardButton">NSButton</string>
+						<string key="playButton">NSButton</string>
+						<string key="recordButton">NSButton</string>
+						<string key="rewindButton">NSButton</string>
+						<string key="skipBackButton">NSButton</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="currentTimeTextField">
+							<string key="name">currentTimeTextField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="data">
+							<string key="name">data</string>
+							<string key="candidateClassName">MNData</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="fastForwardButton">
+							<string key="name">fastForwardButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="playButton">
+							<string key="name">playButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="recordButton">
+							<string key="name">recordButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rewindButton">
+							<string key="name">rewindButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="skipBackButton">
+							<string key="name">skipBackButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/MNToolbarViewController.h</string>
