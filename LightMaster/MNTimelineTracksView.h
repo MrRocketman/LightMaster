@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 James Adams. All rights reserved.
 //
 
+#import <Cocoa/Cocoa.h>
 #import "MNSynchronizedScrollView.h"
 #import "MNData.h"
 
@@ -27,7 +28,7 @@ enum
     MNChannelGroup
 };
 
-@interface MNTimelineTracksView : MNSynchronizedScrollView
+@interface MNTimelineTracksView : NSView
 {
     MNData *__weak data;
     

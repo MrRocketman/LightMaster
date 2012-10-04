@@ -6,8 +6,9 @@
 //  Copyright (c) 2012 James Adams. All rights reserved.
 //
 
+#import <Cocoa/Cocoa.h>
 #import "MNSynchronizedScrollView.h"
 
-@interface MNCommandClusterChannelsView : MNSynchronizedScrollView
+@interface MNCommandClusterChannelsView : NSView
 
 @end

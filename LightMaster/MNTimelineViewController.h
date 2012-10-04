@@ -10,10 +10,13 @@
 #import "MNData.h"
 #import "MNTimelineTrackHeadersView.h"
 #import "MNTimelineTracksView.h"
+#import "MNSynchronizedScrollView.h"
 
 @interface MNTimelineViewController : NSViewController
 {
     MNData *__weak data;
+    IBOutlet MNSynchronizedScrollView *timelineTrackHeadersScrollView;
+    IBOutlet MNSynchronizedScrollView *timelineTracksScrollView;
     IBOutlet MNTimelineTrackHeadersView *timelineTrackHeadersView;
     IBOutlet MNTimelineTracksView *timelineTracksView;
     

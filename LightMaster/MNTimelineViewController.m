@@ -26,10 +26,10 @@
         // Init Code Here
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSequence:) name:@"LoadSequence" object:nil];
         
-        /*[timelineTracksView setData:self.data];
-         [timelineTrackHeadersView setData:self.data];
-         [timelineTracksView setNeedsDisplay:YES];
-         [timelineTrackHeadersView setNeedsDisplay:YES];*/
+        [timelineTracksView setData:self.data];
+        [timelineTrackHeadersView setData:self.data];
+        [timelineTracksView setNeedsDisplay:YES];
+        [timelineTrackHeadersView setNeedsDisplay:YES];
     }
     
     return self;
