@@ -35,7 +35,8 @@
 
 - (IBAction)zoomLevelChange:(id)sender
 {
-    self.zoomLevel = [sender floatValue];
+    // This gives a much more linear feel to the zoom
+    self.zoomLevel = pow([sender floatValue], 2) / 2;
     [data setZoomLevel:self.zoomLevel];
     [timelineTracksView setNeedsDisplay:YES];
 }

@@ -57,7 +57,7 @@
     {
         // Custom initialization here
         [self loadLibaries];
-        zoomLevel = 0.5;
+        zoomLevel = 1.0;
         [self setCurrentTime:1.0];
     }
     
@@ -439,8 +439,7 @@
 
 - (float)xToTime:(int)x
 {
-	//return  (x / zoomLevel / PIXEL_TO_ZOOM_RATIO) + timeAtLeftEdgeOfTimelineView;
-    NSLog(@"Zoom level:%f", zoomLevel);
+	//return  (x / zoomLevel / PIXEL_TO_ZOOM_RATIO);
     return  x / zoomLevel / PIXEL_TO_ZOOM_RATIO;
 }
 

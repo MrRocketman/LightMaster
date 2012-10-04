@@ -10,7 +10,8 @@
 
 // See 'MNData_Model_Description'
 
-#define PIXEL_TO_ZOOM_RATIO 1000
+// This is how many pixels per second there are are a zoom level of 1
+#define PIXEL_TO_ZOOM_RATIO 25
 
 @interface MNData : NSObject
 {
@@ -26,7 +27,7 @@
     NSMutableDictionary *currentSequence;
     float currentTime;
     float timeAtLeftEdgeOfTimelineView;
-    float zoomLevel; // 0.01 = no zoom, 1.0 = full zoom
+    float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
     BOOL currentTimeMarkerIsSelected;
 }
 
