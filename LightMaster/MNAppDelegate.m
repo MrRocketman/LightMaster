@@ -14,8 +14,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    MNData *dataObject = [[MNData alloc] init];
-    self.data = dataObject;
     
 //    timelineViewController = [[MNTimelineViewController alloc] init];
 //    commandClusterEditorViewController = [[MNCommandClusterEditorViewController alloc] init];

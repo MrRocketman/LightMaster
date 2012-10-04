@@ -17,7 +17,7 @@
 @implementation MNTimelineViewController
 
 //@synthesize timelineTracksView, timelineClustersView;
-@synthesize data, zoomLevel;
+@synthesize zoomLevel;
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -26,10 +26,8 @@
         // Init Code Here
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSequence:) name:@"LoadSequence" object:nil];
         
-        [timelineTracksView setData:self.data];
-        [timelineTrackHeadersView setData:self.data];
-        [timelineTracksView setNeedsDisplay:YES];
-        [timelineTrackHeadersView setNeedsDisplay:YES];
+        // Update the zoom level
+        [data setZoomLevel:self.zoomLevel];
     }
     
     return self;
@@ -39,7 +37,7 @@
 {
     self.zoomLevel = [sender floatValue];
     [data setZoomLevel:self.zoomLevel];
-    [timelineTrackHeadersView setNeedsDisplay:YES];
+    [timelineTracksView setNeedsDisplay:YES];
 }
 
 - (void)loadSequence:(NSNotification *)aNotification

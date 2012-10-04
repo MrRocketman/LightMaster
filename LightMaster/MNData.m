@@ -46,6 +46,11 @@
 
 #pragma mark - System
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    return [self init];
+}
+
 - (id)init
 {
     if(self = [super init])
@@ -435,6 +440,7 @@
 - (float)xToTime:(int)x
 {
 	//return  (x / zoomLevel / PIXEL_TO_ZOOM_RATIO) + timeAtLeftEdgeOfTimelineView;
+    NSLog(@"Zoom level:%f", zoomLevel);
     return  x / zoomLevel / PIXEL_TO_ZOOM_RATIO;
 }
 

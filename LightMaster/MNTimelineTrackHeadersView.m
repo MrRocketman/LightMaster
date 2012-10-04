@@ -17,8 +17,6 @@
 
 @implementation MNTimelineTrackHeadersView
 
-@synthesize data;
-
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if(self = [super initWithCoder:aDecoder])

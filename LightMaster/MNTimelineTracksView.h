@@ -30,7 +30,7 @@ enum
 
 @interface MNTimelineTracksView : NSView
 {
-    MNData *__weak data;
+    IBOutlet MNData *data;
     
     NSImage *clusterBackgroundImage;
     NSImage *topBarBackgroundImage;
@@ -49,7 +49,5 @@ enum
     NSMutableDictionary *selectedCommand;
     NSMutableDictionary *selectedAudioClip;
 }
-
-@property(readwrite, weak) MNData *data;
 
 @end

@@ -15,7 +15,7 @@
 
 @interface MNAppDelegate : NSObject <NSApplicationDelegate>
 {
-    MNData *data;
+    IBOutlet MNData *data;
     
     IBOutlet MNTimelineViewController *timelineViewController;
     IBOutlet MNCommandClusterEditorViewController *commandClusterEditorViewController;

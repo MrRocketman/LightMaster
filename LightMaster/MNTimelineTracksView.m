@@ -27,8 +27,6 @@
 
 @implementation MNTimelineTracksView
 
-@synthesize data;
-
 #pragma mark - System methods
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -54,7 +52,7 @@
     
     scrollViewOrigin = [changedScrollView documentVisibleRect].origin;
     scrollViewVisibleSize = [changedScrollView documentVisibleRect].size;
-    [self.data setTimeAtLeftEdgeOfTimelineView:(scrollViewOrigin.x / [data zoomLevel] / PIXEL_TO_ZOOM_RATIO)];
+    [data setTimeAtLeftEdgeOfTimelineView:(scrollViewOrigin.x / [data zoomLevel] / PIXEL_TO_ZOOM_RATIO)];
     [self setNeedsDisplay:YES];
 }
 

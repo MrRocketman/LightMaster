@@ -23,7 +23,7 @@ enum
 
 @interface MNTimelineTrackHeadersView : NSView
 {
-    MNData *__weak data;
+    IBOutlet MNData *data;
     
     NSImage *topBarImage;
     NSImage *controlBoxImage;
@@ -32,8 +32,6 @@ enum
     NSImage *recordImage;
     NSImage *blankRecordImage;
 }
-
-@property(readwrite) MNData *__weak data;
 
 @end
 

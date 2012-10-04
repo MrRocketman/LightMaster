@@ -14,7 +14,7 @@
 
 @interface MNTimelineViewController : NSViewController
 {
-    MNData *__weak data;
+    IBOutlet MNData *data;
     IBOutlet MNSynchronizedScrollView *timelineTrackHeadersScrollView;
     IBOutlet MNSynchronizedScrollView *timelineTracksScrollView;
     IBOutlet MNTimelineTrackHeadersView *timelineTrackHeadersView;
@@ -22,8 +22,6 @@
     
     float zoomLevel;
 }
-
-@property(readwrite, weak) MNData *data;
 
 @property(readwrite, assign) float zoomLevel;
 - (IBAction)zoomLevelChange:(id)sender;
