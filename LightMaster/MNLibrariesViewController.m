@@ -48,13 +48,15 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioClip:) name:@"NewSound" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffectCluster:) name:@"NewEffect" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCommandCluster:) name:@"NewCommandCluster" object:nil];
-        
-        // Select the sequences tab in the library
-        selectedLibrary = -1;
-        [self libraryButtonPress:sequenceLibraryButton];
     }
     
     return self;
+}
+
+- (void)awakeFromNib
+{
+    // Select the sequences tab in the library
+    [self displayLibrary:kSequenceLibrary];
 }
 
 #pragma mark - Library Managment Methods

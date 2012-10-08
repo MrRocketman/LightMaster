@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 James Adams. All rights reserved.
 //
 
-#import "MNLibraryManagerViewController.h"
+#import <Cocoa/Cocoa.h>
 
 @interface MNAudioClipLibraryManagerViewController : NSViewController
 {

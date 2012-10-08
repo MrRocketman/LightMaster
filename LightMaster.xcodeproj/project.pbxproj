@@ -52,6 +52,8 @@
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 		1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */; };
 		1ADB081C1623827B002EA46E /* LibraryBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081B1623827B002EA46E /* LibraryBackground.png */; };
+		1ADB08231623899B002EA46E /* TabButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB08211623899B002EA46E /* TabButton.png */; };
+		1ADB08241623899B002EA46E /* TabButtonAlternate.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB08221623899B002EA46E /* TabButtonAlternate.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +138,8 @@
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 		1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimelineTrackBackgroundImage.png; sourceTree = "<group>"; };
 		1ADB081B1623827B002EA46E /* LibraryBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryBackground.png; sourceTree = "<group>"; };
+		1ADB08211623899B002EA46E /* TabButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TabButton.png; sourceTree = "<group>"; };
+		1ADB08221623899B002EA46E /* TabButtonAlternate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TabButtonAlternate.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -280,6 +284,8 @@
 		1A028A88161CD37400B97A5B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1ADB08211623899B002EA46E /* TabButton.png */,
+				1ADB08221623899B002EA46E /* TabButtonAlternate.png */,
 				1ADB081B1623827B002EA46E /* LibraryBackground.png */,
 				1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */,
 				1A028A66161CD36E00B97A5B /* Toolbar.tiff */,
@@ -426,6 +432,8 @@
 				1A028A87161CD36E00B97A5B /* MNAudioClipStyle.tiff in Resources */,
 				1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */,
 				1ADB081C1623827B002EA46E /* LibraryBackground.png in Resources */,
+				1ADB08231623899B002EA46E /* TabButton.png in Resources */,
+				1ADB08241623899B002EA46E /* TabButtonAlternate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
