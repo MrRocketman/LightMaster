@@ -21,6 +21,9 @@
     IBOutlet MNTimelineTracksView *timelineTracksView;
     
     float zoomLevel;
+    NSTimer *playTimer;
+    NSDate *playButtonStartDate;
+    float playButtonStartTime;
 }
 
 @property(readwrite, assign) float zoomLevel;

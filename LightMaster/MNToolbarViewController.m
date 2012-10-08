@@ -47,27 +47,27 @@
 
 - (IBAction)rewindButtonPress:(id)sender
 {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RewindButtonPress" object:nil];
 }
 
 - (IBAction)fastForwardButtonPress:(id)sender
 {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"FastForwardButtonPress" object:nil];
 }
 
 - (IBAction)skipBackButtonPress:(id)sender
 {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SkipBackButtonPress" object:nil];
 }
 
 - (IBAction)playButtonPress:(id)sender
 {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
 }
 
 - (IBAction)recordButtonPress:(id)sender
 {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RecordButtonPress" object:nil];
 }
 
 @end
