@@ -1136,7 +1136,7 @@
 									<string key="NSReuseIdentifierKey">_NS:22</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="958489948">
-										<int key="NSCellFlags">-2080374784</int>
+										<int key="NSCellFlags">-1543503872</int>
 										<int key="NSCellFlags2">134217728</int>
 										<string key="NSContents"/>
 										<object class="NSFont" key="NSSupport" id="152927536">
@@ -1223,7 +1223,7 @@
 											<string key="NSResourceName">SkipBackAlternate</string>
 										</object>
 										<string key="NSAlternateContents"/>
-										<string key="NSKeyEquivalent"/>
+										<string key="NSKeyEquivalent">z</string>
 										<int key="NSPeriodicDelay">400</int>
 										<int key="NSPeriodicInterval">75</int>
 									</object>
@@ -1239,7 +1239,7 @@
 									<string key="NSReuseIdentifierKey">_NS:22</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="700547638">
-										<int key="NSCellFlags">-2080374784</int>
+										<int key="NSCellFlags">-1543503872</int>
 										<int key="NSCellFlags2">134217728</int>
 										<string key="NSContents"/>
 										<reference key="NSSupport" ref="152927536"/>
@@ -1272,7 +1272,7 @@
 									<string key="NSReuseIdentifierKey">_NS:22</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="697548555">
-										<int key="NSCellFlags">67108864</int>
+										<int key="NSCellFlags">603979776</int>
 										<int key="NSCellFlags2">134217728</int>
 										<string key="NSContents"/>
 										<reference key="NSSupport" ref="152927536"/>

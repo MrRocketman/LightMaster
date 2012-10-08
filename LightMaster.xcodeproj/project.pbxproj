@@ -51,6 +51,7 @@
 		1A028AD1161CDAA800B97A5B /* MNCommandClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */; };
 		1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
+		1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +136,7 @@
 		1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelsView.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
+		1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimelineTrackBackgroundImage.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,6 +281,7 @@
 		1A028A88161CD37400B97A5B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */,
 				1A028A66161CD36E00B97A5B /* Toolbar.tiff */,
 				1A028A67161CD36E00B97A5B /* FastForwardAlternate.tiff */,
 				1A028A68161CD36E00B97A5B /* PlayAlternate.tiff */,
@@ -423,6 +426,7 @@
 				1A028A85161CD36E00B97A5B /* MNControlBoxStyle.tiff in Resources */,
 				1A028A86161CD36E00B97A5B /* MNChannelGroupStyle.tiff in Resources */,
 				1A028A87161CD36E00B97A5B /* MNAudioClipStyle.tiff in Resources */,
+				1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

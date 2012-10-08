@@ -37,6 +37,10 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
+    // Draw the background
+    [[NSColor colorWithPatternImage:[NSImage imageNamed:@"TimelineTrackBackgroundImage.png"]] set];
+    NSRectFill(self.bounds);
+    
     // Draw the Top Bar
     NSRect trackFrame = NSMakeRect(0, self.frame.size.height - TOP_BAR_HEIGHT, TRACK_WIDTH, TOP_BAR_HEIGHT);
     NSSize imageSize = [topBarImage size];

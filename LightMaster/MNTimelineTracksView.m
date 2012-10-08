@@ -59,7 +59,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    [[NSColor blackColor] set];
+    [[NSColor colorWithPatternImage:[NSImage imageNamed:@"TimelineTrackBackgroundImage.png"]] set];
     NSRectFill(self.bounds);
     
     currentSequence = [data currentSequence];
