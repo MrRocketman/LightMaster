@@ -31,7 +31,13 @@ enum
     IBOutlet NSButton *effectClusterLibraryButton;
     IBOutlet NSButton *audioClipLibraryButton;
     
-    IBOutlet NSView *currentLibraryView;
+    // Library Data Selection
+    IBOutlet NSTableView *libraryDataSelectionTableView;
+    IBOutlet NSButton *addLibraryDataButton;
+    IBOutlet NSButton *deleteLibraryDataButton;
+    
+    // Library Content
+    IBOutlet NSScrollView *libraryContentScrollView;
     IBOutlet MNSequenceLibraryManagerViewController *sequenceLibraryManagerViewController;
     IBOutlet MNControlBoxLibraryManagerViewController *controlBoxLibraryManagerViewController;
     IBOutlet MNChannelGroupLibraryManagerViewController *channelGroupLibraryManagerViewController;
@@ -39,14 +45,10 @@ enum
     IBOutlet MNEffectClusterLibraryManagerViewController *effectClusterLibraryManagerViewController;
     IBOutlet MNAudioClipLibraryManagerViewController *audioClipLibraryManagerViewController;
     int selectedLibrary;
-    
-    IBOutlet NSTableView *libraryDataSelectionTableView;
-    IBOutlet NSButton *addLibraryDataButton;
-    IBOutlet NSButton *deleteLibraryDataButton;
 }
 
 - (void)displayLibrary:(int)library;
-- (IBAction)addLibraryDateButtonPress:(id)sender;
-- (IBAction)deleteLibraryDateButtonPress:(id)sender;
+- (IBAction)addLibraryDataButtonPress:(id)sender;
+- (IBAction)deleteLibraryDataButtonPress:(id)sender;
 
 @end

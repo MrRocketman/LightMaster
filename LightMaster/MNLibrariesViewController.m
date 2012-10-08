@@ -7,6 +7,12 @@
 //
 
 #import "MNLibrariesViewController.h"
+#import "MNSequenceLibraryManagerViewController.h"
+#import "MNControlBoxLibraryManagerViewController.h"
+#import "MNChannelGroupLibraryManagerViewController.h"
+#import "MNCommandClusterLibraryManagerViewController.h"
+#import "MNEffectClusterLibraryManagerViewController.h"
+#import "MNAudioClipLibraryManagerViewController.h"
 
 @interface MNLibrariesViewController ()
 
@@ -23,9 +29,12 @@
 - (void)newEffectCluster:(NSNotification *)aNotification;
 - (void)newCommandCluster:(NSNotification *)aNotification;
 
+- (void)removeLibraryContentView:(int)library;
+- (void)addLibraryContentView:(int)library;
 - (void)selectLibraryInTabList:(int)library;
 - (IBAction)libraryButtonPress:(id)sender;
 - (NSButton *)buttonForLibraryIndex:(int)library;
+- (NSViewController *)libraryForIndex:(int)library;
 
 @end
 
@@ -98,7 +107,7 @@
         }
     }
     
-//    [tableView deselectAll:nil];
+    [libraryDataSelectionTableView deselectAll:nil];
 //    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
 }
 
@@ -107,96 +116,62 @@
     [self displayLibrary:(int)[sender tag]];
 }
 
+- (void)removeLibraryContentView:(int)library
+{
+    //            previouslySelectedRowsInMainTableView[kSequenceLibrary] = (int)[tableView selectedRow];
+    [[self libraryForIndex:library].view removeFromSuperview];
+}
+
+- (void)addLibraryContentView:(int)library
+{
+    NSViewController *theLibrary = [self libraryForIndex:library];
+    
+    [libraryContentScrollView.documentView setFrame:theLibrary.view.frame];
+    [libraryContentScrollView.documentView addSubview:theLibrary.view];
+    [libraryContentScrollView scrollPoint:NSMakePoint(0, 0)];
+    //            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kSequenceLibrary]] byExtendingSelection:NO];
+    //            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
+}
+
+- (NSViewController *)libraryForIndex:(int)library
+{
+    if(library == kSequenceLibrary)
+        return sequenceLibraryManagerViewController;
+    else if(library == kControlBoxLibrary)
+        return controlBoxLibraryManagerViewController;
+    else if(library == kChannelGroupLibrary)
+        return channelGroupLibraryManagerViewController;
+    else if(library == kCommandClusterLibrary)
+        return commandClusterLibraryManagerViewController;
+    else if(library == kEffectClusterLibrary)
+        return effectClusterLibraryManagerViewController;
+    else if(library == kAudioClipLibrary)
+        return audioClipLibraryManagerViewController;
+    
+    return nil;
+}
+
 - (void)displayLibrary:(int)library
 {
+    // Remove the old content
+    [self removeLibraryContentView:selectedLibrary];
+    
+    // Select the new tab
     [self selectLibraryInTabList:library];
     
-    // Remove the old view
-    /*switch (selectedLibrary)
-    {
-        case kControlBoxLibrary:
-            previouslySelectedRowsInMainTableView[kControlBoxLibrary] = (int)[tableView selectedRow];
-            [controlBoxDetailScrollView removeFromSuperview];
-            break;
-        case kCommandClusterLibrary:
-            previouslySelectedRowsInMainTableView[kCommandClusterLibrary] = (int)[tableView selectedRow];
-            [commandClusterDetailScrollView removeFromSuperview];
-            break;
-        case kEffectLibrary:
-            previouslySelectedRowsInMainTableView[kEffectLibrary] = (int)[tableView selectedRow];
-            [effectDetailScrollView removeFromSuperview];
-            break;
-        case kSoundLibrary:
-            previouslySelectedRowsInMainTableView[kSoundLibrary] = (int)[tableView selectedRow];
-            [soundDetailsScrollView removeFromSuperview];
-            break;
-        case kGroupLibrary:
-            previouslySelectedRowsInMainTableView[kGroupLibrary] = (int)[tableView selectedRow];
-            [groupDetailScrollView removeFromSuperview];
-            break;
-        case kSequenceLibrary:
-            previouslySelectedRowsInMainTableView[kSequenceLibrary] = (int)[tableView selectedRow];
-            [sequenceDetailScrollView removeFromSuperview];
-            break;
-        default:
-            break;
-    }
+    // Display the new content
+    [self addLibraryContentView:selectedLibrary];
     
-    // Toggle the buttons and set the new selcted library
-    [self toggleButtonsOffBesides:sender];
-    [tableView reloadData];
-    
-    // Add the new library
-    NSRect newFrame = NSMakeRect(0, 0, detailViewWell.frame.size.width, detailViewWell.frame.size.height);
-    switch (selectedLibrary)
-    {
-        case kControlBoxLibrary:
-            [controlBoxDetailScrollView setFrame:newFrame];
-            [detailViewWell addSubview:controlBoxDetailScrollView];
-            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kControlBoxLibrary]] byExtendingSelection:NO];
-            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
-            break;
-        case kCommandClusterLibrary:
-            [commandClusterDetailScrollView setFrame:newFrame];
-            [detailViewWell addSubview:commandClusterDetailScrollView];
-            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kCommandClusterLibrary]] byExtendingSelection:NO];
-            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
-            break;
-        case kEffectLibrary:
-            [effectDetailScrollView setFrame:newFrame];
-            [detailViewWell addSubview:effectDetailScrollView];
-            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kEffectLibrary]] byExtendingSelection:NO];
-            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
-            break;
-        case kSoundLibrary:
-            [soundDetailsScrollView setFrame:newFrame];
-            [detailViewWell addSubview:soundDetailsScrollView];
-            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kSoundLibrary]] byExtendingSelection:NO];
-            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
-            break;
-        case kGroupLibrary:
-            [groupDetailScrollView setFrame:newFrame];
-            [detailViewWell addSubview:groupDetailScrollView];
-            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kGroupLibrary]] byExtendingSelection:NO];
-            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
-            break;
-        case kSequenceLibrary:
-            [sequenceDetailScrollView setFrame:newFrame];
-            [detailViewWell addSubview:sequenceDetailScrollView];
-            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kSequenceLibrary]] byExtendingSelection:NO];
-            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
-            break;
-        default:
-            break;
-    }*/
+    // Reload the library selection table view
+    [libraryDataSelectionTableView reloadData];
 }
 
-- (IBAction)addLibraryDateButtonPress:(id)sender
+- (IBAction)addLibraryDataButtonPress:(id)sender
 {
     
 }
 
-- (IBAction)deleteLibraryDateButtonPress:(id)sender
+- (IBAction)deleteLibraryDataButtonPress:(id)sender
 {
     
 }
