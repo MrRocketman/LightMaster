@@ -8,6 +8,9 @@
 
 #import "MNLibraryManagerViewController.h"
 
-@interface MNSequenceLibraryManagerViewController : MNLibraryManagerViewController
+@interface MNSequenceLibraryManagerViewController : NSViewController
+{
+    
+}
 
 @end

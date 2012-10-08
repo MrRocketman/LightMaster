@@ -8,6 +8,9 @@
 
 #import "MNLibraryManagerViewController.h"
 
-@interface MNChannelGroupLibraryManagerViewController : MNLibraryManagerViewController
+@interface MNChannelGroupLibraryManagerViewController : NSViewController
+{
+    
+}
 
 @end

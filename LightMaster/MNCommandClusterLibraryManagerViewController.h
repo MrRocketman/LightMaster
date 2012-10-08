@@ -8,6 +8,9 @@
 
 #import "MNLibraryManagerViewController.h"
 
-@interface MNCommandClusterLibraryManagerViewController : MNLibraryManagerViewController
+@interface MNCommandClusterLibraryManagerViewController : NSViewController
+{
+    
+}
 
 @end

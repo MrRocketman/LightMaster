@@ -8,6 +8,9 @@
 
 #import "MNLibraryManagerViewController.h"
 
-@interface MNAudioClipLibraryManagerViewController : MNLibraryManagerViewController
+@interface MNAudioClipLibraryManagerViewController : NSViewController
+{
+    
+}
 
 @end
