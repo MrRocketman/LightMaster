@@ -10,7 +10,9 @@
 
 @interface MNEffectClusterLibraryManagerViewController : NSViewController
 {
-    
+    NSMutableDictionary __weak *effectCluster;
 }
+
+@property(readwrite, weak) NSMutableDictionary *effectCluster;
 
 @end

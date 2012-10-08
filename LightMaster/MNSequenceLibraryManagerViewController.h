@@ -10,7 +10,9 @@
 
 @interface MNSequenceLibraryManagerViewController : NSViewController
 {
-    
+    NSMutableDictionary __weak *sequence;
 }
+
+@property(readwrite, weak) NSMutableDictionary *sequence;
 
 @end

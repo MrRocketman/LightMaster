@@ -10,7 +10,9 @@
 
 @interface MNControlBoxLibraryManagerViewController : NSViewController
 {
-    
+    NSMutableDictionary __weak *controlBox;
 }
+
+@property(readwrite, weak) NSMutableDictionary *controlBox;
 
 @end

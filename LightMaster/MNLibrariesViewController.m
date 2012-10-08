@@ -13,6 +13,7 @@
 #import "MNCommandClusterLibraryManagerViewController.h"
 #import "MNEffectClusterLibraryManagerViewController.h"
 #import "MNAudioClipLibraryManagerViewController.h"
+#import "MNData.h"
 
 @interface MNLibrariesViewController ()
 
@@ -109,7 +110,6 @@
     }
     
     [libraryDataSelectionTableView deselectAll:nil];
-//    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
 }
 
 - (IBAction)libraryButtonPress:(id)sender
@@ -119,7 +119,7 @@
 
 - (void)removeLibraryContentView:(int)library
 {
-    //            previouslySelectedRowsInMainTableView[kSequenceLibrary] = (int)[tableView selectedRow];
+    previouslySelectedRowsInLibraryDataSelectionTableView[selectedLibrary] = (int)[libraryDataSelectionTableView selectedRow];
     [[self libraryForIndex:library].view removeFromSuperview];
 }
 
@@ -130,8 +130,8 @@
     [libraryContentScrollView.documentView setFrame:theLibrary.view.frame];
     [libraryContentScrollView.documentView addSubview:theLibrary.view];
     [theLibrary.view scrollPoint:NSMakePoint(0, theLibrary.view.frame.size.height)];
-    //            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kSequenceLibrary]] byExtendingSelection:NO];
-    //            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInLibraryDataSelectionTableView[library]] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:libraryDataSelectionTableView]];
 }
 
 - (NSViewController *)libraryForIndex:(int)library
@@ -183,7 +183,7 @@
     
 }
 
-#pragma mark - Private Methods
+#pragma mark - Notifications
 
 // External Notifications
 - (void)selectCommandCluster:(NSNotification *)aNotification
@@ -230,6 +230,97 @@
 - (void)newCommandCluster:(NSNotification *)aNotification
 {
     
+}
+
+#pragma mark - NSTableViewDataSource Methods
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
+{
+    switch (selectedLibrary)
+    {
+        case kSequenceLibrary:
+            return [data sequenceFilePathsCount];
+            break;
+        case kControlBoxLibrary:
+            return [data controlBoxFilePathsCount];
+            break;
+        case kChannelGroupLibrary:
+            return [data channelGroupFilePathsCount];
+            break;
+        case kCommandClusterLibrary:
+            return [data commandClusterFilePathsCount];
+            break;
+        case kEffectClusterLibrary:
+            return [data effectClusterFilePathsCount];
+            break;
+        case kAudioClipLibrary:
+            return [data audioClipFilePathsCount];
+            break;
+        default:
+            break;
+    }
+    
+    return 0;
+}
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+{
+    switch (selectedLibrary)
+    {
+        case kSequenceLibrary:
+            return [data descriptionForSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)rowIndex]]];
+            break;
+        case kChannelGroupLibrary:
+            return [data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)rowIndex]]];
+            break;
+        case kControlBoxLibrary:
+            return [data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)rowIndex]]];
+            break;
+        case kCommandClusterLibrary:
+            return [data descriptionForCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)rowIndex]]];
+            break;
+        case kEffectClusterLibrary:
+            return [data descriptionForEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)rowIndex]]];
+            break;
+        case kAudioClipLibrary:
+            return [data descriptionForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)rowIndex]]];
+            break;
+        default:
+            break;
+    }
+    
+    return @"nil";
+}
+
+#pragma mark - NSTableViewDelegate Methods
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
+{
+    //NSLog(@"tableView selected:%d", (int)[tableView selectedRow]);
+    
+    switch(selectedLibrary)
+    {
+        case kSequenceLibrary:
+            [sequenceLibraryManagerViewController setSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kControlBoxLibrary:
+            [controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kChannelGroupLibrary:
+            [channelGroupLibraryManagerViewController setChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kCommandClusterLibrary:
+            [commandClusterLibraryManagerViewController setCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kEffectClusterLibrary:
+            [effectClusterLibraryManagerViewController setEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kAudioClipLibrary:
+            [audioClipLibraryManagerViewController setAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        default:
+            break;
+    }
 }
 
 @end

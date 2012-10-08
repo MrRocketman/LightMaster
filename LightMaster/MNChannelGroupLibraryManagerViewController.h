@@ -10,7 +10,9 @@
 
 @interface MNChannelGroupLibraryManagerViewController : NSViewController
 {
-    
+    NSMutableDictionary __weak *channelGroup;
 }
+
+@property(readwrite, weak) NSMutableDictionary *channelGroup;
 
 @end

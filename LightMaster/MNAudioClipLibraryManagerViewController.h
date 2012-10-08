@@ -10,7 +10,9 @@
 
 @interface MNAudioClipLibraryManagerViewController : NSViewController
 {
-    
+    NSMutableDictionary __weak *audioClip;
 }
+
+@property(readwrite, weak) NSMutableDictionary *audioClip;
 
 @end

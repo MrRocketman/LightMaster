@@ -10,7 +10,9 @@
 
 @interface MNCommandClusterLibraryManagerViewController : NSViewController
 {
-    
+    NSMutableDictionary __weak *commandCluster;
 }
+
+@property(readwrite, weak) NSMutableDictionary *commandCluster;
 
 @end

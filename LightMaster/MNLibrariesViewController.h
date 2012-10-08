@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class MNControlBoxLibraryManagerViewController, MNCommandClusterLibraryManagerViewController, MNEffectClusterLibraryManagerViewController, MNAudioClipLibraryManagerViewController, MNChannelGroupLibraryManagerViewController, MNSequenceLibraryManagerViewController;
+@class MNControlBoxLibraryManagerViewController, MNCommandClusterLibraryManagerViewController, MNEffectClusterLibraryManagerViewController, MNAudioClipLibraryManagerViewController, MNChannelGroupLibraryManagerViewController, MNSequenceLibraryManagerViewController, MNData;
 
 #define NUMBER_OF_LIBRARIES 6
 
@@ -24,6 +24,10 @@ enum
 
 @interface MNLibrariesViewController : NSViewController
 {
+    IBOutlet MNData *data;
+    int selectedLibrary;
+    
+    // Tab bar
     IBOutlet NSButton *sequenceLibraryButton;
     IBOutlet NSButton *controlBoxLibraryButton;
     IBOutlet NSButton *channelGroupLibraryButton;
@@ -35,6 +39,7 @@ enum
     IBOutlet NSTableView *libraryDataSelectionTableView;
     IBOutlet NSButton *addLibraryDataButton;
     IBOutlet NSButton *deleteLibraryDataButton;
+    int previouslySelectedRowsInLibraryDataSelectionTableView[NUMBER_OF_LIBRARIES];
     
     // Library Content
     IBOutlet NSScrollView *libraryContentScrollView;
@@ -44,7 +49,6 @@ enum
     IBOutlet MNCommandClusterLibraryManagerViewController *commandClusterLibraryManagerViewController;
     IBOutlet MNEffectClusterLibraryManagerViewController *effectClusterLibraryManagerViewController;
     IBOutlet MNAudioClipLibraryManagerViewController *audioClipLibraryManagerViewController;
-    int selectedLibrary;
 }
 
 - (void)displayLibrary:(int)library;
