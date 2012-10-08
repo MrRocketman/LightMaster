@@ -65,6 +65,7 @@
 - (void)awakeFromNib
 {
     // Select the sequences tab in the library
+    selectedLibrary = -1;
     [self displayLibrary:kSequenceLibrary];
 }
 
@@ -128,7 +129,7 @@
     
     [libraryContentScrollView.documentView setFrame:theLibrary.view.frame];
     [libraryContentScrollView.documentView addSubview:theLibrary.view];
-    [libraryContentScrollView scrollPoint:NSMakePoint(0, 0)];
+    [theLibrary.view scrollPoint:NSMakePoint(0, theLibrary.view.frame.size.height)];
     //            [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInMainTableView[kSequenceLibrary]] byExtendingSelection:NO];
     //            [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
 }
@@ -153,17 +154,23 @@
 
 - (void)displayLibrary:(int)library
 {
-    // Remove the old content
-    [self removeLibraryContentView:selectedLibrary];
-    
-    // Select the new tab
-    [self selectLibraryInTabList:library];
-    
-    // Display the new content
-    [self addLibraryContentView:selectedLibrary];
-    
-    // Reload the library selection table view
-    [libraryDataSelectionTableView reloadData];
+    if(library != selectedLibrary && library != -1)
+    {
+        // Remove the old content if there is old content
+        if(selectedLibrary != -1)
+        {
+            [self removeLibraryContentView:selectedLibrary];
+        }
+        
+        // Select the new tab
+        [self selectLibraryInTabList:library];
+        
+        // Display the new content
+        [self addLibraryContentView:selectedLibrary];
+        
+        // Reload the library selection table view
+        [libraryDataSelectionTableView reloadData];
+    }
 }
 
 - (IBAction)addLibraryDataButtonPress:(id)sender
