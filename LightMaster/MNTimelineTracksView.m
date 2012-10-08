@@ -332,7 +332,7 @@
 	{
         float timeMarker = (leftEdgeNearestTimeMaker - (timeMarkerDifference * 3) + i * timeMarkerDifference);
         // Draw the times
-        NSString *time = [NSString stringWithFormat:@"%.03f", timeMarker];
+        NSString *time = [NSString stringWithFormat:@"%.02f", timeMarker];
         NSRect textFrame = NSMakeRect([data timeToX:timeMarker], topBarFrame.origin.y, 40, topBarFrame.size.height);
         [time drawInRect:textFrame withAttributes:attributes];
         
