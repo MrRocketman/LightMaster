@@ -7,14 +7,26 @@
 //
 
 #import <Cocoa/Cocoa.h>
+@class MNData, MNControlBoxChannelSelectorViewController;
 
-@interface MNChannelGroupLibraryManagerViewController : NSViewController
+@interface MNChannelGroupLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
-    NSMutableDictionary __weak *channelGroup;
+    IBOutlet MNData *data;
+    int channelGroupIndex;
+    
+    IBOutlet MNControlBoxChannelSelectorViewController *controlBoxChannelSelectorViewController;
+    IBOutlet NSPopover *controlBoxChannelSelectorPopover;
+    IBOutlet NSTextField *descriptionTextField;
+    IBOutlet NSTableView *channelsTableView;
+    IBOutlet NSButton *addChannelButton;
+    IBOutlet NSButton *removeChannelButton;
 }
 
-@property(readwrite, weak) NSMutableDictionary *channelGroup;
+@property() int channelGroupIndex;
 
 - (void)updateContent;
+
+- (IBAction)addChannelButtonPress:(id)sender;
+- (IBAction)removeChannelButtonPress:(id)sender;
 
 @end

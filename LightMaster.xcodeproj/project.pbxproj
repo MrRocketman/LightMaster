@@ -50,6 +50,7 @@
 		1A028AD1161CDAA800B97A5B /* MNCommandClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */; };
 		1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
+		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
 		1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */; };
 		1ADB081C1623827B002EA46E /* LibraryBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081B1623827B002EA46E /* LibraryBackground.png */; };
 		1ADB08231623899B002EA46E /* TabButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB08211623899B002EA46E /* TabButton.png */; };
@@ -141,6 +142,8 @@
 		1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelsView.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
+		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
+		1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNControlBoxChannelSelectorViewController.m; sourceTree = "<group>"; };
 		1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimelineTrackBackgroundImage.png; sourceTree = "<group>"; };
 		1ADB081B1623827B002EA46E /* LibraryBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryBackground.png; sourceTree = "<group>"; };
 		1ADB08211623899B002EA46E /* TabButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TabButton.png; sourceTree = "<group>"; };
@@ -339,8 +342,7 @@
 			children = (
 				1AFA925D1623DA68000E13B7 /* SequenceLibrary */,
 				1ADD72521623EF2C0071467F /* ControlBoxLibrary */,
-				1A028AC0161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.h */,
-				1A028AC1161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m */,
+				1A818A8F1624C8FB0054936E /* ChannelGroupLibrary */,
 				1A028AB7161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.h */,
 				1A028AB8161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m */,
 				1A028ABA161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.h */,
@@ -349,6 +351,17 @@
 				1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */,
 			);
 			name = "Library Managers";
+			sourceTree = "<group>";
+		};
+		1A818A8F1624C8FB0054936E /* ChannelGroupLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				1A028AC0161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.h */,
+				1A028AC1161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m */,
+				1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */,
+				1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */,
+			);
+			name = ChannelGroupLibrary;
 			sourceTree = "<group>";
 		};
 		1ADD72521623EF2C0071467F /* ControlBoxLibrary */ = {
@@ -532,6 +545,7 @@
 				1AFA92631623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m in Sources */,
 				1AFA92661623DAD1000E13B7 /* MNSequenceEffectClusterSelectorViewController.m in Sources */,
 				1AFA92691623DADE000E13B7 /* MNSequenceAudioClipSelectorViewController.m in Sources */,
+				1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

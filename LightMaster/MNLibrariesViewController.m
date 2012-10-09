@@ -353,10 +353,9 @@
                 break;
             case kControlBoxLibrary:
                 [controlBoxLibraryManagerViewController setControlBoxIndex:(int)[libraryDataSelectionTableView selectedRow]];
-                //[controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
                 break;
             case kChannelGroupLibrary:
-                [channelGroupLibraryManagerViewController setChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [channelGroupLibraryManagerViewController setChannelGroupIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kCommandClusterLibrary:
                 [commandClusterLibraryManagerViewController setCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
@@ -382,10 +381,9 @@
                 break;
             case kControlBoxLibrary:
                 [controlBoxLibraryManagerViewController setControlBoxIndex:-1];
-                //[controlBoxLibraryManagerViewController setControlBox:nil];
                 break;
             case kChannelGroupLibrary:
-                [channelGroupLibraryManagerViewController setChannelGroup:nil];
+                [channelGroupLibraryManagerViewController setChannelGroupIndex:-1];
                 break;
             case kCommandClusterLibrary:
                 [commandClusterLibraryManagerViewController setCommandCluster:nil];
