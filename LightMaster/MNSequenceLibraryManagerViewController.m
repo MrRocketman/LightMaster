@@ -8,11 +8,20 @@
 
 #import "MNSequenceLibraryManagerViewController.h"
 #import "MNData.h"
+#import "MNSequenceControlBoxSelectorViewController.h"
+#import "MNSequenceChannelGroupSelectorViewController.h"
+#import "MNSequenceCommandClusterSelectorViewController.h"
+#import "MNSequenceEffectClusterSelectorViewController.h"
+#import "MNSequenceAudioClipViewController.h"
 
 
 @interface MNSequenceLibraryManagerViewController ()
 
+- (void)addControlBoxFilePathToSequence:(NSNotification *)aNotification;
+- (void)addChannelGroupFilePathToSequence:(NSNotification *)aNotification;
+
 @end
+
 
 @implementation MNSequenceLibraryManagerViewController
 
@@ -24,11 +33,15 @@ startTimeTextField,
 endTimeTextField;
 
 @synthesize
+sequenceControlBoxSelectorViewController,
+sequenceControlBoxSelectorPopover,
 controlBoxesTableView,
 deleteControlBoxFromSequenceButton,
 addControlBoxToSequenceButton;
 
 @synthesize
+sequenceChannelGroupSelectorViewController,
+sequenceChannelGroupSelectorPopover,
 channelGroupsTableView,
 deleteChannleGroupFromSequenceButton,
 addChannelGroupToSequenceButton;
@@ -54,6 +67,8 @@ addAudioClipToSequenceButton;
     if (self)
     {
         // Initialization code here.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addControlBoxFilePathToSequence:) name:@"AddControlBoxFilePathToSequence" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addChannelGroupFilePathToSequence:) name:@"AddChannelGroupFilePathToSequence" object:nil];
     }
     
     return self;
@@ -91,18 +106,45 @@ addAudioClipToSequenceButton;
     }
 }
 
+#pragma mark - Notifications
+
+- (void)addControlBoxFilePathToSequence:(NSNotification *)aNotification
+{
+    [sequenceControlBoxSelectorPopover performClose:nil];
+    [data addControlBoxFilePath:[aNotification object] forSequence:sequence];
+    [controlBoxesTableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (void)addChannelGroupFilePathToSequence:(NSNotification *)aNotification
+{
+    [sequenceChannelGroupSelectorPopover performClose:nil];
+    [data addChannelGroupFilePath:[aNotification object] forSequence:sequence];
+    [channelGroupsTableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
 #pragma mark - Button Actions
 
 - (IBAction)deleteControlBoxFromSequenceButtonPress:(id)sender
 {
     [data removeControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow]] forSequence:sequence];
     [controlBoxesTableView reloadData];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)addControlBoxToSequenceButtonPress:(id)sender
 {
+    [sequenceControlBoxSelectorPopover showRelativeToRect:[controlBoxesTableView rectOfRow:[controlBoxesTableView selectedRow]] ofView:controlBoxesTableView preferredEdge:NSMaxYEdge];
+    if([controlBoxesTableView selectedRow] > -1)
+    {
+        [sequenceControlBoxSelectorViewController setSelectedControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow] forSequence:sequence]];
+    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteChannelGroupFromSequenceButtonPress:(id)sender
@@ -114,7 +156,13 @@ addAudioClipToSequenceButton;
 
 - (IBAction)addChannelGroupToSequenceButtonPress:(id)sender
 {
+    [sequenceChannelGroupSelectorPopover showRelativeToRect:[channelGroupsTableView rectOfRow:[channelGroupsTableView selectedRow]] ofView:channelGroupsTableView preferredEdge:NSMaxYEdge];
+    if([channelGroupsTableView selectedRow] > -1)
+    {
+        [sequenceChannelGroupSelectorViewController setSelectedChannelGroupFilePath:[data channelGroupFilePathAtIndex:(int)[channelGroupsTableView selectedRow] forSequence:sequence]];
+    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteCommandClusterFromSequenceButtonPress:(id)sender

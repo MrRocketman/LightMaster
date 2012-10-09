@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@class MNData;
+@class MNData, MNSequenceControlBoxSelectorViewController, MNSequenceChannelGroupSelectorViewController, MNSequenceCommandClusterSelectorViewController, MNSequenceEffectClusterSelectorViewController, MNSequenceAudioClipViewController;
 
-@interface MNSequenceLibraryManagerViewController : NSViewController
+@interface MNSequenceLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
     IBOutlet MNData *data;
     __weak NSMutableDictionary *sequence;
@@ -20,11 +20,15 @@
     __weak NSTextField *endTimeTextField;
     
     // Control Boxes
+    __weak MNSequenceControlBoxSelectorViewController *sequenceControlBoxSelectorViewController;
+    __weak NSPopover *sequenceControlBoxSelectorPopover;
     __weak NSTableView *controlBoxesTableView;
     __weak NSButton *deleteControlBoxFromSequenceButton;
     __weak NSButton *addControlBoxToSequenceButton;
     
     // Channel Groups
+    __weak MNSequenceChannelGroupSelectorViewController *sequenceChannelGroupSelectorViewController;
+    __weak NSPopover *sequenceChannelGroupSelectorPopover;
     __weak NSTableView *channelGroupsTableView;
     __weak NSButton *deleteChannleGroupFromSequenceButton;
     __weak NSButton *addChannelGroupToSequenceButton;
@@ -51,10 +55,14 @@
 @property (weak) IBOutlet NSTextField *startTimeTextField;
 @property (weak) IBOutlet NSTextField *endTimeTextField;
 
+@property (weak) IBOutlet MNSequenceControlBoxSelectorViewController *sequenceControlBoxSelectorViewController;
+@property (weak) IBOutlet NSPopover *sequenceControlBoxSelectorPopover;
 @property (weak) IBOutlet NSTableView *controlBoxesTableView;
 @property (weak) IBOutlet NSButton *deleteControlBoxFromSequenceButton;
 @property (weak) IBOutlet NSButton *addControlBoxToSequenceButton;
 
+@property (weak) IBOutlet MNSequenceChannelGroupSelectorViewController *sequenceChannelGroupSelectorViewController;
+@property (weak) IBOutlet NSPopover *sequenceChannelGroupSelectorPopover;
 @property (weak) IBOutlet NSTableView *channelGroupsTableView;
 @property (weak) IBOutlet NSButton *deleteChannleGroupFromSequenceButton;
 @property (weak) IBOutlet NSButton *addChannelGroupToSequenceButton;
