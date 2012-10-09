@@ -72,7 +72,7 @@
         if(beingUsedCount == 0)
         {
             [addButton setEnabled:YES];
-            [beingUsedLabel setStringValue:@""];
+            [beingUsedLabel setStringValue:@"Not Being Used"];
         }
         else if(beingUsedCount == 1)
         {

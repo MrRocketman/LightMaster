@@ -12,7 +12,7 @@
 @interface MNSequenceLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
     IBOutlet MNData *data;
-    __weak NSMutableDictionary *sequence;
+    __strong NSMutableDictionary *sequence;
     
     // General outlets
     IBOutlet NSTextField *descriptionTextField;
@@ -55,7 +55,7 @@
     IBOutlet NSButton *addAudioClipToSequenceButton;
 }
 
-@property (weak) NSMutableDictionary *sequence;
+@property (strong) NSMutableDictionary *sequence;
 
 - (void)updateContent;
 

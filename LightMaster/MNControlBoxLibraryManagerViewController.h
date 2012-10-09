@@ -12,7 +12,7 @@
 @interface MNControlBoxLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
     IBOutlet MNData *data;
-    __weak NSMutableDictionary *controlBox;
+    __strong NSMutableDictionary *controlBox;
     
     IBOutlet NSTextField *idTextField;
     IBOutlet NSTextField *descriptionTextField;
@@ -22,7 +22,7 @@
     IBOutlet NSButton *deleteChannelButton;
 }
 
-@property(weak) NSMutableDictionary *controlBox;
+@property(strong) NSMutableDictionary *controlBox;
 
 - (void)updateContent;
 
