@@ -338,8 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				1AFA925D1623DA68000E13B7 /* SequenceLibrary */,
-				1A028AB4161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.h */,
-				1A028AB5161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m */,
+				1ADD72521623EF2C0071467F /* ControlBoxLibrary */,
 				1A028AC0161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.h */,
 				1A028AC1161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m */,
 				1A028AB7161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.h */,
@@ -350,6 +349,15 @@
 				1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */,
 			);
 			name = "Library Managers";
+			sourceTree = "<group>";
+		};
+		1ADD72521623EF2C0071467F /* ControlBoxLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				1A028AB4161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.h */,
+				1A028AB5161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m */,
+			);
+			name = ControlBoxLibrary;
 			sourceTree = "<group>";
 		};
 		1AFA925D1623DA68000E13B7 /* SequenceLibrary */ = {

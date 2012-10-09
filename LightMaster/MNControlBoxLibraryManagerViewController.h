@@ -7,14 +7,26 @@
 //
 
 #import <Cocoa/Cocoa.h>
+@class MNData;
 
-@interface MNControlBoxLibraryManagerViewController : NSViewController
+@interface MNControlBoxLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
-    NSMutableDictionary __weak *controlBox;
+    IBOutlet MNData *data;
+    __weak NSMutableDictionary *controlBox;
+    
+    IBOutlet NSTextField *idTextField;
+    IBOutlet NSTextField *descriptionTextField;
+    
+    IBOutlet NSTableView *channelsTableView;
+    IBOutlet NSButton *addChannelButton;
+    IBOutlet NSButton *deleteChannelButton;
 }
 
-@property(readwrite, weak) NSMutableDictionary *controlBox;
+@property(weak) NSMutableDictionary *controlBox;
 
 - (void)updateContent;
+
+- (IBAction)addChannelButtonPress:(id)sender;
+- (IBAction)deleteChannelButtonPress:(id)sender;
 
 @end

@@ -23,6 +23,8 @@
 - (void)addEffectClusterFilePathToSequence:(NSNotification *)aNotification;
 - (void)addAudioClipFilePathToSequence:(NSNotification *)aNotification;
 
+- (void)textDidEndEditing:(NSNotification *)aNotification;
+
 @end
 
 
@@ -76,10 +78,19 @@
         [endTimeTextField setEnabled:NO];
         
         [addControlBoxToSequenceButton setEnabled:NO];
+        [deleteControlBoxFromSequenceButton setEnabled:NO];
         [addChannelGroupToSequenceButton setEnabled:NO];
+        [deleteChannleGroupFromSequenceButton setEnabled:NO];
         [addCommandClusterToSequenceButton setEnabled:NO];
+        [deleteCommandClusterFromSequenceButton setEnabled:NO];
         [addEffectClusterToSequenceButton setEnabled:NO];
+        [deleteEffectClusterFromSequenceButton setEnabled:NO];
         [addAudioClipToSequenceButton setEnabled:NO];
+        [deleteAudioClipFromSequenceButton setEnabled:NO];
+        
+        [descriptionTextField setStringValue:@""];
+        [startTimeTextField setFloatValue:0.0];
+        [endTimeTextField setFloatValue:0.0];
     }
 }
 
