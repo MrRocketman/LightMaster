@@ -45,6 +45,11 @@
 - (int)widthForTimeInterval:(float)timeInterval;
 
 #pragma mark - Sequence Library Methods
+// Management Methods
+- (NSString *)createSequenceAndReturnFilePath;
+- (NSString *)createCopyOfSequenceAndReturnFilePath:(NSMutableDictionary *)sequence;
+- (void)removeSequenceFromLibrary:(NSMutableDictionary *)sequence;
+
 // Getter Methods
 - (float)versionNumberForSequenceLibrary;
 - (NSMutableArray *)sequenceFilePaths;
@@ -78,9 +83,6 @@
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forSequence:(NSMutableDictionary *)sequence;
-- (NSString *)createSequenceAndReturnFilePath;
-- (NSString *)createCopyOfSequenceAndReturnFilePath:(NSMutableDictionary *)sequence;
-- (void)removeSequenceFromLibrary:(NSMutableDictionary *)sequence;
 - (void)setDescription:(NSString *)description forSequence:(NSMutableDictionary *)sequence;
 - (void)setStartTime:(float)startTIme forSequence:(NSMutableDictionary *)sequence;
 - (void)setEndTime:(float)endTime forSequence:(NSMutableDictionary *)sequence;
@@ -94,6 +96,11 @@
 - (void)removeCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 
 #pragma mark - ControlBox Library Methods
+// Management Methods
+- (NSString *)createControlBoxAndReturnFilePath;
+- (NSString *)createCopyOfControlBoxAndReturnFilePath:(NSMutableDictionary *)controlBox;
+- (void)removeControlBoxFromLibrary:(NSMutableDictionary *)controlBox;
+
 // Getter Methods
 - (float)versionNumberForControlBoxLibrary;
 - (NSMutableArray *)controlBoxFilePaths;
@@ -123,9 +130,6 @@
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forControlBox:(NSMutableDictionary *)controlBox;
-- (NSString *)createControlBoxAndReturnFilePath;
-- (NSString *)createCopyOfControlBoxAndReturnFilePath:(NSMutableDictionary *)controlBox;
-- (void)removeControlBoxFromLibrary:(NSMutableDictionary *)controlBox;
 - (void)setControlBoxID:(NSString *)ID forControlBox:(NSMutableDictionary *)controlBox;
 - (void)setDescription:(NSString *)description forControlBox:(NSMutableDictionary *)controlBox;
 - (int)addChannelAndReturnNewChannelIndexForControlBox:(NSMutableDictionary *)controlBox;
@@ -134,8 +138,51 @@
 - (void)setColor:(NSString *)color forChannelAtIndex:(int)index whichIsPartOfControlBox:(NSMutableDictionary *)controlBox;
 - (void)setDescription:(NSString *)description forChannelAtIndex:(int)index whichIsPartOfControlBox:(NSMutableDictionary *)controlBox;
 
+#pragma mark - ChannelGroupLibrary Methods
+// Managment Methods
+- (NSString *)createChannelGroupAndReturnFilePath;
+- (NSString *)createCopyOfChannelGroupAndReturnFilePath:(NSMutableDictionary *)channelGroup;
+- (void)removeChannelGroupFromLibrary:(NSMutableDictionary *)channelGroup;
+
+// Getter Methods
+- (float)channelGroupLibraryVersionNumber;
+- (NSMutableArray *)channelGroupFilePaths;
+- (NSString *)channelGroupFilePathAtIndex:(int)index;
+- (int)channelGroupFilePathsCount;
+
+// Setter Methods
+- (void)setVersionNumberForChannelGroupLibraryTo:(float)newVersionNumber;
+- (void)addChannelGroupFilePathToChannelGroupLibrary:(NSString *)filePath;
+
+#pragma mark - ChannelGroup Methods
+// Getter Methods
+- (float)versionNumberForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSString *)filePathForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSMutableDictionary *)channelGroupFromFilePath:(NSString *)filePath;
+- (NSString *)descriptionForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSMutableArray *)channelGroupBeingUsedInSequenceFilePaths:(NSMutableDictionary *)channelGroup;
+- (int)channelGroupBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)channelGroup;
+- (NSString *)channelGroup:(NSMutableDictionary *)channelGroup beingUsedInSequenceFilePathAtIndex:(int)index;
+- (NSMutableArray *)itemsForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (int)itemsCountForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSMutableDictionary *)itemDataAtIndex:(int)index forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (NSString *)controlBoxFilePathForItemData:(NSMutableDictionary *)itemData;
+- (int)channelIndexForItemData:(NSMutableDictionary *)itemData;
+
+// Setter Methods
+- (void)setVersionNumber:(float)newVersionNumber forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)setDescription:(NSString *)description forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (int)createItemDataAndReturnNewItemIndexForChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)removeItemData:(NSMutableDictionary *)itemData forChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)setControlBoxFilePath:(NSString *)filePath forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)setChannelIndex:(int)channelIndex forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup;
 
 #pragma mark - CommandClusterLibrary Methods
+// Management Methods
+- (NSString *)createCommandClusterAndReturnFilePath;
+- (NSString *)createCopyOfCommandClusterAndReturnFilePath:(NSMutableDictionary *)commandCluster;
+- (void)removeCommandClusterFromLibrary:(NSMutableDictionary *)commandCluster;
+
 // Getter Methods
 - (float)versionNumberForCommandClusterLibrary;
 - (NSMutableArray *)commandClusterFilePaths;
@@ -171,9 +218,6 @@
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forCommandCluster:(NSMutableDictionary *)commandCluster;
-- (NSString *)createCommandClusterAndReturnFilePath;
-- (NSString *)createCopyOfCommandClusterAndReturnFilePath:(NSMutableDictionary *)commandCluster;
-- (void)removeCommandClusterFromLibrary:(NSMutableDictionary *)commandCluster;
 - (void)setDescription:(NSString *)description forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setControlBoxFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setChannelGroupFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster;
@@ -190,7 +234,43 @@
 - (void)setFadeInDuration:(int)fadeInDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setFadeOutDuration:(int)fadeOutDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 
+#pragma mark - EffectClusterLibrary Methods
+// Management Methods
+- (NSString *)createEffectClusterAndReturnFilePath;
+- (NSString *)createCopyOfEffectClusterAndReturnFilePath:(NSMutableDictionary *)effectCluster;
+- (void)removeEffectClusterFromLibrary:(NSMutableDictionary *)effectCluster;
+
+// Getter Methods
+- (float)versionNumberForEffectClusterLibrary;
+- (NSMutableArray *)effectClusterFilePaths;
+- (NSString *)effectClusterFilePathAtIndex:(int)index;
+- (int)effectClusterFilePathsCount;
+
+// Setter Methods
+- (void)setVersionNumberForEffectClusterLibraryTo:(float)newVersionNumber;
+- (void)addEffectClusterFilePathToEffectClusterLibrary:(NSString *)filePath;
+
+#pragma mark - EffectCluster Methods
+// Getter Methods
+- (float)versionNumberforEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)filePathForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSMutableDictionary *)effectClusterFromFilePath:(NSString *)filePath;
+- (NSString *)descriptionForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)parametersForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSString *)scriptForEffectCluster:(NSMutableDictionary *)effectCluster;
+
+// Setter Methods
+- (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (void)setDescription:(NSString *)description forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (void)setParameters:(NSString *)parameters forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (void)setScript:(NSString *)script forEffectCluster:(NSMutableDictionary *)effectCluster;
+
 #pragma mark - AudioClipLibrary Methods
+// Management Methods
+- (NSString *)createAudioClipAndReturnFilePath;
+- (NSString *)createCopyOfAudioClipAndReturnFilePath:(NSMutableDictionary *)audioClip;
+- (void)removeAudioClipFromLibrary:(NSMutableDictionary *)audioClip;
+
 // Getter Methods
 - (float)audioClipLibraryVersionNumber;
 - (NSMutableArray *)audioClipFilePaths;
@@ -201,7 +281,7 @@
 - (void)setVersionNumberForAudioClipLibraryTo:(float)newVersionNumber;
 - (void)addAudioClipFilePathToAudioClipLibrary:(NSString *)filePath;
 
-//#pragma mark - AudioClip Methods
+#pragma mark - AudioClip Methods
 // Getter Methods
 - (float)versionNumberForAudioClip:(NSMutableDictionary *)audioClip;
 - (NSString *)filePathForAudioClip:(NSMutableDictionary *)audioClip;
@@ -216,78 +296,9 @@
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forAudioClip:(NSMutableDictionary *)audioClip;
-- (NSString *)createAudioClipAndReturnFilePath;
-- (NSString *)createCopyOfAudioClipAndReturnFilePath:(NSMutableDictionary *)audioClip;
 - (void)setDescription:(NSString *)description forAudioClip:(NSMutableDictionary *)audioClip;
-- (void)removeAudioClipFromLibrary:(NSMutableDictionary *)audioClip;
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
-
-//#pragma mark - ChannelGroupLibrary Methods
-// Getter Methods
-- (float)channelGroupLibraryVersionNumber;
-- (NSMutableArray *)channelGroupFilePaths;
-- (NSString *)channelGroupFilePathAtIndex:(int)index;
-- (int)channelGroupFilePathsCount;
-
-// Setter Methods
-- (void)setVersionNumberForChannelGroupLibraryTo:(float)newVersionNumber;
-- (void)addChannelGroupFilePathToChannelGroupLibrary:(NSString *)filePath;
-
-//#pragma mark - ChannelGroup Methods
-// Getter Methods
-- (float)versionNumberForChannelGroup:(NSMutableDictionary *)channelGroup;
-- (NSString *)filePathForChannelGroup:(NSMutableDictionary *)channelGroup;
-- (NSMutableDictionary *)channelGroupFromFilePath:(NSString *)filePath;
-- (NSString *)descriptionForChannelGroup:(NSMutableDictionary *)channelGroup;
-- (NSMutableArray *)channelGroupBeingUsedInSequenceFilePaths:(NSMutableDictionary *)channelGroup;
-- (int)channelGroupBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)channelGroup;
-- (NSString *)channelGroup:(NSMutableDictionary *)channelGroup beingUsedInSequenceFilePathAtIndex:(int)index;
-- (NSMutableArray *)itemsForChannelGroup:(NSMutableDictionary *)channelGroup;
-- (int)itemsCountForChannelGroup:(NSMutableDictionary *)channelGroup;
-- (NSMutableDictionary *)itemDataAtIndex:(int)index forChannelGroup:(NSMutableDictionary *)channelGroup;
-- (NSString *)controlBoxFilePathForItemData:(NSMutableDictionary *)itemData;
-- (int)channelIndexForItemData:(NSMutableDictionary *)itemData;
-
-// Setter Methods
-- (void)setVersionNumber:(float)newVersionNumber forChannelGroup:(NSMutableDictionary *)channelGroup;
-- (NSString *)createChannelGroupAndReturnFilePath;
-- (NSString *)createCopyOfChannelGroupAndReturnFilePath:(NSMutableDictionary *)channelGroup;
-- (void)removeChannelGroupFromLibrary:(NSMutableDictionary *)channelGroup;
-- (void)setDescription:(NSString *)description forChannelGroup:(NSMutableDictionary *)channelGroup;
-- (int)createItemDataAndReturnNewItemIndexForChannelGroup:(NSMutableDictionary *)channelGroup;
-- (void)removeItemData:(NSMutableDictionary *)itemData forChannelGroup:(NSMutableDictionary *)channelGroup;
-- (void)setControlBoxFilePath:(NSString *)filePath forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup;
-- (void)setChannelIndex:(int)channelIndex forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup;
-
-//#pragma mark - EffectClusterLibrary Methods
-// Getter Methods
-- (float)versionNumberForEffectClusterLibrary;
-- (NSMutableArray *)effectClusterFilePaths;
-- (NSString *)effectClusterFilePathAtIndex:(int)index;
-- (int)effectClusterFilePathsCount;
-
-// Setter Methods
-- (void)setVersionNumberForEffectClusterLibraryTo:(float)newVersionNumber;
-- (void)addEffectClusterFilePathToEffectClusterLibrary:(NSString *)filePath;
-
-//#pragma mark - EffectCluster Methods
-// Getter Methods
-- (float)versionNumberforEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)filePathForEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSMutableDictionary *)effectClusterFromFilePath:(NSString *)filePath;
-- (NSString *)descriptionForEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)parametersForEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)scriptForEffectCluster:(NSMutableDictionary *)effectCluster;
-
-// Setter Methods
-- (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)createEffectClusterAndReturnFilePath;
-- (NSString *)createCopyOfEffectClusterAndReturnFilePath:(NSMutableDictionary *)effectCluster;
-- (void)removeEffectClusterFromLibrary:(NSMutableDictionary *)effectCluster;
-- (void)setDescription:(NSString *)description forEffectCluster:(NSMutableDictionary *)effectCluster;
-- (void)setParameters:(NSString *)parameters forEffectCluster:(NSMutableDictionary *)effectCluster;
-- (void)setScript:(NSString *)script forEffectCluster:(NSMutableDictionary *)effectCluster;
 
 @end

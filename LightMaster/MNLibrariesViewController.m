@@ -26,9 +26,9 @@
 - (void)newSequence:(NSNotification *)aNotification;
 - (void)newControlBox:(NSNotification *)aNotification;
 - (void)newChannelGroup:(NSNotification *)aNotification;
-- (void)newAudioClip:(NSNotification *)aNotification;
-- (void)newEffectCluster:(NSNotification *)aNotification;
 - (void)newCommandCluster:(NSNotification *)aNotification;
+- (void)newEffectCluster:(NSNotification *)aNotification;
+- (void)newAudioClip:(NSNotification *)aNotification;
 
 - (void)removeLibraryContentView:(int)library;
 - (void)addLibraryContentView:(int)library;
@@ -54,10 +54,10 @@
         // Menu Items
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSequence:) name:@"NewSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newControlBox:) name:@"NewControlBox" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChannelGroup:) name:@"NewGroup" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioClip:) name:@"NewSound" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffectCluster:) name:@"NewEffect" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChannelGroup:) name:@"NewChannelGroup" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCommandCluster:) name:@"NewCommandCluster" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffectCluster:) name:@"NewEffectCluster" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioClip:) name:@"NewAudioClip" object:nil];
     }
     
     return self;
@@ -175,12 +175,66 @@
 
 - (IBAction)addLibraryDataButtonPress:(id)sender
 {
+    switch (selectedLibrary)
+    {
+        case kSequenceLibrary:
+            [data createSequenceAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data sequenceFilePathsCount] - 1] byExtendingSelection:NO];
+            break;
+        case kControlBoxLibrary:
+            [data createControlBoxAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data controlBoxFilePathsCount] - 1] byExtendingSelection:NO];
+            break;
+        case kChannelGroupLibrary:
+            [data createChannelGroupAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data channelGroupFilePathsCount] - 1] byExtendingSelection:NO];
+            break;
+        case kCommandClusterLibrary:
+            [data createCommandClusterAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data commandClusterFilePathsCount] - 1] byExtendingSelection:NO];
+            break;
+        case kEffectClusterLibrary:
+            [data createEffectClusterAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data effectClusterFilePathsCount] - 1] byExtendingSelection:NO];
+            break;
+        case kAudioClipLibrary:
+            [data createAudioClipAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data audioClipFilePathsCount] - 1] byExtendingSelection:NO];
+            break;
+        default:
+            break;
+    }
     
+    [libraryDataSelectionTableView reloadData];
 }
 
 - (IBAction)deleteLibraryDataButtonPress:(id)sender
 {
+    switch(selectedLibrary)
+    {
+        case kSequenceLibrary:
+            [data removeSequenceFromLibrary:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kControlBoxLibrary:
+            [data removeControlBoxFromLibrary:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kChannelGroupLibrary:
+            [data removeChannelGroupFromLibrary:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kCommandClusterLibrary:
+            [data removeCommandClusterFromLibrary:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kEffectClusterLibrary:
+            [data removeEffectClusterFromLibrary:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        case kAudioClipLibrary:
+            [data removeAudioClipFromLibrary:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+            break;
+        default:
+            break;
+    }
     
+    [libraryDataSelectionTableView reloadData];
 }
 
 #pragma mark - Notifications
@@ -204,32 +258,44 @@
 // Menu Items
 - (void)newSequence:(NSNotification *)aNotification
 {
+    [self displayLibrary:kSequenceLibrary];
     
+    [self addLibraryDataButtonPress:nil];
 }
 
 - (void)newControlBox:(NSNotification *)aNotification
 {
+    [self displayLibrary:kControlBoxLibrary];
     
+    [self addLibraryDataButtonPress:nil];
 }
 
 - (void)newChannelGroup:(NSNotification *)aNotification
 {
+    [self displayLibrary:kChannelGroupLibrary];
     
-}
-
-- (void)newAudioClip:(NSNotification *)aNotification
-{
-    
-}
-
-- (void)newEffectCluster:(NSNotification *)aNotification
-{
-    
+    [self addLibraryDataButtonPress:nil];
 }
 
 - (void)newCommandCluster:(NSNotification *)aNotification
 {
+    [self displayLibrary:kCommandClusterLibrary];
     
+    [self addLibraryDataButtonPress:nil];
+}
+
+- (void)newEffectCluster:(NSNotification *)aNotification
+{
+    [self displayLibrary:kEffectClusterLibrary];
+    
+    [self addLibraryDataButtonPress:nil];
+}
+
+- (void)newAudioClip:(NSNotification *)aNotification
+{
+    [self displayLibrary:kAudioClipLibrary];
+    
+    [self addLibraryDataButtonPress:nil];
 }
 
 #pragma mark - NSTableViewDataSource Methods
@@ -298,28 +364,57 @@
 {
     //NSLog(@"tableView selected:%d", (int)[tableView selectedRow]);
     
-    switch(selectedLibrary)
+    if([libraryDataSelectionTableView selectedRow] > -1)
     {
-        case kSequenceLibrary:
-            [sequenceLibraryManagerViewController setSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
-            break;
-        case kControlBoxLibrary:
-            [controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
-            break;
-        case kChannelGroupLibrary:
-            [channelGroupLibraryManagerViewController setChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
-            break;
-        case kCommandClusterLibrary:
-            [commandClusterLibraryManagerViewController setCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
-            break;
-        case kEffectClusterLibrary:
-            [effectClusterLibraryManagerViewController setEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
-            break;
-        case kAudioClipLibrary:
-            [audioClipLibraryManagerViewController setAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
-            break;
-        default:
-            break;
+        switch(selectedLibrary)
+        {
+            case kSequenceLibrary:
+                [sequenceLibraryManagerViewController setSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                break;
+            case kControlBoxLibrary:
+                [controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                break;
+            case kChannelGroupLibrary:
+                [channelGroupLibraryManagerViewController setChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                break;
+            case kCommandClusterLibrary:
+                [commandClusterLibraryManagerViewController setCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                break;
+            case kEffectClusterLibrary:
+                [effectClusterLibraryManagerViewController setEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                break;
+            case kAudioClipLibrary:
+                [audioClipLibraryManagerViewController setAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                break;
+            default:
+                break;
+        }
+    }
+    else
+    {
+        switch(selectedLibrary)
+        {
+            case kSequenceLibrary:
+                [sequenceLibraryManagerViewController setSequence:nil];
+                break;
+            case kControlBoxLibrary:
+                [controlBoxLibraryManagerViewController setControlBox:nil];
+                break;
+            case kChannelGroupLibrary:
+                [channelGroupLibraryManagerViewController setChannelGroup:nil];
+                break;
+            case kCommandClusterLibrary:
+                [commandClusterLibraryManagerViewController setCommandCluster:nil];
+                break;
+            case kEffectClusterLibrary:
+                [effectClusterLibraryManagerViewController setEffectCluster:nil];
+                break;
+            case kAudioClipLibrary:
+                [audioClipLibraryManagerViewController setAudioClip:nil];
+                break;
+            default:
+                break;
+        }
     }
 }
 
