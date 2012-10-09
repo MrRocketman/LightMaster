@@ -35,12 +35,17 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        // Initialization code here.
+        // Add data items Notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addControlBoxFilePathToSequence:) name:@"AddControlBoxFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addChannelGroupFilePathToSequence:) name:@"AddChannelGroupFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterFilePathToSequence:) name:@"AddCommanClusterFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addEffectClusterFilePathToSequence:) name:@"AddEffectClusterFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAudioClipFilePathToSequence:) name:@"AddAudioClipFilePathToSequence" object:nil];
+        
+        // Text Editing Notifications
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
     }
     
     return self;
@@ -320,6 +325,37 @@
     {
         [deleteAudioClipFromSequenceButton setEnabled:NO];
     }
+}
+
+#pragma mark - TextEditinig Notifications
+
+/*- (void)textDidBeginEditing:(NSNotification *)aNotification
+{
+    
+}
+
+- (void)textDidChange:(NSNotification *)aNotification
+{
+    
+}*/
+
+- (void)textDidEndEditing:(NSNotification *)aNotification
+{
+    if([aNotification object] == descriptionTextField)
+    {
+        [data setDescription:[descriptionTextField stringValue] forSequence:sequence];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
+    }
+    else if([aNotification object] == startTimeTextField)
+    {
+        [data setStartTime:[startTimeTextField floatValue] forSequence:sequence];
+    }
+    else if([aNotification object] == endTimeTextField)
+    {
+        [data setEndTime:[endTimeTextField floatValue] forSequence:sequence];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 @end

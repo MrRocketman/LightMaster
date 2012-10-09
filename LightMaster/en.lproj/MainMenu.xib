@@ -3938,8 +3938,8 @@
 				<string key="NSReuseIdentifierKey">_NS:1192</string>
 				<string key="NSClassName">NSView</string>
 			</object>
-			<object class="NSViewController" id="271597618"/>
-			<object class="NSPopover" id="1064274648">
+			<object class="NSViewController" id="934138478"/>
+			<object class="NSPopover" id="317122690">
 				<nil key="NSNextResponder"/>
 				<int key="NSAppearance">0</int>
 				<int key="NSBehavior">1</int>
@@ -4180,8 +4180,8 @@
 				<string key="NSReuseIdentifierKey">_NS:1192</string>
 				<string key="NSClassName">NSView</string>
 			</object>
-			<object class="NSViewController" id="845271944"/>
-			<object class="NSPopover" id="758120998">
+			<object class="NSViewController" id="526009556"/>
+			<object class="NSPopover" id="759835433">
 				<nil key="NSNextResponder"/>
 				<int key="NSAppearance">0</int>
 				<int key="NSBehavior">1</int>
@@ -8236,7 +8236,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">sequenceEffectClusterSelectorPopover</string>
 						<reference key="source" ref="1037774731"/>
-						<reference key="destination" ref="1064274648"/>
+						<reference key="destination" ref="317122690"/>
 					</object>
 					<int key="connectionID">2556</int>
 				</object>
@@ -8244,7 +8244,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">sequenceEffectClusterSelectorViewController</string>
 						<reference key="source" ref="1037774731"/>
-						<reference key="destination" ref="271597618"/>
+						<reference key="destination" ref="934138478"/>
 					</object>
 					<int key="connectionID">2557</int>
 				</object>
@@ -8252,7 +8252,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">sequenceAudioClipSelectorPopover</string>
 						<reference key="source" ref="1037774731"/>
-						<reference key="destination" ref="758120998"/>
+						<reference key="destination" ref="759835433"/>
 					</object>
 					<int key="connectionID">2571</int>
 				</object>
@@ -8260,7 +8260,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">sequenceAudioClipSelectorViewController</string>
 						<reference key="source" ref="1037774731"/>
-						<reference key="destination" ref="845271944"/>
+						<reference key="destination" ref="526009556"/>
 					</object>
 					<int key="connectionID">2572</int>
 				</object>
@@ -8319,6 +8319,30 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="801841124"/>
 					</object>
 					<int key="connectionID">2174</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="963799414"/>
+						<reference key="destination" ref="1037774731"/>
+					</object>
+					<int key="connectionID">2575</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="1045012340"/>
+						<reference key="destination" ref="1037774731"/>
+					</object>
+					<int key="connectionID">2574</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="1069983558"/>
+						<reference key="destination" ref="1037774731"/>
+					</object>
+					<int key="connectionID">2573</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -8388,7 +8412,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="961372125"/>
-						<reference key="destination" ref="845271944"/>
+						<reference key="destination" ref="526009556"/>
 					</object>
 					<int key="connectionID">2569</int>
 				</object>
@@ -8396,7 +8420,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="961372125"/>
-						<reference key="destination" ref="845271944"/>
+						<reference key="destination" ref="526009556"/>
 					</object>
 					<int key="connectionID">2570</int>
 				</object>
@@ -8452,7 +8476,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="391376741"/>
-						<reference key="destination" ref="271597618"/>
+						<reference key="destination" ref="934138478"/>
 					</object>
 					<int key="connectionID">2554</int>
 				</object>
@@ -8460,7 +8484,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="391376741"/>
-						<reference key="destination" ref="271597618"/>
+						<reference key="destination" ref="934138478"/>
 					</object>
 					<int key="connectionID">2555</int>
 				</object>
@@ -8683,7 +8707,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">data</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="683593973"/>
 					</object>
 					<int key="connectionID">2546</int>
@@ -8691,7 +8715,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">view</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="966460954"/>
 					</object>
 					<int key="connectionID">2547</int>
@@ -8699,7 +8723,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">tableView</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="391376741"/>
 					</object>
 					<int key="connectionID">2548</int>
@@ -8707,7 +8731,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">addButton</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="972031815"/>
 					</object>
 					<int key="connectionID">2549</int>
@@ -8715,7 +8739,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">addCopyButton</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="762450638"/>
 					</object>
 					<int key="connectionID">2550</int>
@@ -8723,7 +8747,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">beingUsedLabel</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="149229754"/>
 					</object>
 					<int key="connectionID">2551</int>
@@ -8731,7 +8755,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">addButtonPress:</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="972031815"/>
 					</object>
 					<int key="connectionID">2552</int>
@@ -8739,7 +8763,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">addCopyButtonPress:</string>
-						<reference key="source" ref="271597618"/>
+						<reference key="source" ref="934138478"/>
 						<reference key="destination" ref="762450638"/>
 					</object>
 					<int key="connectionID">2553</int>
@@ -8747,15 +8771,15 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">contentViewController</string>
-						<reference key="source" ref="1064274648"/>
-						<reference key="destination" ref="271597618"/>
+						<reference key="source" ref="317122690"/>
+						<reference key="destination" ref="934138478"/>
 					</object>
 					<int key="connectionID">2544</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">addButton</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="55200280"/>
 					</object>
 					<int key="connectionID">2561</int>
@@ -8763,7 +8787,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">addCopyButton</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="254429439"/>
 					</object>
 					<int key="connectionID">2562</int>
@@ -8771,7 +8795,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">beingUsedLabel</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="880923851"/>
 					</object>
 					<int key="connectionID">2563</int>
@@ -8779,7 +8803,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">data</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="683593973"/>
 					</object>
 					<int key="connectionID">2564</int>
@@ -8787,7 +8811,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">tableView</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="961372125"/>
 					</object>
 					<int key="connectionID">2565</int>
@@ -8795,7 +8819,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">view</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="18269618"/>
 					</object>
 					<int key="connectionID">2566</int>
@@ -8803,7 +8827,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">addButtonPress:</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="55200280"/>
 					</object>
 					<int key="connectionID">2567</int>
@@ -8811,7 +8835,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">addCopyButtonPress:</string>
-						<reference key="source" ref="845271944"/>
+						<reference key="source" ref="526009556"/>
 						<reference key="destination" ref="254429439"/>
 					</object>
 					<int key="connectionID">2568</int>
@@ -8819,8 +8843,8 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">contentViewController</string>
-						<reference key="source" ref="758120998"/>
-						<reference key="destination" ref="845271944"/>
+						<reference key="source" ref="759835433"/>
+						<reference key="destination" ref="526009556"/>
 					</object>
 					<int key="connectionID">2560</int>
 				</object>
@@ -21470,24 +21494,24 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">2542</int>
-						<reference key="object" ref="271597618"/>
+						<reference key="object" ref="934138478"/>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Popover View Controller</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">2543</int>
-						<reference key="object" ref="1064274648"/>
+						<reference key="object" ref="317122690"/>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">2558</int>
-						<reference key="object" ref="845271944"/>
+						<reference key="object" ref="526009556"/>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Popover View Controller</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">2559</int>
-						<reference key="object" ref="758120998"/>
+						<reference key="object" ref="759835433"/>
 						<reference key="parent" ref="0"/>
 					</object>
 				</array>
@@ -23176,7 +23200,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">2572</int>
+			<int key="maxID">2575</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

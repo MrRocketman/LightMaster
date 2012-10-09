@@ -21,6 +21,7 @@
 - (void)selectCommandCluster:(NSNotification *)aNotification;
 - (void)selectCommand:(NSNotification *)aNotification;
 - (void)selectAudioClip:(NSNotification *)aNotification;
+- (void)updateTableView:(NSNotification *)aNotification;
 
 // Menu Items
 - (void)newSequence:(NSNotification *)aNotification;
@@ -48,6 +49,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommandCluster:) name:@"SelectCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommand:) name:@"SelectCommand" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectAudioClip:) name:@"SelectSound" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView:) name:@"UpdateLibrariesViewController" object:nil];
         
         // Menu Items
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSequence:) name:@"NewSequence" object:nil];
@@ -207,7 +209,7 @@
     [libraryDataSelectionTableView reloadData];
 }
 
-#pragma mark - Notifications
+#pragma mark - External Notifications
 
 // External Notifications
 - (void)selectCommandCluster:(NSNotification *)aNotification
@@ -224,6 +226,13 @@
 {
     
 }
+
+- (void)updateTableView:(NSNotification *)aNotification
+{
+    [libraryDataSelectionTableView reloadData];
+}
+
+#pragma mark - MenuItem Notifications
 
 // Menu Items
 - (void)newSequence:(NSNotification *)aNotification
