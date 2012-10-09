@@ -12,7 +12,7 @@
 @interface MNControlBoxLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
     IBOutlet MNData *data;
-    __strong NSMutableDictionary *controlBox;
+    int controlBoxIndex; // Can't use a pointer here - things go HORRIBLY wrong if you do
     
     IBOutlet NSTextField *idTextField;
     IBOutlet NSTextField *descriptionTextField;
@@ -22,7 +22,7 @@
     IBOutlet NSButton *deleteChannelButton;
 }
 
-@property(strong) NSMutableDictionary *controlBox;
+@property() int controlBoxIndex;
 
 - (void)updateContent;
 

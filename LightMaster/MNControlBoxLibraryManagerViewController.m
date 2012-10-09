@@ -12,14 +12,16 @@
 
 @interface MNControlBoxLibraryManagerViewController ()
 
+- (void)textDidBeginEditing:(NSNotification *)aNotification;
 - (void)textDidEndEditing:(NSNotification *)aNotification;
+- (NSMutableDictionary *)controlBox;
 
 @end
 
 
 @implementation MNControlBoxLibraryManagerViewController
 
-@synthesize controlBox;
+@synthesize controlBoxIndex;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -35,17 +37,25 @@
     return self;
 }
 
+- (NSMutableDictionary *)controlBox
+{
+    if(controlBoxIndex > -1)
+        return [data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxIndex]];
+    
+    return nil;
+}
+
 - (void)updateContent
 {
-    if(controlBox != nil)
+    if(controlBoxIndex > -1)
     {
         [idTextField setEnabled:YES];
         [descriptionTextField setEnabled:YES];
         
         [addChannelButton setEnabled:YES];
         
-        [idTextField setStringValue:[data controlBoxIDForControlBox:controlBox]];
-        [descriptionTextField setStringValue:[data descriptionForControlBox:controlBox]];
+        [idTextField setStringValue:[data controlBoxIDForControlBox:[self controlBox]]];
+        [descriptionTextField setStringValue:[data descriptionForControlBox:[self controlBox]]];
     }
     else
     {
@@ -66,8 +76,7 @@
 
 - (IBAction)addChannelButtonPress:(id)sender
 {
-    [data addChannelAndReturnNewChannelIndexForControlBox:controlBox];
-    NSLog(@"addChannel controlBox:%@", controlBox);
+    [data addChannelAndReturnNewChannelIndexForControlBox:[self controlBox]];
     [channelsTableView reloadData];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
@@ -75,7 +84,7 @@
 
 - (IBAction)deleteChannelButtonPress:(id)sender
 {
-    [data removeChannel:[data channelAtIndex:(int)[channelsTableView selectedRow] forControlBox:controlBox] forControlBox:controlBox];
+    [data removeChannel:[data channelAtIndex:(int)[channelsTableView selectedRow] forControlBox:[self controlBox]] forControlBox:[self controlBox]];
     [channelsTableView deselectAll:nil];
     [channelsTableView reloadData];
     
@@ -86,23 +95,22 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    NSLog(@"numberOfRows controlBox:%@", controlBox);
-    return [data channelsCountForControlBox:controlBox];
+    return [data channelsCountForControlBox:[self controlBox]];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     if([[aTableColumn identifier] isEqualToString:@"Number"])
     {
-        return [data numberForChannel:[data channelAtIndex:(int)rowIndex forControlBox:controlBox]];
+        return [data numberForChannel:[data channelAtIndex:(int)rowIndex forControlBox:[self controlBox]]];
     }
     else if([[aTableColumn identifier] isEqualToString:@"Color"])
     {
-        return [data colorForChannel:[data channelAtIndex:(int)rowIndex forControlBox:controlBox]];
+        return [data colorForChannel:[data channelAtIndex:(int)rowIndex forControlBox:[self controlBox]]];
     }
     else if([[aTableColumn identifier] isEqualToString:@"Description"])
     {
-        return [data descriptionForChannel:[data channelAtIndex:(int)rowIndex forControlBox:controlBox]];
+        return [data descriptionForChannel:[data channelAtIndex:(int)rowIndex forControlBox:[self controlBox]]];
     }
     
     return @"nil";
@@ -126,7 +134,7 @@
 
 - (void)textDidBeginEditing:(NSNotification *)aNotification
 {
-    NSLog(@"begin editing controlBox:%@", controlBox);
+    
 }
  
 - (void)textDidChange:(NSNotification *)aNotification
@@ -138,33 +146,31 @@
 {
     if([aNotification object] == descriptionTextField)
     {
-        [data setDescription:[descriptionTextField stringValue] forControlBox:controlBox];
+        [data setDescription:[descriptionTextField stringValue] forControlBox:[self controlBox]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
     }
     else if([aNotification object] == idTextField)
     {
-        [data setControlBoxID:[idTextField stringValue] forControlBox:controlBox];
+        [data setControlBoxID:[idTextField stringValue] forControlBox:[self controlBox]];
     }
     else if([[aNotification userInfo] objectForKey:@"NSFieldEditor"])
     {
-        NSLog(@"end editing 1st controlBox:%@", controlBox);
         NSString *textFieldString = [[[aNotification userInfo] objectForKey:@"NSFieldEditor"] string];
         if([channelsTableView editedColumn] == 0)
         {
             //NSLog(@"number:%d", (int)[textFieldString intValue]);
-            [data setNumber:[textFieldString intValue] forChannelAtIndex:(int)[channelsTableView editedRow] whichIsPartOfControlBox:controlBox];
+            [data setNumber:[textFieldString intValue] forChannelAtIndex:(int)[channelsTableView editedRow] whichIsPartOfControlBox:[self controlBox]];
         }
         else if([channelsTableView editedColumn] == 1)
         {
             //NSLog(@"color:%@", textFieldString);
-            [data setColor:textFieldString forChannelAtIndex:(int)[channelsTableView editedRow] whichIsPartOfControlBox:controlBox];
+            [data setColor:textFieldString forChannelAtIndex:(int)[channelsTableView editedRow] whichIsPartOfControlBox:[self controlBox]];
         }
         else if([channelsTableView editedColumn] == 2)
         {
             //NSLog(@"description:%@", textFieldString);
-            [data setDescription:textFieldString forChannelAtIndex:(int)[channelsTableView editedRow] whichIsPartOfControlBox:controlBox];
+            [data setDescription:textFieldString forChannelAtIndex:(int)[channelsTableView editedRow] whichIsPartOfControlBox:[self controlBox]];
         }
-        NSLog(@"end editing 2nd controlBox:%@", controlBox);
         
         [channelsTableView reloadData];
     }

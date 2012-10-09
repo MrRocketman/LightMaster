@@ -352,7 +352,8 @@
                 [sequenceLibraryManagerViewController setSequence:[data currentSequence]];
                 break;
             case kControlBoxLibrary:
-                [controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [controlBoxLibraryManagerViewController setControlBoxIndex:(int)[libraryDataSelectionTableView selectedRow]];
+                //[controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
                 break;
             case kChannelGroupLibrary:
                 [channelGroupLibraryManagerViewController setChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
@@ -380,7 +381,8 @@
                 [sequenceLibraryManagerViewController setSequence:nil];
                 break;
             case kControlBoxLibrary:
-                [controlBoxLibraryManagerViewController setControlBox:nil];
+                [controlBoxLibraryManagerViewController setControlBoxIndex:-1];
+                //[controlBoxLibraryManagerViewController setControlBox:nil];
                 break;
             case kChannelGroupLibrary:
                 [channelGroupLibraryManagerViewController setChannelGroup:nil];
