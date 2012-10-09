@@ -67,6 +67,12 @@ addAudioClipToSequenceButton;
         [startTimeTextField setEnabled:YES];
         [endTimeTextField setEnabled:YES];
         
+        [addControlBoxToSequenceButton setEnabled:YES];
+        [addChannelGroupToSequenceButton setEnabled:YES];
+        [addCommandClusterToSequenceButton setEnabled:YES];
+        [addEffectClusterToSequenceButton setEnabled:YES];
+        [addAudioClipToSequenceButton setEnabled:YES];
+        
         [descriptionTextField setStringValue:[data descriptionForSequence:sequence]];
         [startTimeTextField setFloatValue:[data startTimeForSequence:sequence]];
         [endTimeTextField setFloatValue:[data endTimeForSequence:sequence]];
@@ -76,6 +82,12 @@ addAudioClipToSequenceButton;
         [descriptionTextField setEnabled:NO];
         [startTimeTextField setEnabled:NO];
         [endTimeTextField setEnabled:NO];
+        
+        [addControlBoxToSequenceButton setEnabled:NO];
+        [addChannelGroupToSequenceButton setEnabled:NO];
+        [addCommandClusterToSequenceButton setEnabled:NO];
+        [addEffectClusterToSequenceButton setEnabled:NO];
+        [addAudioClipToSequenceButton setEnabled:NO];
     }
 }
 
@@ -139,6 +151,110 @@ addAudioClipToSequenceButton;
 - (IBAction)addAudioClipToSequenceButtonPress:(id)sender
 {
     
+}
+
+#pragma mark - NSTableViewDataSource Methods
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
+{
+    if(aTableView == controlBoxesTableView)
+    {
+        return [data controlBoxFilePathsCountForSequence:sequence];
+    }
+    else if(aTableView == channelGroupsTableView)
+    {
+        return [data channelGroupFilePathsCountForSequence:sequence];
+    }
+    else if(aTableView == commandClustersTableView)
+    {
+        return [data commandClusterFilePathsCountForSequence:sequence];
+    }
+    else if(aTableView == effectClustersTableView)
+    {
+        return [data effectClusterFilePathsCountForSequence:sequence];
+    }
+    else if(aTableView == audioClipsTableView)
+    {
+        return [data audioClipFilePathsCountForSequence:sequence];
+    }
+    
+    return 0;
+}
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+{
+    if(aTableView == controlBoxesTableView)
+    {
+        return [data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
+    }
+    else if(aTableView == channelGroupsTableView)
+    {
+        return [data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
+    }
+    else if(aTableView == commandClustersTableView)
+    {
+        return [data descriptionForCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
+    }
+    else if(aTableView == effectClustersTableView)
+    {
+        return [data descriptionForEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
+    }
+    else if(aTableView == audioClipsTableView)
+    {
+        return [data descriptionForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
+    }
+    
+    return @"nil";
+}
+
+#pragma mark - NSTableViewDelegate Methods
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
+{
+    if([controlBoxesTableView selectedRow] > -1)
+    {
+        [deleteControlBoxFromSequenceButton setEnabled:YES];
+    }
+    else
+    {
+        [deleteControlBoxFromSequenceButton setEnabled:NO];
+    }
+    
+    if([channelGroupsTableView selectedRow] > -1)
+    {
+        [deleteChannleGroupFromSequenceButton setEnabled:YES];
+    }
+    else
+    {
+        [deleteChannleGroupFromSequenceButton setEnabled:NO];
+    }
+    
+    if([commandClustersTableView selectedRow] > -1)
+    {
+        [deleteCommandClusterFromSequenceButton setEnabled:YES];
+    }
+    else
+    {
+        [deleteCommandClusterFromSequenceButton setEnabled:NO];
+    }
+    
+    if([effectClustersTableView selectedRow] > -1)
+    {
+        [deleteEffectClusterFromSequenceButton setEnabled:YES];
+    }
+    else
+    {
+        [deleteEffectClusterFromSequenceButton setEnabled:NO];
+    }
+    
+    if([audioClipsTableView selectedRow] > -1)
+    {
+        [deleteAudioClipFromSequenceButton setEnabled:YES];
+    }
+    else
+    {
+        [deleteAudioClipFromSequenceButton setEnabled:NO];
+    }
 }
 
 @end

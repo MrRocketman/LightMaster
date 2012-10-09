@@ -56,6 +56,11 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCommandCluster:) name:@"NewCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffectCluster:) name:@"NewEffectCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioClip:) name:@"NewAudioClip" object:nil];
+        
+        for(int i = 0; i < NUMBER_OF_LIBRARIES; i ++)
+        {
+            previouslySelectedRowsInLibraryDataSelectionTableView[i] = -1;
+        }
     }
     
     return self;
@@ -130,11 +135,11 @@
         // Select the new tab
         [self selectLibraryInTabList:library];
         
-        // Display the new content
-        [self addLibraryContentView:selectedLibrary];
-        
         // Reload the library selection table view
         [libraryDataSelectionTableView reloadData];
+        
+        // Display the new content
+        [self addLibraryContentView:selectedLibrary];
     }
 }
 
@@ -355,6 +360,8 @@
             default:
                 break;
         }
+        
+        [deleteLibraryDataButton setEnabled:YES];
     }
     else
     {
@@ -381,6 +388,8 @@
             default:
                 break;
         }
+        
+        [deleteLibraryDataButton setEnabled:NO];
     }
     
     [[libraries objectAtIndex:selectedLibrary] updateContent];
