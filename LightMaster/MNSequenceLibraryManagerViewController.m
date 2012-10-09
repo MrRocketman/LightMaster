@@ -12,13 +12,16 @@
 #import "MNSequenceChannelGroupSelectorViewController.h"
 #import "MNSequenceCommandClusterSelectorViewController.h"
 #import "MNSequenceEffectClusterSelectorViewController.h"
-#import "MNSequenceAudioClipViewController.h"
+#import "MNSequenceAudioClipSelectorViewController.h"
 
 
 @interface MNSequenceLibraryManagerViewController ()
 
 - (void)addControlBoxFilePathToSequence:(NSNotification *)aNotification;
 - (void)addChannelGroupFilePathToSequence:(NSNotification *)aNotification;
+- (void)addCommandClusterFilePathToSequence:(NSNotification *)aNotification;
+- (void)addEffectClusterFilePathToSequence:(NSNotification *)aNotification;
+- (void)addAudioClipFilePathToSequence:(NSNotification *)aNotification;
 
 @end
 
@@ -26,40 +29,6 @@
 @implementation MNSequenceLibraryManagerViewController
 
 @synthesize sequence;
-
-@synthesize
-descriptionTextField,
-startTimeTextField,
-endTimeTextField;
-
-@synthesize
-sequenceControlBoxSelectorViewController,
-sequenceControlBoxSelectorPopover,
-controlBoxesTableView,
-deleteControlBoxFromSequenceButton,
-addControlBoxToSequenceButton;
-
-@synthesize
-sequenceChannelGroupSelectorViewController,
-sequenceChannelGroupSelectorPopover,
-channelGroupsTableView,
-deleteChannleGroupFromSequenceButton,
-addChannelGroupToSequenceButton;
-
-@synthesize
-commandClustersTableView,
-deleteCommandClusterFromSequenceButton,
-addCommandClusterToSequenceButton;
-
-@synthesize
-effectClustersTableView,
-deleteEffectClusterFromSequenceButton,
-addEffectClusterToSequenceButton;
-
-@synthesize 
-audioClipsTableView,
-deleteAudioClipFromSequenceButton,
-addAudioClipToSequenceButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -69,6 +38,9 @@ addAudioClipToSequenceButton;
         // Initialization code here.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addControlBoxFilePathToSequence:) name:@"AddControlBoxFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addChannelGroupFilePathToSequence:) name:@"AddChannelGroupFilePathToSequence" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterFilePathToSequence:) name:@"AddCommanClusterFilePathToSequence" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addEffectClusterFilePathToSequence:) name:@"AddEffectClusterFilePathToSequence" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAudioClipFilePathToSequence:) name:@"AddAudioClipFilePathToSequence" object:nil];
     }
     
     return self;
@@ -126,6 +98,33 @@ addAudioClipToSequenceButton;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
+- (void)addCommandClusterFilePathToSequence:(NSNotification *)aNotification
+{
+    [sequenceCommandClusterSelectorPopover performClose:nil];
+    [data addCommandClusterFilePath:[aNotification object] forSequence:sequence];
+    [commandClustersTableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (void)addEffectClusterFilePathToSequence:(NSNotification *)aNotification
+{
+    [sequenceEffectClusterSelectorPopover performClose:nil];
+    [data addEffectClusterFilePath:[aNotification object] forSequence:sequence];
+    [effectClustersTableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (void)addAudioClipFilePathToSequence:(NSNotification *)aNotification
+{
+    [sequenceAudioClipSelectorPopover performClose:nil];
+    [data addAudioClipFilePath:[aNotification object] forSequence:sequence];
+    [audioClipsTableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
 #pragma mark - Button Actions
 
 - (IBAction)deleteControlBoxFromSequenceButtonPress:(id)sender
@@ -174,7 +173,13 @@ addAudioClipToSequenceButton;
 
 - (IBAction)addCommandClusterToSequenceButtonPress:(id)sender
 {
+    [sequenceCommandClusterSelectorPopover showRelativeToRect:[commandClustersTableView rectOfRow:[commandClustersTableView selectedRow]] ofView:commandClustersTableView preferredEdge:NSMaxYEdge];
+    if([commandClustersTableView selectedRow] > -1)
+    {
+        [sequenceCommandClusterSelectorViewController setSelectedCommandClusterFilePath:[data commandClusterFilePathAtIndex:(int)[commandClustersTableView selectedRow] forSequence:sequence]];
+    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteEffectClusterFromSequenceButtonPress:(id)sender
@@ -186,7 +191,13 @@ addAudioClipToSequenceButton;
 
 - (IBAction)addEffectClusterToSequenceButtonPress:(id)sender
 {
+    [sequenceEffectClusterSelectorPopover showRelativeToRect:[effectClustersTableView rectOfRow:[effectClustersTableView selectedRow]] ofView:effectClustersTableView preferredEdge:NSMaxYEdge];
+    if([effectClustersTableView selectedRow] > -1)
+    {
+        [sequenceEffectClusterSelectorViewController setSelectedEffectClusterFilePath:[data effectClusterFilePathAtIndex:(int)[effectClustersTableView selectedRow] forSequence:sequence]];
+    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteAudioClipFromSequenceButtonPress:(id)sender
@@ -198,7 +209,13 @@ addAudioClipToSequenceButton;
 
 - (IBAction)addAudioClipToSequenceButtonPress:(id)sender
 {
+    [sequenceAudioClipSelectorPopover showRelativeToRect:[audioClipsTableView rectOfRow:[audioClipsTableView selectedRow]] ofView:audioClipsTableView preferredEdge:NSMaxYEdge];
+    if([audioClipsTableView selectedRow] > -1)
+    {
+        [sequenceAudioClipSelectorViewController setSelectedAudioClipFilePath:[data audioClipFilePathAtIndex:(int)[audioClipsTableView selectedRow] forSequence:sequence]];
+    }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 #pragma mark - NSTableViewDataSource Methods

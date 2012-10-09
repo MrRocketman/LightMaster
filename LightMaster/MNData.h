@@ -263,6 +263,9 @@
 - (NSString *)descriptionForEffectCluster:(NSMutableDictionary *)effectCluster;
 - (NSString *)parametersForEffectCluster:(NSMutableDictionary *)effectCluster;
 - (NSString *)scriptForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (NSMutableArray *)effectClusterBeingUsedInSequenceFilePaths:(NSMutableDictionary *)effectCluster;
+- (int)effectClusterBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)effectCluster;
+- (NSString *)effectCluster:(NSMutableDictionary *)effectCluster beingUsedInSequenceFilePathAtIndex:(int)index;
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster;

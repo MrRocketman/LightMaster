@@ -11,15 +11,13 @@
 
 @interface MNSequenceChannelGroupSelectorViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 {
-    __weak MNData *data;
+    IBOutlet MNData *data;
     
     IBOutlet NSTableView *tableView;
     IBOutlet NSTextField *beingUsedLabel;
     IBOutlet NSButton *addButton;
     IBOutlet NSButton *addCopyButton;
 }
-
-@property (weak) IBOutlet MNData *data;
 
 - (IBAction)addButtonPress:(id)sender;
 - (IBAction)addCopyButtonPress:(id)sender;

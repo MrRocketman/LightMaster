@@ -1,5 +1,5 @@
 //
-//  MNSequenceCommandClusterSelectorViewController.h
+//  MNSequenceAudioClipViewController.h
 //  LightMaster
 //
 //  Created by James Adams on 10/8/12.
@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "MNData.h"
 
-@interface MNSequenceCommandClusterSelectorViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
+@interface MNSequenceAudioClipSelectorViewController : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 {
     IBOutlet MNData *data;
     
@@ -23,6 +23,6 @@
 - (IBAction)addCopyButtonPress:(id)sender;
 
 - (void)reload;
-- (void)setSelectedCommandClusterFilePath:(NSString *)selectedCommandClusterFilePath;
+- (void)setSelectedAudioClipFilePath:(NSString *)selectedAudioClipFilePath;
 
 @end

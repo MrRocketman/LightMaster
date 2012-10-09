@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@class MNData, MNSequenceControlBoxSelectorViewController, MNSequenceChannelGroupSelectorViewController, MNSequenceCommandClusterSelectorViewController, MNSequenceEffectClusterSelectorViewController, MNSequenceAudioClipViewController;
+@class MNData, MNSequenceControlBoxSelectorViewController, MNSequenceChannelGroupSelectorViewController, MNSequenceCommandClusterSelectorViewController, MNSequenceEffectClusterSelectorViewController, MNSequenceAudioClipSelectorViewController;
 
 @interface MNSequenceLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
@@ -15,70 +15,49 @@
     __weak NSMutableDictionary *sequence;
     
     // General outlets
-    __weak NSTextField *descriptionTextField;
-    __weak NSTextField *startTimeTextField;
-    __weak NSTextField *endTimeTextField;
+    IBOutlet NSTextField *descriptionTextField;
+    IBOutlet NSTextField *startTimeTextField;
+    IBOutlet NSTextField *endTimeTextField;
     
     // Control Boxes
-    __weak MNSequenceControlBoxSelectorViewController *sequenceControlBoxSelectorViewController;
-    __weak NSPopover *sequenceControlBoxSelectorPopover;
-    __weak NSTableView *controlBoxesTableView;
-    __weak NSButton *deleteControlBoxFromSequenceButton;
-    __weak NSButton *addControlBoxToSequenceButton;
+    IBOutlet MNSequenceControlBoxSelectorViewController *sequenceControlBoxSelectorViewController;
+    IBOutlet NSPopover *sequenceControlBoxSelectorPopover;
+    IBOutlet NSTableView *controlBoxesTableView;
+    IBOutlet NSButton *deleteControlBoxFromSequenceButton;
+    IBOutlet NSButton *addControlBoxToSequenceButton;
     
     // Channel Groups
-    __weak MNSequenceChannelGroupSelectorViewController *sequenceChannelGroupSelectorViewController;
-    __weak NSPopover *sequenceChannelGroupSelectorPopover;
-    __weak NSTableView *channelGroupsTableView;
-    __weak NSButton *deleteChannleGroupFromSequenceButton;
-    __weak NSButton *addChannelGroupToSequenceButton;
+    IBOutlet MNSequenceChannelGroupSelectorViewController *sequenceChannelGroupSelectorViewController;
+    IBOutlet NSPopover *sequenceChannelGroupSelectorPopover;
+    IBOutlet NSTableView *channelGroupsTableView;
+    IBOutlet NSButton *deleteChannleGroupFromSequenceButton;
+    IBOutlet NSButton *addChannelGroupToSequenceButton;
     
     // Command Clusters
-    __weak NSTableView *commandClustersTableView;
-    __weak NSButton *deleteCommandClusterFromSequenceButton;
-    __weak NSButton *addCommandClusterToSequenceButton;
+    IBOutlet MNSequenceCommandClusterSelectorViewController *sequenceCommandClusterSelectorViewController;
+    IBOutlet NSPopover *sequenceCommandClusterSelectorPopover;
+    IBOutlet NSTableView *commandClustersTableView;
+    IBOutlet NSButton *deleteCommandClusterFromSequenceButton;
+    IBOutlet NSButton *addCommandClusterToSequenceButton;
     
     // Effect Clusters
-    __weak NSTableView *effectClustersTableView;
-    __weak NSButton *deleteEffectClusterFromSequenceButton;
-    __weak NSButton *addEffectClusterToSequenceButton;
+    IBOutlet MNSequenceEffectClusterSelectorViewController *sequenceEffectClusterSelectorViewController;
+    IBOutlet NSPopover *sequenceEffectClusterSelectorPopover;
+    IBOutlet NSTableView *effectClustersTableView;
+    IBOutlet NSButton *deleteEffectClusterFromSequenceButton;
+    IBOutlet NSButton *addEffectClusterToSequenceButton;
     
     // Audio Clips
-    __weak NSTableView *audioClipsTableView;
-    __weak NSButton *deleteAudioClipFromSequenceButton;
-    __weak NSButton *addAudioClipToSequenceButton;
+    IBOutlet MNSequenceAudioClipSelectorViewController *sequenceAudioClipSelectorViewController;
+    IBOutlet NSPopover *sequenceAudioClipSelectorPopover;
+    IBOutlet NSTableView *audioClipsTableView;
+    IBOutlet NSButton *deleteAudioClipFromSequenceButton;
+    IBOutlet NSButton *addAudioClipToSequenceButton;
 }
 
-@property(weak) NSMutableDictionary *sequence;
+@property (weak) NSMutableDictionary *sequence;
 
-@property (weak) IBOutlet NSTextField *descriptionTextField;
-@property (weak) IBOutlet NSTextField *startTimeTextField;
-@property (weak) IBOutlet NSTextField *endTimeTextField;
-
-@property (weak) IBOutlet MNSequenceControlBoxSelectorViewController *sequenceControlBoxSelectorViewController;
-@property (weak) IBOutlet NSPopover *sequenceControlBoxSelectorPopover;
-@property (weak) IBOutlet NSTableView *controlBoxesTableView;
-@property (weak) IBOutlet NSButton *deleteControlBoxFromSequenceButton;
-@property (weak) IBOutlet NSButton *addControlBoxToSequenceButton;
-
-@property (weak) IBOutlet MNSequenceChannelGroupSelectorViewController *sequenceChannelGroupSelectorViewController;
-@property (weak) IBOutlet NSPopover *sequenceChannelGroupSelectorPopover;
-@property (weak) IBOutlet NSTableView *channelGroupsTableView;
-@property (weak) IBOutlet NSButton *deleteChannleGroupFromSequenceButton;
-@property (weak) IBOutlet NSButton *addChannelGroupToSequenceButton;
-
-@property (weak) IBOutlet NSTableView *commandClustersTableView;
-@property (weak) IBOutlet NSButton *deleteCommandClusterFromSequenceButton;
-@property (weak) IBOutlet NSButton *addCommandClusterToSequenceButton;
-
-@property (weak) IBOutlet NSTableView *effectClustersTableView;
-@property (weak) IBOutlet NSButton *deleteEffectClusterFromSequenceButton;
-@property (weak) IBOutlet NSButton *addEffectClusterToSequenceButton;
-
-@property (weak) IBOutlet NSTableView *audioClipsTableView;
-@property (weak) IBOutlet NSButton *deleteAudioClipFromSequenceButton;
-@property (weak) IBOutlet NSButton *addAudioClipToSequenceButton;
-
+- (void)updateContent;
 
 - (IBAction)deleteControlBoxFromSequenceButtonPress:(id)sender;
 - (IBAction)addControlBoxToSequenceButtonPress:(id)sender;
@@ -94,7 +73,5 @@
 
 - (IBAction)deleteAudioClipFromSequenceButtonPress:(id)sender;
 - (IBAction)addAudioClipToSequenceButtonPress:(id)sender;
-
-- (void)updateContent;
 
 @end

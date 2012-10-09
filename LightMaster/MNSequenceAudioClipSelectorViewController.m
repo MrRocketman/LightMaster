@@ -1,18 +1,18 @@
 //
-//  MNSequenceChannelGroupSelectorViewController.m
+//  MNSequenceAudioClipViewController.m
 //  LightMaster
 //
 //  Created by James Adams on 10/8/12.
 //  Copyright (c) 2012 James Adams. All rights reserved.
 //
 
-#import "MNSequenceChannelGroupSelectorViewController.h"
+#import "MNSequenceAudioClipSelectorViewController.h"
 
-@interface MNSequenceChannelGroupSelectorViewController ()
+@interface MNSequenceAudioClipSelectorViewController ()
 
 @end
 
-@implementation MNSequenceChannelGroupSelectorViewController
+@implementation MNSequenceAudioClipSelectorViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -26,13 +26,13 @@
 
 - (IBAction)addButtonPress:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"AddChannelGroupFilePathToSequence" object:[data channelGroupFilePathAtIndex:(int)[tableView selectedRow]] userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AddAudioClipFilePathToSequence" object:[data audioClipFilePathAtIndex:(int)[tableView selectedRow]] userInfo:nil];
 }
 
 - (IBAction)addCopyButtonPress:(id)sender
 {
-    NSString *newChannelGroupFilePath = [data createCopyOfChannelGroupAndReturnFilePath:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[tableView selectedRow]]]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"AddChannelGroupFilePathToSequence" object:newChannelGroupFilePath userInfo:nil];
+    NSString *newAudioClipFilePath = [data createCopyOfAudioClipAndReturnFilePath:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[tableView selectedRow]]]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AddAudioClipFilePathToSequence" object:newAudioClipFilePath userInfo:nil];
 }
 
 - (void)reload
@@ -41,9 +41,9 @@
     [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:tableView]];
 }
 
-- (void)setSelectedChannelGroupFilePath:(NSString *)selectedChannelGroupFilePath
+- (void)setSelectedAudioClipFilePath:(NSString *)selectedAudioClipFilePath
 {
-    int index = (int)[[data channelGroupFilePaths] indexOfObject:selectedChannelGroupFilePath];
+    int index = (int)[[data audioClipFilePaths] indexOfObject:selectedAudioClipFilePath];
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
     [self reload];
 }
@@ -52,12 +52,12 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return [data channelGroupFilePathsCount];
+    return [data audioClipFilePathsCount];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-    return [data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)rowIndex]]];
+    return [data descriptionForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)rowIndex]]];
 }
 
 #pragma mark - NSTableViewDelegate Methods
@@ -68,7 +68,7 @@
     
     if([tableView selectedRow] > -1)
     {
-        int beingUsedCount = [data channelGroupBeingUsedInSequenceFilePathsCount:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:(int)[tableView selectedRow]]]];
+        int beingUsedCount = [data audioClipBeingUsedInSequenceFilePathsCount:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[tableView selectedRow]]]];
         if(beingUsedCount == 0)
         {
             [addButton setEnabled:YES];

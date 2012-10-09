@@ -1686,6 +1686,21 @@
     return [effectCluster objectForKey:@"script"];
 }
 
+- (NSMutableArray *)effectClusterBeingUsedInSequenceFilePaths:(NSMutableDictionary *)effectCluster
+{
+    return [self dictionaryBeingUsedInSequenceFilePaths:effectCluster];
+}
+
+- (int)effectClusterBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)effectCluster
+{
+    return [self dictionaryBeingUsedInSequenceFilePathsCount:effectCluster];
+}
+
+- (NSString *)effectCluster:(NSMutableDictionary *)effectCluster beingUsedInSequenceFilePathAtIndex:(int)index
+{
+    return [self dictionary:effectCluster beingUsedInSequenceFilePathAtIndex:index];
+}
+
 // Setter Methods
 
 - (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster
