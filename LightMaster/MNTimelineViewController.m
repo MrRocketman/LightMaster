@@ -10,7 +10,7 @@
 
 @interface MNTimelineViewController()
 
-- (void)loadSequence:(NSNotification *)aNotification;
+- (void)updateGraphics:(NSNotification *)aNotification;
 - (void)rewindButtonPress:(NSNotification *)aNotification;
 - (void)fastForwardButtonPress:(NSNotification *)aNotification;
 - (void)skipBackButtonPress:(NSNotification *)aNotification;
@@ -31,7 +31,7 @@
     if (self)
     {
         // Init Code Here
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadSequence:) name:@"LoadSequence" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateGraphics:) name:@"UpdateGraphics" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rewindButtonPress:) name:@"RewindButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fastForwardButtonPress:) name:@"FastForwardButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(skipBackButtonPress:) name:@"SkipBackButtonPress" object:nil];
@@ -58,7 +58,7 @@
 
 #pragma mark - Private Methods
 
-- (void)loadSequence:(NSNotification *)aNotification
+- (void)updateGraphics:(NSNotification *)aNotification
 {
     [timelineTracksView setNeedsDisplay:YES];
     [timelineTrackHeadersView setNeedsDisplay:YES];

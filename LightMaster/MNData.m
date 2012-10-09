@@ -464,10 +464,12 @@
     NSMutableArray *controlBoxFilePathsForSequence = [[NSMutableArray alloc] init];
     NSMutableArray *channelGroupFilePathsForSequence = [[NSMutableArray alloc] init];
     NSMutableArray *commandClusterFilePathsForSequence = [[NSMutableArray alloc] init];
+    NSMutableArray *effectClusterFilePathsForSequence = [[NSMutableArray alloc] init];
     [newSequence setObject:audioClipFilePathsForSequence forKey:@"audioClipFilePaths"];
     [newSequence setObject:controlBoxFilePathsForSequence forKey:@"controlBoxFilePaths"];
     [newSequence setObject:channelGroupFilePathsForSequence forKey:@"channelGroupFilePaths"];
     [newSequence setObject:commandClusterFilePathsForSequence forKey:@"commandClusterFilePaths"];
+    [newSequence setObject:effectClusterFilePathsForSequence forKey:@"efectClusterFilePaths"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
     NSString *filePath = [NSString stringWithFormat:@"sequenceLibrary/%@.lmsq", [self nextAvailableNumberForFilePaths:[self sequenceFilePaths]]];
@@ -489,6 +491,7 @@
     [newSequence setObject:[self controlBoxFilePathsForSequence:sequence] forKey:@"controlBoxFilePaths"];
     [newSequence setObject:[self channelGroupFilePathsForSequence:sequence] forKey:@"channelGroupFilePaths"];
     [newSequence setObject:[self commandClusterFilePathsForSequence:sequence] forKey:@"commandClusterFilePaths"];
+    [newSequence setObject:[self effectClusterFilePathsForSequence:sequence] forKey:@"effectClusterFilePaths"];
     [self setDescription:[NSString stringWithFormat:@"%@ Copy", [self descriptionForSequence:sequence]] forSequence:newSequence];
     [self setStartTime:[self startTimeForSequence:sequence] forSequence:newSequence];
     [self setEndTime:[self endTimeForSequence:sequence] forSequence:newSequence];
@@ -636,6 +639,21 @@
     return [[self commandClusterFilePathsForSequence:sequence] objectAtIndex:index];
 }
 
+- (NSMutableArray *)effectClusterFilePathsForSequence:(NSMutableDictionary *)sequence
+{
+    return [sequence objectForKey:@"effectClusterFilePaths"];
+}
+
+- (int)effectClusterFilePathsCountForSequence:(NSMutableDictionary *)sequence
+{
+    return (int)[[self effectClusterFilePathsForSequence:sequence] count];
+}
+
+- (NSString *)effectClusterFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
+{
+    return [[self effectClusterFilePathsForSequence:sequence] objectAtIndex:index];
+}
+
 // Setter Methods
 
 - (void)setVersionNumber:(float)newVersionNumber forSequence:(NSMutableDictionary *)sequence
@@ -737,6 +755,26 @@
     NSMutableArray *filePaths = [self commandClusterFilePathsForSequence:sequence];
     [filePaths removeObject:filePath];
     [sequence setObject:filePaths forKey:@"commandClusterFilePaths"];
+    [self saveDictionaryToItsFilePath:sequence];
+    
+    [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+}
+
+- (void)addEffectClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
+{
+    NSMutableArray *filePaths = [self effectClusterFilePathsForSequence:sequence];
+    [filePaths addObject:filePath];
+    [sequence setObject:filePaths forKey:@"effectClusterFilePaths"];
+    [self saveDictionaryToItsFilePath:sequence];
+    
+    [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+}
+
+- (void)removeEffectClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
+{
+    NSMutableArray *filePaths = [self effectClusterFilePathsForSequence:sequence];
+    [filePaths removeObject:filePath];
+    [sequence setObject:filePaths forKey:@"effectClusterFilePaths"];
     [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];

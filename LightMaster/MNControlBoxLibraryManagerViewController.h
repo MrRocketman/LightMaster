@@ -15,4 +15,6 @@
 
 @property(readwrite, weak) NSMutableDictionary *controlBox;
 
+- (void)updateContent;
+
 @end

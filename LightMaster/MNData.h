@@ -80,6 +80,9 @@
 - (NSMutableArray *)commandClusterFilePathsForSequence:(NSMutableDictionary *)sequence;
 - (int)commandClusterFilePathsCountForSequence:(NSMutableDictionary *)sequence;
 - (NSString *)commandClusterFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
+- (NSMutableArray *)effectClusterFilePathsForSequence:(NSMutableDictionary *)sequence;
+- (int)effectClusterFilePathsCountForSequence:(NSMutableDictionary *)sequence;
+- (NSString *)effectClusterFilePathAtIndex:(int)index forSequence:(NSMutableDictionary *)sequence;
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forSequence:(NSMutableDictionary *)sequence;
@@ -94,6 +97,8 @@
 - (void)removeChannelGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 - (void)addCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 - (void)removeCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
+- (void)addEffectClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
+- (void)removeEffectClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence;
 
 #pragma mark - ControlBox Library Methods
 // Management Methods

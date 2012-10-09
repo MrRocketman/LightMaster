@@ -16,6 +16,7 @@
         *controlBoxFilePaths (NSMutableArray)
         *channGroupFilePaths (NSMutableArray)
         *commandClusterFilePaths (NSMutableArray)
+        *effectClusterFilePaths (NSMutableArray)
  
  *controlBoxLibrary (NSMutableDictionary)
     *versionNumber (NSNumber)

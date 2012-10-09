@@ -34,8 +34,6 @@
 - (void)addLibraryContentView:(int)library;
 - (void)selectLibraryInTabList:(int)library;
 - (IBAction)libraryButtonPress:(id)sender;
-- (NSButton *)buttonForLibraryIndex:(int)library;
-- (NSViewController *)libraryForIndex:(int)library;
 
 @end
 
@@ -65,30 +63,15 @@
 
 - (void)awakeFromNib
 {
+    tabBarButtons = [NSArray arrayWithObjects:sequenceLibraryButton, controlBoxLibraryButton, channelGroupLibraryButton, commandClusterLibraryButton, effectClusterLibraryButton, audioClipLibraryButton, nil];
+    libraries = [NSArray arrayWithObjects:sequenceLibraryManagerViewController, controlBoxLibraryManagerViewController, channelGroupLibraryManagerViewController, commandClusterLibraryManagerViewController, effectClusterLibraryManagerViewController, audioClipLibraryManagerViewController, nil];
+    
     // Select the sequences tab in the library
     selectedLibrary = -1;
     [self displayLibrary:kSequenceLibrary];
 }
 
 #pragma mark - Library Managment Methods
-
-- (NSButton *)buttonForLibraryIndex:(int)library
-{
-    if(library == kSequenceLibrary)
-        return sequenceLibraryButton;
-    else if(library == kControlBoxLibrary)
-        return controlBoxLibraryButton;
-    else if(library == kChannelGroupLibrary)
-        return channelGroupLibraryButton;
-    else if(library == kCommandClusterLibrary)
-        return commandClusterLibraryButton;
-    else if(library == kEffectClusterLibrary)
-        return effectClusterLibraryButton;
-    else if(library == kAudioClipLibrary)
-        return audioClipLibraryButton;
-    
-    return nil;
-}
 
 - (void)selectLibraryInTabList:(int)library
 {
@@ -100,12 +83,12 @@
         // Deselect all other libraries
         if(i != library)
         {
-            [[self buttonForLibraryIndex:i] setState:NSOffState];
+            [[tabBarButtons objectAtIndex:i] setState:NSOffState];
         }
         // Select the library
         else
         {
-            [[self buttonForLibraryIndex:i] setState:NSOnState];
+            [[tabBarButtons objectAtIndex:i] setState:NSOnState];
         }
     }
     
@@ -120,36 +103,18 @@
 - (void)removeLibraryContentView:(int)library
 {
     previouslySelectedRowsInLibraryDataSelectionTableView[selectedLibrary] = (int)[libraryDataSelectionTableView selectedRow];
-    [[self libraryForIndex:library].view removeFromSuperview];
+    [[(NSViewController *)[libraries objectAtIndex:library] view] removeFromSuperview];
 }
 
 - (void)addLibraryContentView:(int)library
 {
-    NSViewController *theLibrary = [self libraryForIndex:library];
+    NSViewController *theLibrary = (NSViewController *)[libraries objectAtIndex:library];
     
     [libraryContentScrollView.documentView setFrame:theLibrary.view.frame];
     [libraryContentScrollView.documentView addSubview:theLibrary.view];
     [theLibrary.view scrollPoint:NSMakePoint(0, theLibrary.view.frame.size.height)];
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:previouslySelectedRowsInLibraryDataSelectionTableView[library]] byExtendingSelection:NO];
     [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:libraryDataSelectionTableView]];
-}
-
-- (NSViewController *)libraryForIndex:(int)library
-{
-    if(library == kSequenceLibrary)
-        return sequenceLibraryManagerViewController;
-    else if(library == kControlBoxLibrary)
-        return controlBoxLibraryManagerViewController;
-    else if(library == kChannelGroupLibrary)
-        return channelGroupLibraryManagerViewController;
-    else if(library == kCommandClusterLibrary)
-        return commandClusterLibraryManagerViewController;
-    else if(library == kEffectClusterLibrary)
-        return effectClusterLibraryManagerViewController;
-    else if(library == kAudioClipLibrary)
-        return audioClipLibraryManagerViewController;
-    
-    return nil;
 }
 
 - (void)displayLibrary:(int)library
@@ -369,7 +334,8 @@
         switch(selectedLibrary)
         {
             case kSequenceLibrary:
-                [sequenceLibraryManagerViewController setSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [data setCurrentSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [sequenceLibraryManagerViewController setSequence:[data currentSequence]];
                 break;
             case kControlBoxLibrary:
                 [controlBoxLibraryManagerViewController setControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
@@ -416,6 +382,8 @@
                 break;
         }
     }
+    
+    [[libraries objectAtIndex:selectedLibrary] updateContent];
 }
 
 @end

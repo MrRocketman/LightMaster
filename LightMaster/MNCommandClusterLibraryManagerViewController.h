@@ -15,4 +15,6 @@
 
 @property(readwrite, weak) NSMutableDictionary *commandCluster;
 
+- (void)updateContent;
+
 @end

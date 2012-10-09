@@ -15,4 +15,6 @@
 
 @property(readwrite, weak) NSMutableDictionary *effectCluster;
 
+- (void)updateContent;
+
 @end

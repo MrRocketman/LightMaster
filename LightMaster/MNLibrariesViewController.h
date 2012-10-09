@@ -34,6 +34,7 @@ enum
     IBOutlet NSButton *commandClusterLibraryButton;
     IBOutlet NSButton *effectClusterLibraryButton;
     IBOutlet NSButton *audioClipLibraryButton;
+    NSArray *tabBarButtons;
     
     // Library Data Selection
     IBOutlet NSTableView *libraryDataSelectionTableView;
@@ -49,6 +50,7 @@ enum
     IBOutlet MNCommandClusterLibraryManagerViewController *commandClusterLibraryManagerViewController;
     IBOutlet MNEffectClusterLibraryManagerViewController *effectClusterLibraryManagerViewController;
     IBOutlet MNAudioClipLibraryManagerViewController *audioClipLibraryManagerViewController;
+    NSArray *libraries;
 }
 
 - (void)displayLibrary:(int)library;

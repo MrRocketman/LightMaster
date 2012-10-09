@@ -15,4 +15,6 @@
 
 @property(readwrite, weak) NSMutableDictionary *channelGroup;
 
+- (void)updateContent;
+
 @end

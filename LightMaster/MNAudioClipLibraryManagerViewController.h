@@ -15,4 +15,6 @@
 
 @property(readwrite, weak) NSMutableDictionary *audioClip;
 
+- (void)updateContent;
+
 @end
