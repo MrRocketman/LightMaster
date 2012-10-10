@@ -68,14 +68,22 @@
         [chooseControlBoxForCommandClusterButton setEnabled:YES];
         [chooseChannelGroupForCommandClusterButton setEnabled:YES];
         
-        //[addCommandButton setEnabled:YES];
+        [addCommandButton setEnabled:YES];
         
         [descriptionTextField setStringValue:[data descriptionForCommandCluster:[self commandCluster]]];
         [startTimeTextField setFloatValue:[data startTimeForCommandCluster:[self commandCluster]]];
         [endTimeTextField setFloatValue:[data endTimeForCommandCluster:[self commandCluster]]];
         
-        [commandClusterControlBoxLabel setStringValue:[data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]];
-        [commandClusterChannelGroupLabel setStringValue:[data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathForCommandCluster:[self commandCluster]]]]];
+        NSString *controlBoxDescription = [data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]];
+        if(controlBoxDescription)
+            [commandClusterControlBoxLabel setStringValue:controlBoxDescription];
+        else
+            [commandClusterControlBoxLabel setStringValue:@""];
+        NSString *channelGroupDescription = [data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathForCommandCluster:[self commandCluster]]]];
+        if(channelGroupDescription)
+            [commandClusterChannelGroupLabel setStringValue:channelGroupDescription];
+        else
+            [commandClusterChannelGroupLabel setStringValue:@""];
     }
     else
     {
@@ -119,6 +127,7 @@
         [commandClusterControlBoxLabel setStringValue:@""];
     }
     
+    [self updateContent];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
@@ -139,6 +148,7 @@
         [commandClusterControlBoxLabel setStringValue:@""];
     }
     
+    [self updateContent];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
@@ -177,6 +187,8 @@
     [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:(int)([data commandsCountForCommandCluster:[self commandCluster]] - 1)] byExtendingSelection:NO];
     [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
     [self chooseChannelForCommandButtonPress:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteCommandButtonPress:(id)sender
@@ -258,7 +270,7 @@
     }
     else if([aNotification object] == endTimeTextField)
     {
-        [data setStartTime:[endTimeTextField floatValue] forCommandCluster:[self commandCluster]];
+        [data setEndTime:[endTimeTextField floatValue] forCommandcluster:[self commandCluster]];
         [commandsTableView reloadData];
     }
     else if([aNotification object] == adjustByTimeTextTextField)

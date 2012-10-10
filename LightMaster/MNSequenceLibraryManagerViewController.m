@@ -40,7 +40,7 @@
         // Add data items Notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addControlBoxFilePathToSequence:) name:@"AddControlBoxFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addChannelGroupFilePathToSequence:) name:@"AddChannelGroupFilePathToSequence" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterFilePathToSequence:) name:@"AddCommanClusterFilePathToSequence" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterFilePathToSequence:) name:@"AddCommandClusterFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addEffectClusterFilePathToSequence:) name:@"AddEffectClusterFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAudioClipFilePathToSequence:) name:@"AddAudioClipFilePathToSequence" object:nil];
         
@@ -92,6 +92,12 @@
         [startTimeTextField setFloatValue:0.0];
         [endTimeTextField setFloatValue:0.0];
     }
+    
+    [controlBoxesTableView reloadData];
+    [channelGroupsTableView reloadData];
+    [commandClustersTableView reloadData];
+    [effectClustersTableView reloadData];
+    [audioClipsTableView reloadData];
 }
 
 #pragma mark - Notifications

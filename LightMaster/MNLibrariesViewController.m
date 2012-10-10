@@ -178,6 +178,7 @@
     }
     
     [libraryDataSelectionTableView reloadData];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteLibraryDataButtonPress:(id)sender
@@ -207,6 +208,7 @@
     }
     
     [libraryDataSelectionTableView reloadData];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 #pragma mark - External Notifications
@@ -350,6 +352,7 @@
             case kSequenceLibrary:
                 [data setCurrentSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
                 [sequenceLibraryManagerViewController setSequence:[data currentSequence]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
                 break;
             case kControlBoxLibrary:
                 [controlBoxLibraryManagerViewController setControlBoxIndex:(int)[libraryDataSelectionTableView selectedRow]];
@@ -358,7 +361,7 @@
                 [channelGroupLibraryManagerViewController setChannelGroupIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kCommandClusterLibrary:
-                [commandClusterLibraryManagerViewController setCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [commandClusterLibraryManagerViewController setCommandClusterIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kEffectClusterLibrary:
                 [effectClusterLibraryManagerViewController setEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
@@ -386,7 +389,7 @@
                 [channelGroupLibraryManagerViewController setChannelGroupIndex:-1];
                 break;
             case kCommandClusterLibrary:
-                [commandClusterLibraryManagerViewController setCommandCluster:nil];
+                [commandClusterLibraryManagerViewController setCommandClusterIndex:-1];
                 break;
             case kEffectClusterLibrary:
                 [effectClusterLibraryManagerViewController setEffectCluster:nil];
