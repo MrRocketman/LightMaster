@@ -240,7 +240,7 @@
     if([commandsTableView selectedRow] > -1)
     {
         [deleteCommandButton setEnabled:YES];
-        [chooseControlBoxForCommandClusterButton setEnabled:YES];
+        [chooseChannelForCommandButton setEnabled:YES];
         
         NSString *controlBoxLabelString = [NSString stringWithFormat:@"%d %@ %@", [data channelIndexForCommand:[data commandAtIndex:(int)[commandsTableView selectedRow] fromCommandCluster:[self commandCluster]]], [data colorForChannel:[data channelAtIndex:(int)[commandsTableView selectedRow] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]], [data descriptionForChannel:[data channelAtIndex:(int)[commandsTableView selectedRow] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]]];
         [commandChannelLabel setStringValue:controlBoxLabelString];
@@ -249,7 +249,7 @@
     else
     {
         [deleteCommandButton setEnabled:NO];
-        [chooseControlBoxForCommandClusterButton setEnabled:NO];
+        [chooseChannelForCommandButton setEnabled:NO];
         
         [commandChannelLabel setStringValue:@""];
         [commandControlBoxLabel setStringValue:@""];
