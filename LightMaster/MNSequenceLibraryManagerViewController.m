@@ -160,6 +160,7 @@
 - (IBAction)addControlBoxToSequenceButtonPress:(id)sender
 {
     [sequenceControlBoxSelectorPopover showRelativeToRect:[controlBoxesTableView rectOfRow:[controlBoxesTableView selectedRow]] ofView:controlBoxesTableView preferredEdge:NSMaxYEdge];
+    [sequenceControlBoxSelectorViewController reload];
     if([controlBoxesTableView selectedRow] > -1)
     {
         [sequenceControlBoxSelectorViewController setSelectedControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow] forSequence:sequence]];
@@ -178,6 +179,7 @@
 - (IBAction)addChannelGroupToSequenceButtonPress:(id)sender
 {
     [sequenceChannelGroupSelectorPopover showRelativeToRect:[channelGroupsTableView rectOfRow:[channelGroupsTableView selectedRow]] ofView:channelGroupsTableView preferredEdge:NSMaxYEdge];
+    [sequenceChannelGroupSelectorViewController reload];
     if([channelGroupsTableView selectedRow] > -1)
     {
         [sequenceChannelGroupSelectorViewController setSelectedChannelGroupFilePath:[data channelGroupFilePathAtIndex:(int)[channelGroupsTableView selectedRow] forSequence:sequence]];
@@ -196,6 +198,7 @@
 - (IBAction)addCommandClusterToSequenceButtonPress:(id)sender
 {
     [sequenceCommandClusterSelectorPopover showRelativeToRect:[commandClustersTableView rectOfRow:[commandClustersTableView selectedRow]] ofView:commandClustersTableView preferredEdge:NSMaxYEdge];
+    [sequenceCommandClusterSelectorViewController reload];
     if([commandClustersTableView selectedRow] > -1)
     {
         [sequenceCommandClusterSelectorViewController setSelectedCommandClusterFilePath:[data commandClusterFilePathAtIndex:(int)[commandClustersTableView selectedRow] forSequence:sequence]];
@@ -214,6 +217,7 @@
 - (IBAction)addEffectClusterToSequenceButtonPress:(id)sender
 {
     [sequenceEffectClusterSelectorPopover showRelativeToRect:[effectClustersTableView rectOfRow:[effectClustersTableView selectedRow]] ofView:effectClustersTableView preferredEdge:NSMaxYEdge];
+    [sequenceEffectClusterSelectorViewController reload];
     if([effectClustersTableView selectedRow] > -1)
     {
         [sequenceEffectClusterSelectorViewController setSelectedEffectClusterFilePath:[data effectClusterFilePathAtIndex:(int)[effectClustersTableView selectedRow] forSequence:sequence]];
@@ -232,6 +236,7 @@
 - (IBAction)addAudioClipToSequenceButtonPress:(id)sender
 {
     [sequenceAudioClipSelectorPopover showRelativeToRect:[audioClipsTableView rectOfRow:[audioClipsTableView selectedRow]] ofView:audioClipsTableView preferredEdge:NSMaxYEdge];
+    [sequenceAudioClipSelectorViewController reload];
     if([audioClipsTableView selectedRow] > -1)
     {
         [sequenceAudioClipSelectorViewController setSelectedAudioClipFilePath:[data audioClipFilePathAtIndex:(int)[audioClipsTableView selectedRow] forSequence:sequence]];

@@ -7,14 +7,22 @@
 //
 
 #import <Cocoa/Cocoa.h>
+@class MNData;
 
 @interface MNEffectClusterLibraryManagerViewController : NSViewController
 {
-    NSMutableDictionary __weak *effectCluster;
+    int effectClusterIndex;
+    IBOutlet MNData *data;
+    
+    IBOutlet NSTextField *descriptionTextField;
+    IBOutlet NSTextView *scriptTextView;
+    IBOutlet NSButton *compileButton;
 }
 
-@property(readwrite, weak) NSMutableDictionary *effectCluster;
+@property() int effectClusterIndex;
 
 - (void)updateContent;
+
+- (IBAction)compileButtonPress:(id)sender;
 
 @end

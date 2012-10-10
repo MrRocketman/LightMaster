@@ -364,7 +364,7 @@
                 [commandClusterLibraryManagerViewController setCommandClusterIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kEffectClusterLibrary:
-                [effectClusterLibraryManagerViewController setEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [effectClusterLibraryManagerViewController setEffectClusterIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kAudioClipLibrary:
                 [audioClipLibraryManagerViewController setAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
@@ -392,7 +392,7 @@
                 [commandClusterLibraryManagerViewController setCommandClusterIndex:-1];
                 break;
             case kEffectClusterLibrary:
-                [effectClusterLibraryManagerViewController setEffectCluster:nil];
+                [effectClusterLibraryManagerViewController setEffectClusterIndex:-1];
                 break;
             case kAudioClipLibrary:
                 [audioClipLibraryManagerViewController setAudioClip:nil];

@@ -352,9 +352,8 @@
 				1AFA925D1623DA68000E13B7 /* SequenceLibrary */,
 				1ADD72521623EF2C0071467F /* ControlBoxLibrary */,
 				1A818A8F1624C8FB0054936E /* ChannelGroupLibrary */,
-				1AAA049816253D1C0052A779 /* New Group */,
-				1A028ABA161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.h */,
-				1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */,
+				1AAA049816253D1C0052A779 /* CommandClusterLibrary */,
+				1AAA04A31625FBED0052A779 /* EffectClusterLibrary */,
 				1A028ABD161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.h */,
 				1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */,
 			);
@@ -372,7 +371,7 @@
 			name = ChannelGroupLibrary;
 			sourceTree = "<group>";
 		};
-		1AAA049816253D1C0052A779 /* New Group */ = {
+		1AAA049816253D1C0052A779 /* CommandClusterLibrary */ = {
 			isa = PBXGroup;
 			children = (
 				1A028AB7161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.h */,
@@ -384,7 +383,16 @@
 				1AAA04A0162547B70052A779 /* MNCommandChannelSelectorViewController.h */,
 				1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */,
 			);
-			name = "New Group";
+			name = CommandClusterLibrary;
+			sourceTree = "<group>";
+		};
+		1AAA04A31625FBED0052A779 /* EffectClusterLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				1A028ABA161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.h */,
+				1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */,
+			);
+			name = EffectClusterLibrary;
 			sourceTree = "<group>";
 		};
 		1ADD72521623EF2C0071467F /* ControlBoxLibrary */ = {

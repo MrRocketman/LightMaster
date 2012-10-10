@@ -469,7 +469,7 @@
     [newSequence setObject:controlBoxFilePathsForSequence forKey:@"controlBoxFilePaths"];
     [newSequence setObject:channelGroupFilePathsForSequence forKey:@"channelGroupFilePaths"];
     [newSequence setObject:commandClusterFilePathsForSequence forKey:@"commandClusterFilePaths"];
-    [newSequence setObject:effectClusterFilePathsForSequence forKey:@"efectClusterFilePaths"];
+    [newSequence setObject:effectClusterFilePathsForSequence forKey:@"effectClusterFilePaths"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
     NSString *filePath = [NSString stringWithFormat:@"sequenceLibrary/%@.lmsq", [self nextAvailableNumberForFilePaths:[self sequenceFilePaths]]];
@@ -501,6 +501,38 @@
 
 - (void)removeSequenceFromLibrary:(NSMutableDictionary *)sequence
 {
+    // Remove any controlBoxes from this sequence
+    NSMutableArray *controlBoxFilePaths = [self controlBoxFilePathsForSequence:sequence];
+    for(int i = 0; i < [controlBoxFilePaths count]; i ++)
+    {
+        [self removeControlBoxFilePath:[controlBoxFilePaths objectAtIndex:i] forSequence:sequence];
+    }
+    // Remove any chanelGroups from this sequence
+    NSMutableArray *channelGroupFilePaths = [self channelGroupFilePathsForSequence:sequence];
+    for(int i = 0; i < [channelGroupFilePaths count]; i ++)
+    {
+        [self removeChannelGroupFilePath:[channelGroupFilePaths objectAtIndex:i] forSequence:sequence];
+    }
+    // Remove any commandClustesr from this sequence
+    NSMutableArray *commandClusterFilePaths = [self commandClusterFilePathsForSequence:sequence];
+    for(int i = 0; i < [commandClusterFilePaths count]; i ++)
+    {
+        [self removeCommandClusterFilePath:[commandClusterFilePaths objectAtIndex:i] forSequence:sequence];
+    }
+    // Remove any effectClusters from this sequence
+    NSMutableArray *effectClusterFilePaths = [self effectClusterFilePathsForSequence:sequence];
+    for(int i = 0; i < [controlBoxFilePaths count]; i ++)
+    {
+        [self removeEffectClusterFilePath:[effectClusterFilePaths objectAtIndex:i] forSequence:sequence];
+    }
+    // Remove any audioClips from this sequence
+    NSMutableArray *audioClipFilePaths = [self audioClipFilePathsForSequence:sequence];
+    for(int i = 0; i < [audioClipFilePaths count]; i ++)
+    {
+        [self removeAudioClipFilePath:[audioClipFilePaths objectAtIndex:i] forSequence:sequence];
+    }
+    
+    // Remove the sequence
     NSMutableArray *filePaths = [self sequenceFilePaths];
     [filePaths removeObject:[self filePathForSequence:sequence]];
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForSequence:sequence]] error:NULL];
@@ -825,6 +857,7 @@
         [self removeControlBoxFilePath:[self filePathForControlBox:controlBox] forSequence:[self sequenceFromFilePath:[sequenceFilePaths objectAtIndex:i]]];
     }
     
+    // Remove the Control Box
     NSMutableArray *filePaths = [self controlBoxFilePaths];
     [filePaths removeObject:[self filePathForControlBox:controlBox]];
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForControlBox:controlBox]] error:NULL];
@@ -1584,6 +1617,8 @@
 - (NSString *)createEffectClusterAndReturnFilePath
 {
     NSMutableDictionary *newEffectCluster = [[NSMutableDictionary alloc] init];
+    NSMutableArray *beingUsedInSequenceFilePaths = [[NSMutableArray alloc] init];
+    [newEffectCluster setObject:beingUsedInSequenceFilePaths forKey:@"beingUsedInSequenceFilePaths"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
     NSString *filePath = [NSString stringWithFormat:@"effectClusterLibrary/%@.lmef", [self nextAvailableNumberForFilePaths:[self effectClusterFilePaths]]];
@@ -1593,6 +1628,7 @@
     [newEffectCluster writeToFile:[NSString stringWithFormat:@"%@/%@", libraryFolder, filePath] atomically:YES];
     [self setVersionNumber:DATA_VERSION_NUMBER forEffectCluster:newEffectCluster];
     [self setDescription:@"New EffectCluster" forEffectCluster:newEffectCluster];
+    [self setScript:@"// This is a new effect script\n" forEffectCluster:newEffectCluster];
     
     return filePath;
 }
@@ -1601,6 +1637,7 @@
 {
     NSString *newEffectClusterFilePath = [self createEffectClusterAndReturnFilePath];
     NSMutableDictionary *newEffectCluster = [self dictionaryFromFilePath:newEffectClusterFilePath];
+    [newEffectCluster setObject:[self dictionaryBeingUsedInSequenceFilePaths:effectCluster] forKey:@"beingUsedInSequenceFilePaths"];
     [self setDescription:[NSString stringWithFormat:@"%@ Copy", [self descriptionForEffectCluster:effectCluster]] forEffectCluster:newEffectCluster];
     [self setScript:[self scriptForEffectCluster:effectCluster] forEffectCluster:newEffectCluster];
     
@@ -1609,6 +1646,13 @@
 
 - (void)removeEffectClusterFromLibrary:(NSMutableDictionary *)effectCluster
 {
+    // Remove the effectCluster from any sequences
+    NSMutableArray *sequenceFilePaths = [self effectClusterBeingUsedInSequenceFilePaths:effectCluster];
+    for(int i = 0; i < [sequenceFilePaths count]; i ++)
+    {
+        [self removeEffectClusterFilePath:[self filePathForEffectCluster:effectCluster] forSequence:[self sequenceFromFilePath:[sequenceFilePaths objectAtIndex:i]]];
+    }
+    
     NSMutableArray *filePaths = [self effectClusterFilePaths];
     [filePaths removeObject:[self filePathForEffectCluster:effectCluster]];
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForEffectCluster:effectCluster]] error:NULL];

@@ -68,7 +68,10 @@
         [chooseControlBoxForCommandClusterButton setEnabled:YES];
         [chooseChannelGroupForCommandClusterButton setEnabled:YES];
         
-        [addCommandButton setEnabled:YES];
+        if([[data controlBoxFilePathForCommandCluster:[self commandCluster]] length] > 0 || [[data channelGroupFilePathForCommandCluster:[self commandCluster]] length] > 0)
+            [addCommandButton setEnabled:YES];
+        else
+            [addCommandButton setEnabled:NO];
         
         [descriptionTextField setStringValue:[data descriptionForCommandCluster:[self commandCluster]]];
         [startTimeTextField setFloatValue:[data startTimeForCommandCluster:[self commandCluster]]];
