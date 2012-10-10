@@ -14,6 +14,7 @@
 - (void)textDidBeginEditing:(NSNotification *)aNotification;
 - (void)textDidEndEditing:(NSNotification *)aNotification;
 - (NSMutableDictionary *)audioClip;
+- (void)loadOpenPanel;
 
 @end
 
@@ -43,6 +44,20 @@
     return nil;
 }
 
+- (void)loadOpenPanel
+{
+    // Load the open panel if neccessary
+    if(openPanel == nil)
+    {
+        openPanel = [NSOpenPanel openPanel];
+        [openPanel setCanChooseDirectories:NO];
+        [openPanel setCanChooseFiles:YES];
+        [openPanel setResolvesAliases:YES];
+        [openPanel setAllowsMultipleSelection:NO];
+        [openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"aac", @"aif", @"aiff", @"alac", @"mp3", @"m4a", @"wav", nil]];
+    }
+}
+
 #pragma mark - Public Methods
 
 - (void)updateContent
@@ -69,17 +84,6 @@
         {
             [filePathLabel setStringValue:@""];
         }
-        
-        // Load the open panel if neccessary
-        if(openPanel == nil)
-        {
-            openPanel = [NSOpenPanel openPanel];
-            [openPanel setCanChooseDirectories:NO];
-            [openPanel setCanChooseFiles:YES];
-            [openPanel setResolvesAliases:YES];
-            [openPanel setAllowsMultipleSelection:NO];
-            [openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"aac", @"aif", @"aiff", @"alac", @"mp3", @"m4a", @"wav", nil]];
-        }
     }
     else
     {
@@ -100,6 +104,8 @@
 
 - (IBAction)chooseAudioFileButtonPress:(id)sender
 {
+    [self loadOpenPanel];
+    
     if(previousOpenPanelDirectory == nil)
     {
         [openPanel setDirectoryURL:[NSURL URLWithString:@"~"]];
@@ -148,6 +154,8 @@
 
 - (IBAction)chooseAudioFileFromLibraryButtonPress:(id)sender
 {
+    [self loadOpenPanel];
+    
     NSString *soundLibraryDirectory = [NSString stringWithFormat:@"%@/soundLibrary", [data libraryFolder]];
     [openPanel setDirectoryURL:[NSURL URLWithString:soundLibraryDirectory]];
     
