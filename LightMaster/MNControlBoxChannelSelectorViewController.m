@@ -38,7 +38,6 @@
 
 - (void)setSelectedControlBoxIndex:(int)controlBox andChannelIndex:(int)channel
 {
-    NSLog(@"%d %d", controlBox, channel);
     [controlBoxTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:controlBox] byExtendingSelection:NO];
     [channelTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:channel] byExtendingSelection:NO];
     [self reload];
@@ -82,7 +81,7 @@
         if([[aTableColumn identifier] isEqualToString:@"Number"])
         {
             NSNumber *numberForChannel = [data numberForChannel:[data channelAtIndex:(int)rowIndex forControlBox:[self selectedControlBox]]];
-            return [NSNumber numberWithInt:[numberForChannel intValue] + 1];
+            return [NSNumber numberWithInt:[numberForChannel intValue]];
         }
         else if([[aTableColumn identifier] isEqualToString:@"Color"])
         {

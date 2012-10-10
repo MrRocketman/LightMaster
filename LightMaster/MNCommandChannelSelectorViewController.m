@@ -37,6 +37,13 @@
     return nil;
 }
 
+- (void)setSelectedControlBoxIndex:(int)controlBox andChannelIndex:(int)channel
+{
+    [controlBoxTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:controlBox] byExtendingSelection:NO];
+    [channelTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:channel] byExtendingSelection:NO];
+    [self reload];
+}
+
 - (IBAction)chooseButtonPress:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectChannelForCommand" object:[NSNumber numberWithInt:(int)[channelTableView selectedRow]] userInfo:nil];
@@ -75,7 +82,7 @@
         if([[aTableColumn identifier] isEqualToString:@"Number"])
         {
             NSNumber *numberForChannel = [data numberForChannel:[data channelAtIndex:(int)rowIndex forControlBox:[self selectedControlBox]]];
-            return [NSNumber numberWithInt:[numberForChannel intValue] + 1];
+            return [NSNumber numberWithInt:[numberForChannel intValue]];
         }
         else if([[aTableColumn identifier] isEqualToString:@"Color"])
         {

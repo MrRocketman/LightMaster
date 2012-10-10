@@ -20,5 +20,6 @@
 - (void)reload;
 
 - (IBAction)chooseButtonPress:(id)sender;
+- (void)setChannelGroupIndex:(int)index;
 
 @end

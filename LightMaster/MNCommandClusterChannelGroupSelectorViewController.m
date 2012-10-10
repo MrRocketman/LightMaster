@@ -37,6 +37,12 @@
     return nil;
 }
 
+- (void)setChannelGroupIndex:(int)index
+{
+    [channelGroupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    [self reload];
+}
+
 - (IBAction)chooseButtonPress:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectChannelGroupForCommandCluster" object:[data channelGroupFilePathAtIndex:(int)[channelGroupTableView selectedRow]] userInfo:nil];

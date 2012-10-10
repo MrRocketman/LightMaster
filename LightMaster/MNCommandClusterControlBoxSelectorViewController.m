@@ -37,6 +37,12 @@
     return nil;
 }
 
+- (void)setControlBoxIndex:(int)index
+{
+    [controlBoxTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    [self reload];
+}
+
 - (IBAction)chooseButtonPress:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectControlBoxForCommandCluster" object:[data controlBoxFilePathAtIndex:(int)[controlBoxTableView selectedRow]] userInfo:nil];

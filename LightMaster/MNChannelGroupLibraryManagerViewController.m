@@ -98,7 +98,7 @@
         int rowIndex = (int)[channelsTableView selectedRow];
         
         NSString *controlBox = [data controlBoxFilePathForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]];
-        NSMutableDictionary *channel = [data channelAtIndex:[data channelIndexForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]]]];
+        NSMutableDictionary *channel = [data channelAtIndex:[data channelIndexForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]] forControlBox:[data controlBoxFromFilePath:controlBox]];
         
         [controlBoxChannelSelectorViewController setSelectedControlBoxIndex:(int)[[data controlBoxFilePaths] indexOfObject:controlBox] andChannelIndex:(int)[[data channelsForControlBox:[data controlBoxFromFilePath:controlBox]] indexOfObject:channel]];
     }

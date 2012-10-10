@@ -177,18 +177,31 @@
 - (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender
 {
     [commandClusterControlBoxSelectorPopover showRelativeToRect:[commandClusterControlBoxLabel frame] ofView:self.view preferredEdge:NSMaxYEdge];
+    [commandClusterControlBoxSelectorViewController setControlBoxIndex:(int)[[data controlBoxFilePaths] indexOfObject:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]];
     [commandClusterControlBoxSelectorViewController reload];
 }
 
 - (IBAction)chooseChannelGroupForCommandClusterButtonPress:(id)sender
 {
     [commandClusterChannelGroupSelectorPopover showRelativeToRect:[commandClusterChannelGroupLabel frame] ofView:self.view preferredEdge:NSMaxYEdge];
+    [commandClusterChannelGroupSelectorViewController setChannelGroupIndex:(int)[[data channelGroupFilePaths] indexOfObject:[data channelGroupFilePathForCommandCluster:[self commandCluster]]]];
     [commandClusterChannelGroupSelectorViewController reload];
 }
 
 - (IBAction)chooseChannelForCommandButtonPress:(id)sender
 {
     [commandChannelSelectorPopover showRelativeToRect:[commandsTableView rectOfRow:[commandsTableView selectedRow]] ofView:commandsTableView preferredEdge:NSMaxYEdge];
+    
+    if([commandsTableView selectedRow] > -1)
+    {
+        int rowIndex = (int)[commandsTableView selectedRow];
+        
+        NSString *controlBox = [data controlBoxFilePathForCommandCluster:[self commandCluster]];
+        NSMutableDictionary *channel = [data channelAtIndex:[data channelIndexForCommand:[data commandAtIndex:rowIndex fromCommandCluster:[self commandCluster]]] forControlBox:[data controlBoxFromFilePath:controlBox]];
+        
+        [commandChannelSelectorViewController setSelectedControlBoxIndex:(int)[[data controlBoxFilePaths] indexOfObject:controlBox] andChannelIndex:(int)[[data channelsForControlBox:[data controlBoxFromFilePath:controlBox]] indexOfObject:channel]];
+    }
+    
     [commandChannelSelectorViewController reload];
 }
 
