@@ -48,7 +48,7 @@
         // External Notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommandCluster:) name:@"SelectCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommand:) name:@"SelectCommand" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectAudioClip:) name:@"SelectSound" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectAudioClip:) name:@"SelectAudioClip" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView:) name:@"UpdateLibrariesViewController" object:nil];
         
         // Menu Items
@@ -219,17 +219,36 @@
 // External Notifications
 - (void)selectCommandCluster:(NSNotification *)aNotification
 {
+    [self displayLibrary:kCommandClusterLibrary];
     
+    // Select the commmand cluster
+    int commandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:[data filePathForCommandCluster:[aNotification object]]];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
+
 }
 
 - (void)selectCommand:(NSNotification *)aNotification
 {
+    [self displayLibrary:kCommandClusterLibrary];
     
+    NSMutableDictionary *command = [[aNotification object] objectAtIndex:0];
+    NSMutableDictionary *commandCluster = [[aNotification object] objectAtIndex:1];
+    int commandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:[data filePathForCommandCluster:commandCluster]];
+    
+    // Select the command cluster
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
+    
+    // Select the command
+    [commandClusterLibraryManagerViewController selectCommandAtIndex:(int)[[data commandsFromCommandCluster:commandCluster] indexOfObject:command]];
 }
 
 - (void)selectAudioClip:(NSNotification *)aNotification
 {
+    [self displayLibrary:kAudioClipLibrary];
     
+    // Select the audio clip
+    int audioClipIndex = (int)[[data audioClipFilePaths] indexOfObject:[data filePathForAudioClip:[aNotification object]]];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:audioClipIndex] byExtendingSelection:NO];
 }
 
 - (void)updateTableView:(NSNotification *)aNotification

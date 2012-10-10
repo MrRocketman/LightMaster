@@ -41,6 +41,7 @@
 @property() int commandClusterIndex;
 
 - (void)updateContent;
+- (void)selectCommandAtIndex:(int)index;
 
 - (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender;
 - (IBAction)chooseChannelGroupForCommandClusterButtonPress:(id)sender;

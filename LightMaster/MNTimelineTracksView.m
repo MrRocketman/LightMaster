@@ -249,7 +249,7 @@
         {
             [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
             selectedCommand = currentCommand;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:selectedCommand];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:currentCommand, commandCluster, nil]];
             mouseEvent = nil;
         }
         else

@@ -113,6 +113,12 @@
     [commandsTableView reloadData];
 }
 
+- (void)selectCommandAtIndex:(int)index
+{
+    [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
+}
+
 - (void)selectControlBoxForCommandCluster:(NSNotification *)aNotification
 {
     [commandClusterControlBoxSelectorPopover performClose:nil];
