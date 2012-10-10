@@ -18,6 +18,8 @@
         *commandClusterFilePaths (NSMutableArray)
         *effectClusterFilePaths (NSMutableArray)
  
+ 
+ 
  *controlBoxLibrary (NSMutableDictionary)
     *versionNumber (NSNumber)
     *controlBoxFilesPaths (NSMutableArray)
@@ -34,6 +36,25 @@
                 *number (NSNumber)
                 *color (NSString) (pop up box)
                 *description (NSString)
+ 
+ 
+ 
+ *channelGroupLibrary (NSMutableDictionary)
+    *versionNumber (NSNumber)
+    *channelGroupFilePaths (NSMutableArray)
+        *channelGroupFilePath (NSString)
+ 
+    *channelGroup (NSMutableDictionary)
+        *versionNumber (NSNumber)
+        *filePath (NSString)
+        *beingUsedInSequenceFilePaths (NSMutableArray)
+        *description (NSString)
+        *items (NSMutableArray)
+            *itemData (NSMutableDictionary)
+                *channelIndex (NSNumber)
+                *controlBoxFilePath (NSString)
+ 
+ 
  
  *commandClusterLibrary (NSMutableDictionary)
     *versionNumber (NSNumber)
@@ -58,6 +79,22 @@
                 *fadeInDuration (NSNumber) (float in seconds)
                 *fadeOutDuration (NSNumber) (float in seconds)
  
+ 
+ 
+ *effectClusterLibrary (NSMutableDictionary)
+    *versionNumber (NSNumber)
+    *effectClustersFilePaths (NSMutableArray)
+        *effectClusterFilepath (NSString)
+ 
+    *effectCluster (NSMutableDictionary)
+        *versionNumber (NSNumber)
+        *filePath (NSString)
+        *description (NSString)
+        *parameters (NSString)
+        *script (NSString)
+ 
+ 
+ 
  *audioClipLibrary (NSMutableDictionary)
     *versionNumber (NSNumber)
     *audioClipFilePaths (NSMutableArray)
@@ -71,32 +108,7 @@
         *filePathToAudioFile (NSString)
         *startTime (NSNumber) float
         *endTime (NSNumber) float
+        *seekTime (NSNumber) float // allows portions of an audio clip to be used by starting somewhere in the file
  
- *channelGroupLibrary (NSMutableDictionary)
-    *versionNumber (NSNumber)
-    *channelGroupFilePaths (NSMutableArray)
-        *channelGroupFilePath (NSString)
- 
-    *channelGroup (NSMutableDictionary)
-        *versionNumber (NSNumber)
-        *filePath (NSString)
-        *beingUsedInSequenceFilePaths (NSMutableArray)
-        *description (NSString)
-        *items (NSMutableArray)
-            *itemData (NSMutableDictionary)
-            *channelIndex (NSNumber)
-            *controlBoxFilePath (NSString)
- 
- *effectClusterLibrary (NSMutableDictionary)
-    *versionNumber (NSNumber)
-    *effectClustersFilePaths (NSMutableArray)
-        *effectClusterFilepath (NSString)
- 
-    *effectCluster (NSMutableDictionary)
-        *versionNumber (NSNumber)
-        *filePath (NSString)
-        *description (NSString)
-        *parameters (NSString)
-        *script (NSString)
  
  *************** End Data Model *****************/

@@ -15,7 +15,6 @@
 @interface MNData()
 
 - (NSString *)findOrCreateDirectory:(NSSearchPathDirectory)searchPathDirectory inDomain:(NSSearchPathDomainMask)domainMask appendPathComponent:(NSString *)appendComponent error:(NSError **)errorOut;
-- (NSString *)applicationSupportDirectory;
 - (void)loadLibaries;
 - (void)saveLibraries;
 - (void)saveControlBoxLibrary;
@@ -1912,6 +1911,11 @@
     return [[audioClip objectForKey:@"endTime"] floatValue];
 }
 
+- (float)seekTimeForAudioClip:(NSMutableDictionary *)audioClip
+{
+    return [[audioClip objectForKey:@"seekTime"] floatValue];
+}
+
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forAudioClip:(NSMutableDictionary *)audioClip
 {
@@ -1940,6 +1944,12 @@
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
+    [self saveDictionaryToItsFilePath:audioClip];
+}
+
+- (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
+{
+    [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"seekTime"];
     [self saveDictionaryToItsFilePath:audioClip];
 }
 

@@ -43,6 +43,7 @@
 - (int)timeToX:(float)time;
 - (float)xToTime:(int)x;
 - (int)widthForTimeInterval:(float)timeInterval;
+- (NSString *)applicationSupportDirectory;
 
 #pragma mark - Sequence Library Methods
 // Management Methods
@@ -301,6 +302,7 @@
 - (NSString *)filePathToAudioFileForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)startTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)endTimeForAudioClip:(NSMutableDictionary *)audioClip;
+- (float)seekTimeForAudioClip:(NSMutableDictionary *)audioClip;
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forAudioClip:(NSMutableDictionary *)audioClip;
@@ -308,5 +310,6 @@
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
+- (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 
 @end

@@ -92,6 +92,7 @@
 - (IBAction)addChannelButtonPress:(id)sender
 {
     [controlBoxChannelSelectorPopover showRelativeToRect:[channelsTableView rectOfRow:[channelsTableView selectedRow]] ofView:channelsTableView preferredEdge:NSMaxYEdge];
+    [controlBoxChannelSelectorViewController reload];
     if([channelsTableView selectedRow] > -1)
     {
         //[controlBoxChannelSelectorViewController setSelectedControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow] forSequence:sequence]];

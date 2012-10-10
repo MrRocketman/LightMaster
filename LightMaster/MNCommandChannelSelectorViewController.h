@@ -18,6 +18,8 @@
     IBOutlet NSButton *chooseButton;
 }
 
+- (void)reload;
+
 - (IBAction)chooseButtonPress:(id)sender;
 
 @end

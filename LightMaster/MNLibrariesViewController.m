@@ -142,6 +142,9 @@
         
         // Display the new content
         [self addLibraryContentView:selectedLibrary];
+        
+        // Tell the panel to update
+        [[libraries objectAtIndex:selectedLibrary] updateContent];
     }
 }
 
@@ -367,7 +370,7 @@
                 [effectClusterLibraryManagerViewController setEffectClusterIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kAudioClipLibrary:
-                [audioClipLibraryManagerViewController setAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+                [audioClipLibraryManagerViewController setAudioClipIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             default:
                 break;
@@ -395,7 +398,7 @@
                 [effectClusterLibraryManagerViewController setEffectClusterIndex:-1];
                 break;
             case kAudioClipLibrary:
-                [audioClipLibraryManagerViewController setAudioClip:nil];
+                [audioClipLibraryManagerViewController setAudioClipIndex:-1];
                 break;
             default:
                 break;

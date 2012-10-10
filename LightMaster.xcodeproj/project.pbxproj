@@ -354,8 +354,7 @@
 				1A818A8F1624C8FB0054936E /* ChannelGroupLibrary */,
 				1AAA049816253D1C0052A779 /* CommandClusterLibrary */,
 				1AAA04A31625FBED0052A779 /* EffectClusterLibrary */,
-				1A028ABD161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.h */,
-				1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */,
+				1AAA04A416260BA10052A779 /* AudioClipLibrary */,
 			);
 			name = "Library Managers";
 			sourceTree = "<group>";
@@ -393,6 +392,15 @@
 				1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */,
 			);
 			name = EffectClusterLibrary;
+			sourceTree = "<group>";
+		};
+		1AAA04A416260BA10052A779 /* AudioClipLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				1A028ABD161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.h */,
+				1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */,
+			);
+			name = AudioClipLibrary;
 			sourceTree = "<group>";
 		};
 		1ADD72521623EF2C0071467F /* ControlBoxLibrary */ = {

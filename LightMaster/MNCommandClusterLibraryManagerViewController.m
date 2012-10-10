@@ -171,16 +171,19 @@
 - (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender
 {
     [commandClusterControlBoxSelectorPopover showRelativeToRect:[commandClusterControlBoxLabel frame] ofView:self.view preferredEdge:NSMaxYEdge];
+    [commandClusterControlBoxSelectorViewController reload];
 }
 
 - (IBAction)chooseChannelGroupForCommandClusterButtonPress:(id)sender
 {
     [commandClusterChannelGroupSelectorPopover showRelativeToRect:[commandClusterChannelGroupLabel frame] ofView:self.view preferredEdge:NSMaxYEdge];
+    [commandClusterChannelGroupSelectorViewController reload];
 }
 
 - (IBAction)chooseChannelForCommandButtonPress:(id)sender
 {
     [commandChannelSelectorPopover showRelativeToRect:[commandsTableView rectOfRow:[commandsTableView selectedRow]] ofView:commandsTableView preferredEdge:NSMaxYEdge];
+    [commandChannelSelectorViewController reload];
 }
 
 - (IBAction)addCommandButtonPress:(id)sender
