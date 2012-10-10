@@ -7,14 +7,39 @@
 //
 
 #import <Cocoa/Cocoa.h>
+@class MNData;
 
-@interface MNCommandClusterLibraryManagerViewController : NSViewController
+@interface MNCommandClusterLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
-    NSMutableDictionary __weak *commandCluster;
+    int commandClusterIndex;
+    IBOutlet MNData *data;
+    
+    IBOutlet NSTextField *descriptionTextField;
+    IBOutlet NSTextField *startTimeTextField;
+    IBOutlet NSTextField *endTimeTextField;
+    IBOutlet NSTextField *adjustByTimeTextTextField;
+    
+    IBOutlet NSTextField *commandClusterControlBoxLabel;
+    IBOutlet NSTextField *commandClusterChannelGroupLabel;
+    IBOutlet NSButton *chooseControlBoxForCommandClusterButton;
+    IBOutlet NSButton *chooseChannelGroupForCommandClusterButton;
+    
+    IBOutlet NSTableView *commandsTableView;
+    IBOutlet NSTextField *commandChannelLabel;
+    IBOutlet NSTextField *commandControlBoxLabel;
+    IBOutlet NSButton *chooseChannelForCommandButton;
+    IBOutlet NSButton *addCommandButton;
+    IBOutlet NSButton *deleteCommandButton;
 }
 
-@property(readwrite, weak) NSMutableDictionary *commandCluster;
+@property() int commandClusterIndex;
 
 - (void)updateContent;
+
+- (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender;
+- (IBAction)chooseChannelGroupForCommandClusterButtonPress:(id)sender;
+- (IBAction)chooseChannelForCommandButtonPress:(id)sender;
+- (IBAction)addCommandButtonPress:(id)sender;
+- (IBAction)deleteCommandButtonPress:(id)sender;
 
 @end
