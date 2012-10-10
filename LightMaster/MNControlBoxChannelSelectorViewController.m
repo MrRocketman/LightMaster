@@ -36,6 +36,14 @@
     return nil;
 }
 
+- (void)setSelectedControlBoxIndex:(int)controlBox andChannelIndex:(int)channel
+{
+    NSLog(@"%d %d", controlBox, channel);
+    [controlBoxTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:controlBox] byExtendingSelection:NO];
+    [channelTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:channel] byExtendingSelection:NO];
+    [self reload];
+}
+
 - (IBAction)chooseButtonPress:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"AddItemDataToSelectedChannelGroup" object:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:(int)[channelTableView selectedRow]], [NSNumber numberWithInt:(int)[controlBoxTableView selectedRow]], nil] forKeys:[NSArray arrayWithObjects:@"ChannelIndex", @"ControlBoxIndex", nil]] userInfo:nil];

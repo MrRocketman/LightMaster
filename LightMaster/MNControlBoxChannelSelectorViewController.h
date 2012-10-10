@@ -21,5 +21,6 @@
 - (void)reload;
 
 - (IBAction)chooseButtonPress:(id)sender;
+- (void)setSelectedControlBoxIndex:(int)controlBox andChannelIndex:(int)channel;
 
 @end

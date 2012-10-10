@@ -95,7 +95,12 @@
     [controlBoxChannelSelectorViewController reload];
     if([channelsTableView selectedRow] > -1)
     {
-        //[controlBoxChannelSelectorViewController setSelectedControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow] forSequence:sequence]];
+        int rowIndex = (int)[channelsTableView selectedRow];
+        
+        NSString *controlBox = [data controlBoxFilePathForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]];
+        NSMutableDictionary *channel = [data channelAtIndex:[data channelIndexForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForItemData:[data itemDataAtIndex:rowIndex forChannelGroup:[self channelGroup]]]]];
+        
+        [controlBoxChannelSelectorViewController setSelectedControlBoxIndex:(int)[[data controlBoxFilePaths] indexOfObject:controlBox] andChannelIndex:(int)[[data channelsForControlBox:[data controlBoxFromFilePath:controlBox]] indexOfObject:channel]];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
