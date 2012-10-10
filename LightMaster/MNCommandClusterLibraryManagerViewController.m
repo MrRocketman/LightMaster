@@ -8,13 +8,18 @@
 
 #import "MNCommandClusterLibraryManagerViewController.h"
 #import "MNData.h"
+#import "MNCommandChannelSelectorViewController.h"
+#import "MNCommandClusterChannelGroupSelectorViewController.h"
+#import "MNCommandClusterControlBoxSelectorViewController.h"
 
 @interface MNCommandClusterLibraryManagerViewController ()
 
 - (void)textDidBeginEditing:(NSNotification *)aNotification;
 - (void)textDidEndEditing:(NSNotification *)aNotification;
 - (NSMutableDictionary *)commandCluster;
-//- (void)addItemDataToControlBox:(NSNotification *)aNotification
+- (void)selectControlBoxForCommandCluster:(NSNotification *)aNotification;
+- (void)selectChannelGroupForCommandcluster:(NSNotification *)aNotification;
+- (void)selectChannelForCommand:(NSNotification *)aNotification;
 
 @end
 
@@ -33,7 +38,9 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
         
-        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addItemDataToControlBox:) name:@"AddItemDataToSelectedCommandCluster" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectControlBoxForCommandCluster:) name:@"SelectControlBoxForCommandCluster" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectChannelGroupForCommandcluster:) name:@"SelectChannelGroupForCommandCluster" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectChannelForCommand:) name:@"SelectChannelForCommand" object:nil];
         
         commandClusterIndex = -1;
     }
@@ -61,7 +68,7 @@
         [chooseControlBoxForCommandClusterButton setEnabled:YES];
         [chooseChannelGroupForCommandClusterButton setEnabled:YES];
         
-        [addCommandButton setEnabled:YES];
+        //[addCommandButton setEnabled:YES];
         
         [descriptionTextField setStringValue:[data descriptionForCommandCluster:[self commandCluster]]];
         [startTimeTextField setFloatValue:[data startTimeForCommandCluster:[self commandCluster]]];
@@ -95,67 +102,91 @@
     [commandsTableView reloadData];
 }
 
-/*- (void)addItemDataToControlBox:(NSNotification *)aNotification
+- (void)selectControlBoxForCommandCluster:(NSNotification *)aNotification
 {
-    [controlBoxChannelSelectorPopover performClose:nil];
-    NSDictionary *theDictionary = [aNotification object];
-    int channelIndex = [[theDictionary objectForKey:@"ChannelIndex"] intValue];
-    int controlBoxIndex = [[theDictionary objectForKey:@"ControlBoxIndex"] intValue];
-    
-    [data createItemDataAndReturnNewItemIndexForCommandCluster:[self commandCluster]];
-    [data setChannelIndex:channelIndex forItemDataAtIndex:(int)([data itemsCountForCommandCluster:[self commandCluster]] - 1) whichIsPartOfCommandCluster:[self commandCluster]];
-    [data setControlBoxFilePath:[data filePathForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxIndex]]] forItemDataAtIndex:(int)([data itemsCountForCommandCluster:[self commandCluster]] - 1) whichIsPartOfCommandCluster:[self commandCluster]];
-    
-    [channelsTableView reloadData];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
-}*/
-
-#pragma mark - Button Actions
-
-- (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender
-{
-    
-}
-
-- (IBAction)chooseChannelGroupForCommandClusterButtonPress:(id)sender
-{
-    
-}
-
-- (IBAction)chooseChannelForCommandButtonPress:(id)sender
-{
-    
-}
-
-- (IBAction)addCommandButtonPress:(id)sender
-{
-    
-}
-
-- (IBAction)deleteCommandButtonPress:(id)sender
-{
-    
-}
-
-/*- (IBAction)addChannelButtonPress:(id)sender
-{
-    [controlBoxChannelSelectorPopover showRelativeToRect:[channelsTableView rectOfRow:[channelsTableView selectedRow]] ofView:channelsTableView preferredEdge:NSMaxYEdge];
-    if([channelsTableView selectedRow] > -1)
+    [commandClusterControlBoxSelectorPopover performClose:nil];
+    [commandsTableView deselectAll:nil];
+    [data setControlBoxFilePath:[aNotification object] forCommandCluster:[self commandCluster]];
+    if([[aNotification object] length] > 0)
     {
-        //[controlBoxChannelSelectorViewController setSelectedControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow] forSequence:sequence]];
+        [commandClusterControlBoxLabel setStringValue:[data descriptionForControlBox:[data controlBoxFromFilePath:[aNotification object]]]];
+        [self selectChannelGroupForCommandcluster:[NSNotification notificationWithName:@"SelectChannelGroupForCommandCluster" object:@""]];
+        
+        [addCommandButton setEnabled:YES];
+    }
+    else
+    {
+        [commandClusterControlBoxLabel setStringValue:@""];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
-- (IBAction)removeChannelButtonPress:(id)sender
+- (void)selectChannelGroupForCommandcluster:(NSNotification *)aNotification
 {
-    [data removeItemData:[data itemDataAtIndex:(int)[channelsTableView selectedRow] forCommandCluster:[self commandCluster]] forCommandCluster:[self commandCluster]];
-    [channelsTableView deselectAll:nil];
-    [channelsTableView reloadData];
+    [commandClusterChannelGroupSelectorPopover performClose:nil];
+    [commandsTableView deselectAll:nil];
+    [data setChannelGroupFilePath:[aNotification object] forCommandCluster:[self commandCluster]];
+    if([[aNotification object] length] > 0)
+    {
+        [commandClusterChannelGroupLabel setStringValue:[data descriptionForChannelGroup:[data channelGroupFromFilePath:[aNotification object]]]];
+        [self selectControlBoxForCommandCluster:[NSNotification notificationWithName:@"SelectControlBoxForCommandCluster" object:@""]];
+        
+        [addCommandButton setEnabled:YES];
+    }
+    else
+    {
+        [commandClusterControlBoxLabel setStringValue:@""];
+    }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
-}*/
+}
+
+- (void)selectChannelForCommand:(NSNotification *)aNotification
+{
+    [commandChannelSelectorPopover performClose:nil];
+    [data setChannelIndex:[[aNotification object] intValue] forCommandAtIndex:(int)[commandsTableView selectedRow] whichIsPartOfCommandCluster:[self commandCluster]];
+    
+    // Update the labels
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+#pragma mark - Button Actions
+
+- (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender
+{
+    [commandClusterControlBoxSelectorPopover showRelativeToRect:[commandClusterControlBoxLabel frame] ofView:self.view preferredEdge:NSMaxYEdge];
+}
+
+- (IBAction)chooseChannelGroupForCommandClusterButtonPress:(id)sender
+{
+    [commandClusterChannelGroupSelectorPopover showRelativeToRect:[commandClusterChannelGroupLabel frame] ofView:self.view preferredEdge:NSMaxYEdge];
+}
+
+- (IBAction)chooseChannelForCommandButtonPress:(id)sender
+{
+    [commandChannelSelectorPopover showRelativeToRect:[commandsTableView rectOfRow:[commandsTableView selectedRow]] ofView:commandsTableView preferredEdge:NSMaxYEdge];
+}
+
+- (IBAction)addCommandButtonPress:(id)sender
+{
+    [data createCommandAndReturnNewCommandIndexForCommandCluster:[self commandCluster]];
+    [commandsTableView reloadData];
+    [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:(int)([data commandsCountForCommandCluster:[self commandCluster]] - 1)] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
+    [self chooseChannelForCommandButtonPress:nil];
+}
+
+- (IBAction)deleteCommandButtonPress:(id)sender
+{
+    [data removeCommand:[data commandAtIndex:(int)[commandsTableView selectedRow] fromCommandCluster:[self commandCluster]] fromCommandCluster:[self commandCluster]];
+    [commandsTableView deselectAll:nil];
+    [commandsTableView reloadData];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
 
 #pragma mark - NSTableViewDataSource Methods
 

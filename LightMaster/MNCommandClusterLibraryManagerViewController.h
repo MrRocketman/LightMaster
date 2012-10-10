@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@class MNData;
+@class MNData, MNCommandClusterChannelGroupSelectorViewController, MNCommandClusterControlBoxSelectorViewController, MNCommandChannelSelectorViewController;
 
 @interface MNCommandClusterLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
@@ -19,11 +19,17 @@
     IBOutlet NSTextField *endTimeTextField;
     IBOutlet NSTextField *adjustByTimeTextTextField;
     
+    IBOutlet MNCommandClusterChannelGroupSelectorViewController *commandClusterChannelGroupSelectorViewController;
+    IBOutlet NSPopover *commandClusterChannelGroupSelectorPopover;
+    IBOutlet MNCommandClusterControlBoxSelectorViewController *commandClusterControlBoxSelectorViewController;
+    IBOutlet NSPopover *commandClusterControlBoxSelectorPopover;
     IBOutlet NSTextField *commandClusterControlBoxLabel;
     IBOutlet NSTextField *commandClusterChannelGroupLabel;
     IBOutlet NSButton *chooseControlBoxForCommandClusterButton;
     IBOutlet NSButton *chooseChannelGroupForCommandClusterButton;
     
+    IBOutlet MNCommandChannelSelectorViewController *commandChannelSelectorViewController;
+    IBOutlet NSPopover *commandChannelSelectorPopover;
     IBOutlet NSTableView *commandsTableView;
     IBOutlet NSTextField *commandChannelLabel;
     IBOutlet NSTextField *commandControlBoxLabel;

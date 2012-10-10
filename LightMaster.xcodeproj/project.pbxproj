@@ -51,6 +51,9 @@
 		1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
+		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
+		1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */; };
+		1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */; };
 		1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */; };
 		1ADB081C1623827B002EA46E /* LibraryBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081B1623827B002EA46E /* LibraryBackground.png */; };
 		1ADB08231623899B002EA46E /* TabButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB08211623899B002EA46E /* TabButton.png */; };
@@ -144,6 +147,12 @@
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
 		1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNControlBoxChannelSelectorViewController.m; sourceTree = "<group>"; };
+		1AAA049A162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterControlBoxSelectorViewController.h; sourceTree = "<group>"; };
+		1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterControlBoxSelectorViewController.m; sourceTree = "<group>"; };
+		1AAA049D162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterChannelGroupSelectorViewController.h; sourceTree = "<group>"; };
+		1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelGroupSelectorViewController.m; sourceTree = "<group>"; };
+		1AAA04A0162547B70052A779 /* MNCommandChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandChannelSelectorViewController.h; sourceTree = "<group>"; };
+		1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandChannelSelectorViewController.m; sourceTree = "<group>"; };
 		1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimelineTrackBackgroundImage.png; sourceTree = "<group>"; };
 		1ADB081B1623827B002EA46E /* LibraryBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryBackground.png; sourceTree = "<group>"; };
 		1ADB08211623899B002EA46E /* TabButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TabButton.png; sourceTree = "<group>"; };
@@ -368,6 +377,12 @@
 			children = (
 				1A028AB7161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.h */,
 				1A028AB8161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m */,
+				1AAA049A162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.h */,
+				1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */,
+				1AAA049D162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.h */,
+				1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */,
+				1AAA04A0162547B70052A779 /* MNCommandChannelSelectorViewController.h */,
+				1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */,
 			);
 			name = "New Group";
 			sourceTree = "<group>";
@@ -554,6 +569,9 @@
 				1AFA92661623DAD1000E13B7 /* MNSequenceEffectClusterSelectorViewController.m in Sources */,
 				1AFA92691623DADE000E13B7 /* MNSequenceAudioClipSelectorViewController.m in Sources */,
 				1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */,
+				1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */,
+				1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */,
+				1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
