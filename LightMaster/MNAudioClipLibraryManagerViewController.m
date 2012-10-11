@@ -71,7 +71,7 @@
         [chooseAudioFileButton setEnabled:YES];
         [chooseAudioFileFromLibraryButton setEnabled:YES];
         
-        [descriptionTextField setStringValue:[data descriptionForEffectCluster:[self audioClip]]];
+        [descriptionTextField setStringValue:[data descriptionForEffect:[self audioClip]]];
         [startTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data startTimeForAudioClip:[self audioClip]]]];
         [endTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data endTimeForAudioClip:[self audioClip]]]];
         [seekTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data seekTimeForAudioClip:[self audioClip]]]];

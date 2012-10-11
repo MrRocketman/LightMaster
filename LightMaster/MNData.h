@@ -27,7 +27,7 @@ enum
     NSMutableDictionary *commandClusterLibrary;
     NSMutableDictionary *audioClipLibrary;
     NSMutableDictionary *channelGroupLibrary;
-    NSMutableDictionary *effectClusterLibrary;
+    NSMutableDictionary *effectLibrary;
     
     NSString *libraryFolder;
     
@@ -242,36 +242,36 @@ enum
 - (void)setFadeInDuration:(int)fadeInDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setFadeOutDuration:(int)fadeOutDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 
-#pragma mark - EffectClusterLibrary Methods
+#pragma mark - EffectLibrary Methods
 // Management Methods
-- (NSString *)createEffectClusterAndReturnFilePath;
-- (NSString *)createCopyOfEffectClusterAndReturnFilePath:(NSMutableDictionary *)effectCluster;
-- (void)removeEffectClusterFromLibrary:(NSMutableDictionary *)effectCluster;
+- (NSString *)createEffectAndReturnFilePath;
+- (NSString *)createCopyOfEffectAndReturnFilePath:(NSMutableDictionary *)effect;
+- (void)removeEffectFromLibrary:(NSMutableDictionary *)effect;
 
 // Getter Methods
-- (float)versionNumberForEffectClusterLibrary;
-- (NSMutableArray *)effectClusterFilePaths;
-- (NSString *)effectClusterFilePathAtIndex:(int)index;
-- (int)effectClusterFilePathsCount;
+- (float)versionNumberForEffectLibrary;
+- (NSMutableArray *)effectFilePaths;
+- (NSString *)effectFilePathAtIndex:(int)index;
+- (int)effectFilePathsCount;
 
 // Setter Methods
-- (void)setVersionNumberForEffectClusterLibraryTo:(float)newVersionNumber;
-- (void)addEffectClusterFilePathToEffectClusterLibrary:(NSString *)filePath;
+- (void)setVersionNumberForEffectLibraryTo:(float)newVersionNumber;
+- (void)addEffectFilePathToEffectLibrary:(NSString *)filePath;
 
-#pragma mark - EffectCluster Methods
+#pragma mark - Effect Methods
 // Getter Methods
-- (float)versionNumberforEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)filePathForEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSMutableDictionary *)effectClusterFromFilePath:(NSString *)filePath;
-- (NSString *)descriptionForEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)parametersForEffectCluster:(NSMutableDictionary *)effectCluster;
-- (NSString *)scriptForEffectCluster:(NSMutableDictionary *)effectCluster;
+- (float)versionNumberforEffect:(NSMutableDictionary *)effect;
+- (NSString *)filePathForEffect:(NSMutableDictionary *)effect;
+- (NSMutableDictionary *)effectFromFilePath:(NSString *)filePath;
+- (NSString *)descriptionForEffect:(NSMutableDictionary *)effect;
+- (NSString *)parametersForEffect:(NSMutableDictionary *)effect;
+- (NSString *)scriptForEffect:(NSMutableDictionary *)effect;
 
 // Setter Methods
-- (void)setVersionNumber:(float)newVersionNumber forEffectCluster:(NSMutableDictionary *)effectCluster;
-- (void)setDescription:(NSString *)description forEffectCluster:(NSMutableDictionary *)effectCluster;
-- (void)setParameters:(NSString *)parameters forEffectCluster:(NSMutableDictionary *)effectCluster;
-- (void)setScript:(NSString *)script forEffectCluster:(NSMutableDictionary *)effectCluster;
+- (void)setVersionNumber:(float)newVersionNumber forEffect:(NSMutableDictionary *)effect;
+- (void)setDescription:(NSString *)description forEffect:(NSMutableDictionary *)effect;
+- (void)setParameters:(NSString *)parameters forEffect:(NSMutableDictionary *)effect;
+- (void)setScript:(NSString *)script forEffect:(NSMutableDictionary *)effect;
 
 #pragma mark - AudioClipLibrary Methods
 // Management Methods

@@ -1,27 +1,27 @@
 //
-//  MNEffectClusterLibraryManagerViewController.m
+//  MNEffectLibraryManagerViewController.m
 //  LightMaster
 //
 //  Created by James Adams on 10/3/12.
 //  Copyright (c) 2012 James Adams. All rights reserved.
 //
 
-#import "MNEffectClusterLibraryManagerViewController.h"
+#import "MNEffectLibraryManagerViewController.h"
 #import "MNData.h"
 
-@interface MNEffectClusterLibraryManagerViewController ()
+@interface MNEffectLibraryManagerViewController ()
 
 - (void)textDidBeginEditing:(NSNotification *)aNotification;
 - (void)textDidEndEditing:(NSNotification *)aNotification;
 - (void)textDidChange:(NSNotification *)aNotification;
-- (NSMutableDictionary *)effectCluster;
+- (NSMutableDictionary *)effect;
 
 @end
 
 
-@implementation MNEffectClusterLibraryManagerViewController
+@implementation MNEffectLibraryManagerViewController
 
-@synthesize effectClusterIndex;
+@synthesize effectIndex;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -42,10 +42,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange:) name:@"NSTextDidChangeNotification" object:scriptTextView];
 }
 
-- (NSMutableDictionary *)effectCluster
+- (NSMutableDictionary *)effect
 {
-    if(effectClusterIndex > -1)
-        return [data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:effectClusterIndex]];
+    if(effectIndex > -1)
+        return [data effectFromFilePath:[data effectFilePathAtIndex:effectIndex]];
     
     return nil;
 }
@@ -54,15 +54,15 @@
 
 - (void)updateContent
 {
-    if(effectClusterIndex > -1)
+    if(effectIndex > -1)
     {
         [descriptionTextField setEnabled:YES];
         [scriptTextView setEditable:YES];
         [compileButton setEnabled:YES];
         
-        [descriptionTextField setStringValue:[data descriptionForEffectCluster:[self effectCluster]]];
-        if([[data scriptForEffectCluster:[self effectCluster]] length] > 0)
-            [scriptTextView setString:[data scriptForEffectCluster:[self effectCluster]]];
+        [descriptionTextField setStringValue:[data descriptionForEffect:[self effect]]];
+        if([[data scriptForEffect:[self effect]] length] > 0)
+            [scriptTextView setString:[data scriptForEffect:[self effect]]];
         else
             [scriptTextView setString:@""];
     }
@@ -93,7 +93,7 @@
 {
     if([aNotification object] == scriptTextView)
     {
-        [data setScript:[scriptTextView string] forEffectCluster:[self effectCluster]];
+        [data setScript:[scriptTextView string] forEffect:[self effect]];
     }
 }
 
@@ -101,7 +101,7 @@
 {
     if([aNotification object] == descriptionTextField)
     {
-        [data setDescription:[descriptionTextField stringValue] forEffectCluster:[self effectCluster]];
+        [data setDescription:[descriptionTextField stringValue] forEffect:[self effect]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
     }
     

@@ -11,7 +11,7 @@
 #import "MNControlBoxLibraryManagerViewController.h"
 #import "MNChannelGroupLibraryManagerViewController.h"
 #import "MNCommandClusterLibraryManagerViewController.h"
-#import "MNEffectClusterLibraryManagerViewController.h"
+#import "MNEffectLibraryManagerViewController.h"
 #import "MNAudioClipLibraryManagerViewController.h"
 #import "MNData.h"
 
@@ -31,7 +31,7 @@
 - (void)newControlBox:(NSNotification *)aNotification;
 - (void)newChannelGroup:(NSNotification *)aNotification;
 - (void)newCommandCluster:(NSNotification *)aNotification;
-- (void)newEffectCluster:(NSNotification *)aNotification;
+- (void)newEffect:(NSNotification *)aNotification;
 - (void)newAudioClip:(NSNotification *)aNotification;
 
 - (void)removeLibraryContentView:(int)library;
@@ -62,7 +62,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newControlBox:) name:@"NewControlBox" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChannelGroup:) name:@"NewChannelGroup" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCommandCluster:) name:@"NewCommandCluster" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffectCluster:) name:@"NewEffectCluster" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffect:) name:@"NewEffect" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioClip:) name:@"NewAudioClip" object:nil];
         
         for(int i = 0; i < NUMBER_OF_LIBRARIES; i ++)
@@ -76,8 +76,8 @@
 
 - (void)awakeFromNib
 {
-    tabBarButtons = [NSArray arrayWithObjects:sequenceLibraryButton, controlBoxLibraryButton, channelGroupLibraryButton, commandClusterLibraryButton, effectClusterLibraryButton, audioClipLibraryButton, nil];
-    libraries = [NSArray arrayWithObjects:sequenceLibraryManagerViewController, controlBoxLibraryManagerViewController, channelGroupLibraryManagerViewController, commandClusterLibraryManagerViewController, effectClusterLibraryManagerViewController, audioClipLibraryManagerViewController, nil];
+    tabBarButtons = [NSArray arrayWithObjects:sequenceLibraryButton, controlBoxLibraryButton, channelGroupLibraryButton, commandClusterLibraryButton, effectLibraryButton, audioClipLibraryButton, nil];
+    libraries = [NSArray arrayWithObjects:sequenceLibraryManagerViewController, controlBoxLibraryManagerViewController, channelGroupLibraryManagerViewController, commandClusterLibraryManagerViewController, effectLibraryManagerViewController, audioClipLibraryManagerViewController, nil];
     
     // Select the sequences tab in the library
     selectedLibrary = -1;
@@ -174,9 +174,9 @@
             [data createCommandClusterAndReturnFilePath];
             [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data commandClusterFilePathsCount] - 1] byExtendingSelection:NO];
             break;
-        case kEffectClusterLibrary:
-            [data createEffectClusterAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data effectClusterFilePathsCount] - 1] byExtendingSelection:NO];
+        case kEffectLibrary:
+            [data createEffectAndReturnFilePath];
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data effectFilePathsCount] - 1] byExtendingSelection:NO];
             break;
         case kAudioClipLibrary:
             [data createAudioClipAndReturnFilePath];
@@ -206,8 +206,8 @@
         case kCommandClusterLibrary:
             [data removeCommandClusterFromLibrary:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
             break;
-        case kEffectClusterLibrary:
-            [data removeEffectClusterFromLibrary:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
+        case kEffectLibrary:
+            [data removeEffectFromLibrary:[data effectFromFilePath:[data effectFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
             break;
         case kAudioClipLibrary:
             [data removeAudioClipFromLibrary:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
@@ -315,9 +315,9 @@
     [self addLibraryDataButtonPress:nil];
 }
 
-- (void)newEffectCluster:(NSNotification *)aNotification
+- (void)newEffect:(NSNotification *)aNotification
 {
-    [self displayLibrary:kEffectClusterLibrary];
+    [self displayLibrary:kEffectLibrary];
     
     [self addLibraryDataButtonPress:nil];
 }
@@ -347,8 +347,8 @@
         case kCommandClusterLibrary:
             return [data commandClusterFilePathsCount];
             break;
-        case kEffectClusterLibrary:
-            return [data effectClusterFilePathsCount];
+        case kEffectLibrary:
+            return [data effectFilePathsCount];
             break;
         case kAudioClipLibrary:
             return [data audioClipFilePathsCount];
@@ -376,8 +376,8 @@
         case kCommandClusterLibrary:
             return [data descriptionForCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)rowIndex]]];
             break;
-        case kEffectClusterLibrary:
-            return [data descriptionForEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)rowIndex]]];
+        case kEffectLibrary:
+            return [data descriptionForEffect:[data effectFromFilePath:[data effectFilePathAtIndex:(int)rowIndex]]];
             break;
         case kAudioClipLibrary:
             return [data descriptionForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)rowIndex]]];
@@ -413,8 +413,8 @@
             case kCommandClusterLibrary:
                 [commandClusterLibraryManagerViewController setCommandClusterIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
-            case kEffectClusterLibrary:
-                [effectClusterLibraryManagerViewController setEffectClusterIndex:(int)[libraryDataSelectionTableView selectedRow]];
+            case kEffectLibrary:
+                [effectLibraryManagerViewController setEffectIndex:(int)[libraryDataSelectionTableView selectedRow]];
                 break;
             case kAudioClipLibrary:
                 [audioClipLibraryManagerViewController setAudioClipIndex:(int)[libraryDataSelectionTableView selectedRow]];
@@ -443,8 +443,8 @@
             case kCommandClusterLibrary:
                 [commandClusterLibraryManagerViewController setCommandClusterIndex:-1];
                 break;
-            case kEffectClusterLibrary:
-                [effectClusterLibraryManagerViewController setEffectClusterIndex:-1];
+            case kEffectLibrary:
+                [effectLibraryManagerViewController setEffectIndex:-1];
                 break;
             case kAudioClipLibrary:
                 [audioClipLibraryManagerViewController setAudioClipIndex:-1];

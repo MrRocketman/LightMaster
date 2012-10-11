@@ -39,7 +39,7 @@
 		1A028A9A161CD45700B97A5B /* MNToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A99161CD45700B97A5B /* MNToolbarViewController.m */; };
 		1A028AB6161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AB5161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m */; };
 		1A028AB9161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AB8161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m */; };
-		1A028ABC161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */; };
+		1A028ABC161CD99C00B97A5B /* MNEffectLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ABB161CD99C00B97A5B /* MNEffectLibraryManagerViewController.m */; };
 		1A028ABF161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */; };
 		1A028AC2161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AC1161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m */; };
 		1A028AC5161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AC4161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.m */; };
@@ -119,8 +119,8 @@
 		1A028AB5161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNControlBoxLibraryManagerViewController.m; sourceTree = "<group>"; };
 		1A028AB7161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterLibraryManagerViewController.h; sourceTree = "<group>"; };
 		1A028AB8161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterLibraryManagerViewController.m; sourceTree = "<group>"; };
-		1A028ABA161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MNEffectClusterLibraryManagerViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MNEffectClusterLibraryManagerViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1A028ABA161CD99C00B97A5B /* MNEffectLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MNEffectLibraryManagerViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		1A028ABB161CD99C00B97A5B /* MNEffectLibraryManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MNEffectLibraryManagerViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1A028ABD161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNAudioClipLibraryManagerViewController.h; sourceTree = "<group>"; };
 		1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNAudioClipLibraryManagerViewController.m; sourceTree = "<group>"; };
 		1A028AC0161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNChannelGroupLibraryManagerViewController.h; sourceTree = "<group>"; };
@@ -367,8 +367,8 @@
 		1AAA04A31625FBED0052A779 /* EffectClusterLibrary */ = {
 			isa = PBXGroup;
 			children = (
-				1A028ABA161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.h */,
-				1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */,
+				1A028ABA161CD99C00B97A5B /* MNEffectLibraryManagerViewController.h */,
+				1A028ABB161CD99C00B97A5B /* MNEffectLibraryManagerViewController.m */,
 			);
 			name = EffectClusterLibrary;
 			sourceTree = "<group>";
@@ -556,7 +556,7 @@
 				1A028A9A161CD45700B97A5B /* MNToolbarViewController.m in Sources */,
 				1A028AB6161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m in Sources */,
 				1A028AB9161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m in Sources */,
-				1A028ABC161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m in Sources */,
+				1A028ABC161CD99C00B97A5B /* MNEffectLibraryManagerViewController.m in Sources */,
 				1A028ABF161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m in Sources */,
 				1A028AC2161CD9F200B97A5B /* MNChannelGroupLibraryManagerViewController.m in Sources */,
 				1A028AC5161CDA0000B97A5B /* MNSequenceLibraryManagerViewController.m in Sources */,

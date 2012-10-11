@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class MNControlBoxLibraryManagerViewController, MNCommandClusterLibraryManagerViewController, MNEffectClusterLibraryManagerViewController, MNAudioClipLibraryManagerViewController, MNChannelGroupLibraryManagerViewController, MNSequenceLibraryManagerViewController, MNData;
+@class MNControlBoxLibraryManagerViewController, MNCommandClusterLibraryManagerViewController, MNEffectLibraryManagerViewController, MNAudioClipLibraryManagerViewController, MNChannelGroupLibraryManagerViewController, MNSequenceLibraryManagerViewController, MNData;
 
 #define NUMBER_OF_LIBRARIES 6
 
@@ -18,7 +18,7 @@ enum
     kControlBoxLibrary,
     kChannelGroupLibrary,
     kCommandClusterLibrary,
-    kEffectClusterLibrary,
+    kEffectLibrary,
     kAudioClipLibrary
 };
 
@@ -32,7 +32,7 @@ enum
     IBOutlet NSButton *controlBoxLibraryButton;
     IBOutlet NSButton *channelGroupLibraryButton;
     IBOutlet NSButton *commandClusterLibraryButton;
-    IBOutlet NSButton *effectClusterLibraryButton;
+    IBOutlet NSButton *effectLibraryButton;
     IBOutlet NSButton *audioClipLibraryButton;
     NSArray *tabBarButtons;
     
@@ -48,7 +48,7 @@ enum
     IBOutlet MNControlBoxLibraryManagerViewController *controlBoxLibraryManagerViewController;
     IBOutlet MNChannelGroupLibraryManagerViewController *channelGroupLibraryManagerViewController;
     IBOutlet MNCommandClusterLibraryManagerViewController *commandClusterLibraryManagerViewController;
-    IBOutlet MNEffectClusterLibraryManagerViewController *effectClusterLibraryManagerViewController;
+    IBOutlet MNEffectLibraryManagerViewController *effectLibraryManagerViewController;
     IBOutlet MNAudioClipLibraryManagerViewController *audioClipLibraryManagerViewController;
     NSArray *libraries;
 }

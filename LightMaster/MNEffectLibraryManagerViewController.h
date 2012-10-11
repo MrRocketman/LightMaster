@@ -1,5 +1,5 @@
 //
-//  MNEffectClusterLibraryManagerViewController.h
+//  MNEffectLibraryManagerViewController.h
 //  LightMaster
 //
 //  Created by James Adams on 10/3/12.
@@ -9,9 +9,9 @@
 #import <Cocoa/Cocoa.h>
 @class MNData;
 
-@interface MNEffectClusterLibraryManagerViewController : NSViewController
+@interface MNEffectLibraryManagerViewController : NSViewController
 {
-    int effectClusterIndex;
+    int effectIndex;
     IBOutlet MNData *data;
     
     IBOutlet NSTextField *descriptionTextField;
@@ -19,7 +19,7 @@
     IBOutlet NSButton *compileButton;
 }
 
-@property() int effectClusterIndex;
+@property() int effectIndex;
 
 - (void)updateContent;
 

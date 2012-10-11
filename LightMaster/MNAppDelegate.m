@@ -39,9 +39,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NewCommandCluster" object:nil userInfo:nil];
 }
 
-- (IBAction)newEffectCluster:(id)sender
+- (IBAction)newEffect:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewEffectCluster" object:nil userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewEffect" object:nil userInfo:nil];
 }
 
 - (IBAction)newAudioClip:(id)sender

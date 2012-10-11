@@ -29,7 +29,7 @@
 - (IBAction)newControlBox:(id)sender;
 - (IBAction)newChannelGroup:(id)sender;
 - (IBAction)newCommandCluster:(id)sender;
-- (IBAction)newEffectCluster:(id)sender;
+- (IBAction)newEffect:(id)sender;
 - (IBAction)newAudioClip:(id)sender;
 
 @end

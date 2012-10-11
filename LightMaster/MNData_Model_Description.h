@@ -16,7 +16,7 @@
         *controlBoxFilePaths (NSMutableArray)
         *channGroupFilePaths (NSMutableArray)
         *commandClusterFilePaths (NSMutableArray)
-        *effectClusterFilePaths (NSMutableArray)
+        *effectFilePaths (NSMutableArray)
  
  
  
@@ -81,12 +81,12 @@
  
  
  
- *effectClusterLibrary (NSMutableDictionary)
+ *effectLibrary (NSMutableDictionary)
     *versionNumber (NSNumber)
-    *effectClustersFilePaths (NSMutableArray)
-        *effectClusterFilepath (NSString)
+    *effectsFilePaths (NSMutableArray)
+        *effectFilepath (NSString)
  
-    *effectCluster (NSMutableDictionary) - These create command clusters when they are "compiled"
+    *effect (NSMutableDictionary) - These create command clusters when they are "compiled"
         *versionNumber (NSNumber)
         *filePath (NSString)
         *description (NSString)
