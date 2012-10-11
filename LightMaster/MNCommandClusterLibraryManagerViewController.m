@@ -320,18 +320,15 @@
     else if([aNotification object] == startTimeTextField)
     {
         [data setStartTime:[startTimeTextField floatValue] forCommandCluster:[self commandCluster]];
-        [commandsTableView reloadData];
     }
     else if([aNotification object] == endTimeTextField)
     {
         [data setEndTime:[endTimeTextField floatValue] forCommandcluster:[self commandCluster]];
-        [commandsTableView reloadData];
     }
     else if([aNotification object] == adjustByTimeTextTextField)
     {
         [data moveCommandCluster:[self commandCluster] byTime:[adjustByTimeTextTextField floatValue]];
         [adjustByTimeTextTextField setFloatValue:0.0];
-        [commandsTableView reloadData];
     }
     else if([[aNotification userInfo] objectForKey:@"NSFieldEditor"])
     {
@@ -345,9 +342,9 @@
             [data setEndTime:[textFieldString floatValue] forCommandAtIndex:(int)[commandsTableView editedRow] whichIsPartOfCommandCluster:[self commandCluster]];
         }
         
-        [commandsTableView reloadData];
     }
     
+    [self updateContent];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 

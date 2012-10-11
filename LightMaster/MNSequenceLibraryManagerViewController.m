@@ -325,6 +325,7 @@
         [data setEndTime:[endTimeTextField floatValue] forSequence:sequence];
     }
     
+    [self updateContent];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
