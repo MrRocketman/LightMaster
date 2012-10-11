@@ -166,9 +166,6 @@
     [commandChannelSelectorPopover performClose:nil];
     [data setChannelIndex:[[aNotification object] intValue] forCommandAtIndex:(int)[commandsTableView selectedRow] whichIsPartOfCommandCluster:[self commandCluster]];
     
-    // Update the labels
-    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
@@ -197,9 +194,10 @@
         int rowIndex = (int)[commandsTableView selectedRow];
         
         NSString *controlBox = [data controlBoxFilePathForCommandCluster:[self commandCluster]];
-        NSMutableDictionary *channel = [data channelAtIndex:[data channelIndexForCommand:[data commandAtIndex:rowIndex fromCommandCluster:[self commandCluster]]] forControlBox:[data controlBoxFromFilePath:controlBox]];
         
-        [commandChannelSelectorViewController setSelectedControlBoxIndex:(int)[[data controlBoxFilePaths] indexOfObject:controlBox] andChannelIndex:(int)[[data channelsForControlBox:[data controlBoxFromFilePath:controlBox]] indexOfObject:channel]];
+        int channelIndex = [data channelIndexForCommand:[data commandAtIndex:rowIndex fromCommandCluster:[self commandCluster]]];
+        
+        [commandChannelSelectorViewController setSelectedControlBoxIndex:(int)[[data controlBoxFilePaths] indexOfObject:controlBox] andChannelIndex:channelIndex];
     }
     
     [commandChannelSelectorViewController reload];
@@ -242,6 +240,44 @@
     {
         return [NSNumber numberWithFloat:[data endTimeForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]]];
     }
+    else if([[aTableColumn identifier] isEqualToString:@"Channel Number"])
+    {
+        return [NSNumber numberWithInt:(int)[data channelIndexForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]]];
+    }
+    else if([[aTableColumn identifier] isEqualToString:@"Channel Color"])
+    {
+        // This is a controlBoxCluster
+        if([[data controlBoxFilePathForCommandCluster:[self commandCluster]] length] > 0)
+        {
+            return [data colorForChannel:[data channelAtIndex:[data channelIndexForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]];
+        }
+        // This is a channelGroupCluster
+        else
+        {
+            NSMutableDictionary *itemData = [data itemDataAtIndex:[data channelIndexForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]] forChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathForCommandCluster:[self commandCluster]]]];
+            
+            return [data colorForChannel:[data channelAtIndex:[data channelIndexForItemData:itemData] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForItemData:itemData]]]];
+        }
+    }
+    else if([[aTableColumn identifier] isEqualToString:@"Channel Description"])
+    {
+        // This is a controlBoxCluster
+        if([[data controlBoxFilePathForCommandCluster:[self commandCluster]] length] > 0)
+        {
+            return [data descriptionForChannel:[data channelAtIndex:[data channelIndexForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]];
+        }
+        // This is a channelGroupCluster
+        else
+        {
+            NSMutableDictionary *itemData = [data itemDataAtIndex:[data channelIndexForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]] forChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathForCommandCluster:[self commandCluster]]]];
+            
+            return [data colorForChannel:[data channelAtIndex:[data channelIndexForItemData:itemData] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForItemData:itemData]]]];
+        }
+    }
+    else if([[aTableColumn identifier] isEqualToString:@"Control Box"])
+    {
+        return [data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]];
+    }
     
     return @"nil";
 }
@@ -254,18 +290,11 @@
     {
         [deleteCommandButton setEnabled:YES];
         [chooseChannelForCommandButton setEnabled:YES];
-        
-        NSString *controlBoxLabelString = [NSString stringWithFormat:@"%d %@ %@", [data channelIndexForCommand:[data commandAtIndex:(int)[commandsTableView selectedRow] fromCommandCluster:[self commandCluster]]], [data colorForChannel:[data channelAtIndex:(int)[commandsTableView selectedRow] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]], [data descriptionForChannel:[data channelAtIndex:(int)[commandsTableView selectedRow] forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]]];
-        [commandChannelLabel setStringValue:controlBoxLabelString];
-        [commandControlBoxLabel setStringValue:[data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]]];
     }
     else
     {
         [deleteCommandButton setEnabled:NO];
         [chooseChannelForCommandButton setEnabled:NO];
-        
-        [commandChannelLabel setStringValue:@""];
-        [commandControlBoxLabel setStringValue:@""];
     }
 }
 

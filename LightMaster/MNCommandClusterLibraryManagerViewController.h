@@ -31,8 +31,6 @@
     IBOutlet MNCommandChannelSelectorViewController *commandChannelSelectorViewController;
     IBOutlet NSPopover *commandChannelSelectorPopover;
     IBOutlet NSTableView *commandsTableView;
-    IBOutlet NSTextField *commandChannelLabel;
-    IBOutlet NSTextField *commandControlBoxLabel;
     IBOutlet NSButton *chooseChannelForCommandButton;
     IBOutlet NSButton *addCommandButton;
     IBOutlet NSButton *deleteCommandButton;
