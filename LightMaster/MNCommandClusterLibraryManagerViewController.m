@@ -74,8 +74,8 @@
             [addCommandButton setEnabled:NO];
         
         [descriptionTextField setStringValue:[data descriptionForCommandCluster:[self commandCluster]]];
-        [startTimeTextField setFloatValue:[data startTimeForCommandCluster:[self commandCluster]]];
-        [endTimeTextField setFloatValue:[data endTimeForCommandCluster:[self commandCluster]]];
+        [startTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data startTimeForCommandCluster:[self commandCluster]]]];
+        [endTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data endTimeForCommandCluster:[self commandCluster]]]];
         
         NSString *controlBoxDescription = [data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:[self commandCluster]]]];
         if(controlBoxDescription)
@@ -103,8 +103,8 @@
         [deleteCommandButton setEnabled:NO];
         
         [descriptionTextField setStringValue:@""];
-        [startTimeTextField setFloatValue:0.0];
-        [endTimeTextField setFloatValue:0.0];
+        [startTimeTextField setStringValue:@""];
+        [endTimeTextField setStringValue:@""];
         
         [commandClusterControlBoxLabel setStringValue:@""];
         [commandClusterChannelGroupLabel setStringValue:@""];
@@ -234,11 +234,11 @@
 {
     if([[aTableColumn identifier] isEqualToString:@"Start Time"])
     {
-        return [NSNumber numberWithFloat:[data startTimeForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]]];
+        return [NSString stringWithFormat:@"%.3f", [data startTimeForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]]];
     }
     else if([[aTableColumn identifier] isEqualToString:@"End Time"])
     {
-        return [NSNumber numberWithFloat:[data endTimeForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]]];
+        return [NSString stringWithFormat:@"%.3f", [data endTimeForCommand:[data commandAtIndex:(int)rowIndex fromCommandCluster:[self commandCluster]]]];
     }
     else if([[aTableColumn identifier] isEqualToString:@"Channel Number"])
     {
@@ -329,7 +329,7 @@
     }
     else if([aNotification object] == adjustByTimeTextTextField)
     {
-        [data moveCluster:[self commandCluster] byTime:[adjustByTimeTextTextField floatValue]];
+        [data moveCommandCluster:[self commandCluster] byTime:[adjustByTimeTextTextField floatValue]];
         [adjustByTimeTextTextField setFloatValue:0.0];
         [commandsTableView reloadData];
     }

@@ -295,14 +295,8 @@
 			children = (
 				1A028AC6161CDA2A00B97A5B /* MNSynchronizedScrollView.h */,
 				1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */,
-				1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */,
-				1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */,
-				1A028AC9161CDA4A00B97A5B /* MNTimelineTracksView.h */,
-				1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */,
-				1A028ACF161CDAA800B97A5B /* MNCommandClusterView.h */,
-				1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */,
-				1A028AD2161CDAE100B97A5B /* MNCommandClusterChannelsView.h */,
-				1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */,
+				1AAA04A5162655210052A779 /* TimelineViews */,
+				1AAA04A6162655300052A779 /* CommandClusterViews */,
 				1A028A08161CD20800B97A5B /* MainMenu.xib */,
 			);
 			name = Views;
@@ -401,6 +395,28 @@
 				1A028ABE161CD9B000B97A5B /* MNAudioClipLibraryManagerViewController.m */,
 			);
 			name = AudioClipLibrary;
+			sourceTree = "<group>";
+		};
+		1AAA04A5162655210052A779 /* TimelineViews */ = {
+			isa = PBXGroup;
+			children = (
+				1A028AC9161CDA4A00B97A5B /* MNTimelineTracksView.h */,
+				1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */,
+				1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */,
+				1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */,
+			);
+			name = TimelineViews;
+			sourceTree = "<group>";
+		};
+		1AAA04A6162655300052A779 /* CommandClusterViews */ = {
+			isa = PBXGroup;
+			children = (
+				1A028ACF161CDAA800B97A5B /* MNCommandClusterView.h */,
+				1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */,
+				1A028AD2161CDAE100B97A5B /* MNCommandClusterChannelsView.h */,
+				1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */,
+			);
+			name = CommandClusterViews;
 			sourceTree = "<group>";
 		};
 		1ADD72521623EF2C0071467F /* ControlBoxLibrary */ = {

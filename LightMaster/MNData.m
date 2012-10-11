@@ -1498,7 +1498,7 @@
     [self saveDictionaryToItsFilePath:commandCluster];
 }
 
-- (void)moveCluster:(NSMutableDictionary *)commandCluster byTime:(float)time
+- (void)moveCommandCluster:(NSMutableDictionary *)commandCluster byTime:(float)time
 {
     // Adjust all of the times for the commands
     for(int i = 0; i < [self commandsCountForCommandCluster:commandCluster]; i ++)
@@ -1944,6 +1944,13 @@
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
+    [self saveDictionaryToItsFilePath:audioClip];
+}
+
+- (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time
+{
+    [audioClip setObject:[NSNumber numberWithFloat:[self startTimeForAudioClip:audioClip] + time] forKey:@"startTime"];
+    [audioClip setObject:[NSNumber numberWithFloat:[self endTimeForAudioClip:audioClip] + time] forKey:@"endTime"];
     [self saveDictionaryToItsFilePath:audioClip];
 }
 

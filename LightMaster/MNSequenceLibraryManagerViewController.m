@@ -68,8 +68,8 @@
         [addAudioClipToSequenceButton setEnabled:YES];
         
         [descriptionTextField setStringValue:[data descriptionForSequence:sequence]];
-        [startTimeTextField setFloatValue:[data startTimeForSequence:sequence]];
-        [endTimeTextField setFloatValue:[data endTimeForSequence:sequence]];
+        [startTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data startTimeForSequence:sequence]]];
+        [endTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data endTimeForSequence:sequence]]];
     }
     else
     {
@@ -89,8 +89,8 @@
         [deleteAudioClipFromSequenceButton setEnabled:NO];
         
         [descriptionTextField setStringValue:@""];
-        [startTimeTextField setFloatValue:0.0];
-        [endTimeTextField setFloatValue:0.0];
+        [startTimeTextField setStringValue:@""];
+        [endTimeTextField setStringValue:@""];
     }
     
     [controlBoxesTableView reloadData];

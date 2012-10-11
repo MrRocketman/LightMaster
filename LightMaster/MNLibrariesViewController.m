@@ -24,6 +24,7 @@
 - (void)selectCommand:(NSNotification *)aNotification;
 - (void)selectAudioClip:(NSNotification *)aNotification;
 - (void)updateTableView:(NSNotification *)aNotification;
+- (void)updateLibraryContent:(NSNotification *)aNotification;
 
 // Menu Items
 - (void)newSequence:(NSNotification *)aNotification;
@@ -54,6 +55,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommand:) name:@"SelectCommand" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectAudioClip:) name:@"SelectAudioClip" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView:) name:@"UpdateLibrariesViewController" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLibraryContent:) name:@"UpdateLibraryContent" object:nil];
         
         // Menu Items
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newSequence:) name:@"NewSequence" object:nil];
@@ -148,7 +150,7 @@
         [self addLibraryContentView:selectedLibrary];
         
         // Tell the panel to update
-        [[libraries objectAtIndex:selectedLibrary] updateContent];
+        [self updateLibraryContent:nil];
     }
 }
 
@@ -275,6 +277,11 @@
 - (void)updateTableView:(NSNotification *)aNotification
 {
     [libraryDataSelectionTableView reloadData];
+}
+
+- (void)updateLibraryContent:(NSNotification *)aNotification
+{
+    [[libraries objectAtIndex:selectedLibrary] updateContent];
 }
 
 #pragma mark - MenuItem Notifications
@@ -447,7 +454,7 @@
         [deleteLibraryDataButton setEnabled:NO];
     }
     
-    [[libraries objectAtIndex:selectedLibrary] updateContent];
+    [self updateLibraryContent:nil];
 }
 
 @end

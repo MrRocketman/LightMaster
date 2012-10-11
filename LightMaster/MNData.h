@@ -236,7 +236,7 @@ enum
 - (void)setChannelGroupFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setStartTime:(float)time forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setEndTime:(float)time forCommandcluster:(NSMutableDictionary *)commandCluster;
-- (void)moveCluster:(NSMutableDictionary *)commandCluster byTime:(float)time;
+- (void)moveCommandCluster:(NSMutableDictionary *)commandCluster byTime:(float)time;
 - (int)createCommandAndReturnNewCommandIndexForCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)removeCommand:(NSMutableDictionary *)command fromCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setStartTime:(float)time forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
@@ -317,6 +317,7 @@ enum
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
+- (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time;
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 
 @end
