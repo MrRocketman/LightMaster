@@ -372,13 +372,6 @@
     NSSize imageSize = [topBarBackgroundImage size];
     [topBarBackgroundImage drawInRect:topBarFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
     
-    // TopBar Mouse Checking
-    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
-    {
-        [data setCurrentTime:[data xToTime:mousePoint.x]];
-        mouseEvent = nil;
-    }
-    
     // Determine the grid spacing
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:10];
@@ -446,6 +439,10 @@
         NSRectFill(markerLineFrame);
 	}
     
+    // Draw the currentTime marker
+    NSPoint trianglePoint = NSMakePoint((float)[data timeToX:[data currentTime]], topBarFrame.origin.y);
+    [self drawInvertedTriangleAndLineWithTipPoint:trianglePoint width:20 andHeight:20];
+    
     // Mouse Checking
     if(mouseAction == MNMouseDragged && currentTimeMarkerIsSelected && mouseEvent != nil)
     {
@@ -461,9 +458,12 @@
         [data setCurrentTime:newCurrentTime];
     }
     
-    // Draw the currentTime marker
-    NSPoint trianglePoint = NSMakePoint((float)[data timeToX:[data currentTime]], topBarFrame.origin.y);
-    [self drawInvertedTriangleAndLineWithTipPoint:trianglePoint width:20 andHeight:20];
+    // TopBar Mouse Checking
+    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
+    {
+        [data setCurrentTime:[data xToTime:mousePoint.x]];
+        mouseEvent = nil;
+    }
 }
 
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height
