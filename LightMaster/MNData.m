@@ -453,6 +453,22 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CurrentTimeChange" object:nil];
 }
 
+- (int)trackItemsCount
+{
+    // Determine the number of trackItems
+    int trackItemsCount = [self audioClipFilePathsCountForSequence:currentSequence];
+    for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        trackItemsCount += [self channelsCountForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]]];
+    }
+    for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        trackItemsCount += [self itemsCountForChannelGroup:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i]]];
+    }
+    
+    return trackItemsCount;
+}
+
 #pragma mark - Sequence Library Methods
 // Sequence Management Methods
 

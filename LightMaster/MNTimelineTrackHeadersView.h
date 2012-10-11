@@ -10,7 +10,7 @@
 #import "MNSynchronizedScrollView.h"
 #import "MNData.h"
 
-#define TRACK_HEIGHT 80.0
+#define TRACK_ITEM_HEIGHT 20.0
 #define TRACK_WIDTH 200.0
 #define TOP_BAR_HEIGHT 20.0
 

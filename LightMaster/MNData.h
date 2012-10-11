@@ -48,6 +48,7 @@ enum
 - (int)timeToX:(float)time;
 - (float)xToTime:(int)x;
 - (int)widthForTimeInterval:(float)timeInterval;
+- (int)trackItemsCount;
 - (NSString *)applicationSupportDirectory;
 
 #pragma mark - Sequence Library Methods

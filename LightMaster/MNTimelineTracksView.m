@@ -11,12 +11,12 @@
 
 @interface MNTimelineTracksView()
 
-- (void)drawTrackBackgroundAtIndex:(int)index;
+- (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems;
 - (void)drawRect:(NSRect)aRect withCornerRadius:(float)radius fillColor:(NSColor *)color andStroke:(BOOL)yesOrNo;
-- (void)drawAudioClipsAtTrackIndex:(int)index;
-- (void)drawControlBoxCommandClustersAtTrackIndex:(int)index controlBoxIndex:(int)controlBoxIndex;
-- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)index forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
-- (void)drawChannelGroupCommandClustersAtTrackIndex:(int)index channelGroupIndex:(int)channelGroupIndex;
+- (void)drawAudioClipsAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems;
+- (void)drawControlBoxCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems controlBoxIndex:(int)controlBoxIndex;
+- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
+- (void)drawChannelGroupCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems channelGroupIndex:(int)channelGroupIndex;
 
 - (void)drawTimelineBar;
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height;
@@ -64,56 +64,61 @@
     NSRectFill(self.bounds);
     
     currentSequence = [data currentSequence];
-    int tracksCount = [data audioClipFilePathsCountForSequence:currentSequence] + [data controlBoxFilePathsCountForSequence:currentSequence] + [data channelGroupFilePathsCountForSequence:currentSequence];
+    int trackItemsCount = [data trackItemsCount];
+    
     // Set the Frame
-    if(tracksCount * TRACK_HEIGHT + TOP_BAR_HEIGHT > [[self superview] frame].size.height)
+    if(trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT > [[self superview] frame].size.height)
     {
-        [self setFrame:NSMakeRect(0.0, 0.0, 999999, tracksCount * TRACK_HEIGHT + TOP_BAR_HEIGHT)];
+        [self setFrame:NSMakeRect(0.0, 0.0, 999999, trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT)];
     }
     else
     {
         [self setFrame:NSMakeRect(0.0, 0.0, 999999, [[self superview] frame].size.height)];
     }
     
-    tracksCount = 0;
+    trackItemsCount = 0;
+    int thisTrackItemsCount = 0;
     int audioClipsCount = 0, controlBoxCount = 0, channelGroupCount = 0;
     int channelGroupIndex = 0, controlBoxIndex = 0;
     // Draw the audio track
     if([data audioClipFilePathsCountForSequence:currentSequence] > 0)
     {
-        [self drawTrackBackgroundAtIndex:tracksCount];
-        [self drawAudioClipsAtTrackIndex:tracksCount];
-        tracksCount ++;
-        audioClipsCount ++;
+        thisTrackItemsCount = [data audioClipFilePathsCountForSequence:currentSequence];
+        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
+        [self drawAudioClipsAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
+        trackItemsCount += thisTrackItemsCount;
+        audioClipsCount += thisTrackItemsCount;
     }
     // Draw the controlBox tracks
     for(int i = 0; i < [data controlBoxFilePathsCountForSequence:currentSequence]; i ++)
     {
-        [self drawTrackBackgroundAtIndex:tracksCount];
-        controlBoxIndex = (audioClipsCount > 0 ? tracksCount - audioClipsCount : tracksCount);
-        [self drawControlBoxCommandClustersAtTrackIndex:tracksCount controlBoxIndex:controlBoxIndex];
-        tracksCount ++;
-        controlBoxCount ++;
+        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i]]];
+        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
+        controlBoxIndex = (audioClipsCount > 0 ? trackItemsCount - audioClipsCount : trackItemsCount);
+        [self drawControlBoxCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount controlBoxIndex:controlBoxIndex];
+        trackItemsCount += thisTrackItemsCount;
+        controlBoxCount += thisTrackItemsCount;
     }
     // Draw the channelGroup tracks
     for(int i = 0; i < [data channelGroupFilePathsCountForSequence:currentSequence]; i ++)
     {
-        [self drawTrackBackgroundAtIndex:tracksCount];
-        channelGroupIndex = (audioClipsCount > 0 ? tracksCount - audioClipsCount : tracksCount);
+        thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i]]];
+        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
+        channelGroupIndex = (audioClipsCount > 0 ? trackItemsCount - audioClipsCount : trackItemsCount);
         channelGroupIndex = (controlBoxCount > 0 ? channelGroupIndex - controlBoxCount : channelGroupIndex);
-        [self drawChannelGroupCommandClustersAtTrackIndex:tracksCount channelGroupIndex:channelGroupIndex];
-        tracksCount ++;
-        channelGroupCount ++;
+        [self drawChannelGroupCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount channelGroupIndex:channelGroupIndex];
+        trackItemsCount += thisTrackItemsCount;
+        channelGroupCount += thisTrackItemsCount;
     }
     
     // Draw the timeline on top of everything
     [self drawTimelineBar];
 }
 
-- (void)drawTrackBackgroundAtIndex:(int)index
+- (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems
 {
     // Draw the Track Background
-    NSRect backgroundFrame = NSMakeRect(0, self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT, self.frame.size.width, TRACK_HEIGHT);
+    NSRect backgroundFrame = NSMakeRect(0, self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT, self.frame.size.width, TRACK_ITEM_HEIGHT * trackItems);
     NSSize imageSize = [clusterBackgroundImage size];
     [clusterBackgroundImage drawInRect:backgroundFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
 }
@@ -133,8 +138,10 @@
 	[thePath fill];
 }
 
-- (void)drawAudioClipsAtTrackIndex:(int)index
+- (void)drawAudioClipsAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems
 {
+    trackItems = 1;
+    
     NSRect superViewFrame = [[self superview] frame];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
     float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
@@ -147,7 +154,7 @@
         // Check to see if this audioClip is in the visible range
         if(([data startTimeForAudioClip:currentAudioClip] > timeAtLeftEdge && [data startTimeForAudioClip:currentAudioClip] < timeAtRightEdge) || ([data endTimeForAudioClip:currentAudioClip] > timeAtLeftEdge && [data endTimeForAudioClip:currentAudioClip] < timeAtRightEdge) || ([data startTimeForAudioClip:currentAudioClip] <= timeAtLeftEdge && [data endTimeForAudioClip:currentAudioClip] >= timeAtRightEdge))
         {
-            NSRect audioClipRect = NSMakeRect([data timeToX:[data startTimeForAudioClip:currentAudioClip]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForAudioClip:currentAudioClip] - [data startTimeForAudioClip:currentAudioClip]], TRACK_HEIGHT - 2);
+            NSRect audioClipRect = NSMakeRect([data timeToX:[data startTimeForAudioClip:currentAudioClip]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForAudioClip:currentAudioClip] - [data startTimeForAudioClip:currentAudioClip]], TRACK_ITEM_HEIGHT - 2);
             
             // AudioClip Mouse Checking here
             if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint] && mouseEvent != nil))
@@ -173,10 +180,12 @@
                 selectedAudioClip = nil;
             }
         }
+        
+        trackIndex++;
     }
 }
 
-- (void)drawControlBoxCommandClustersAtTrackIndex:(int)index controlBoxIndex:(int)controlBoxIndex
+- (void)drawControlBoxCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems controlBoxIndex:(int)controlBoxIndex
 {
     NSRect superViewFrame = [[self superview] frame];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
@@ -193,13 +202,13 @@
             // Check to see if this commandCluster is in the visible range
             if(([data startTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data startTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data endTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data startTimeForCommandCluster:currentCommandCluster] <= timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] >= timeAtRightEdge))
             {
-                NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
+                NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_ITEM_HEIGHT * trackItems - 2);
                 
                 // Command Cluster is selected
                 if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseEvent != nil))
                 {
                     // Draw the commands first and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNControlBox];
+                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
                     
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
@@ -233,14 +242,14 @@
                     selectedCommandCluster = nil;
                     
                     // Draw the commands first and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNControlBox];
+                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
                 }
             }
         }
     }
 }
 
-- (void)drawChannelGroupCommandClustersAtTrackIndex:(int)index channelGroupIndex:(int)channelGroupIndex
+- (void)drawChannelGroupCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems channelGroupIndex:(int)channelGroupIndex
 {
     NSRect superViewFrame = [[self superview] frame];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
@@ -256,13 +265,13 @@
             // Check to see if this commandCluster is in the visible range
             if(([data startTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data startTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data endTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data startTimeForCommandCluster:currentCommandCluster] <= timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] >= timeAtRightEdge))
             {
-                NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
+                NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_ITEM_HEIGHT * trackItems - 2);
                 
                 // Command Cluster Mouse Checking here
                 if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseEvent != nil))
                 {
                     // Draw the commands first and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNChannelGroup];
+                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
@@ -295,25 +304,16 @@
                     selectedCommandCluster = nil;
                     
                     // Draw the commands and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNChannelGroup];
+                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                 }
             }
         }
     }
 }
 
-- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)index forControlBoxOrChannelGroup:(int)boxOrChannelGroup
+- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
 {
-    int numberOfChannelsForCommandCluster = 0;
-    if(boxOrChannelGroup == MNControlBox)
-    {
-        numberOfChannelsForCommandCluster = [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathForCommandCluster:commandCluster]]];
-    }
-    else if(boxOrChannelGroup == MNChannelGroup)
-    {
-        numberOfChannelsForCommandCluster = [data itemsCountForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathForCommandCluster:commandCluster]]];
-    }
-    float channelHeightForCommandCluster = (TRACK_HEIGHT - 10) / numberOfChannelsForCommandCluster;
+    trackItems = 1;
     
     for(int i = 0; i < [data commandsCountForCommandCluster:commandCluster]; i ++)
     {
@@ -322,9 +322,10 @@
         NSRect commandRect;
         float x, y, width , height;
         x  = [data timeToX:[data startTimeForCommand:currentCommand]];
-        y = self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + (TRACK_HEIGHT - 5) - channelHeightForCommandCluster * ([data channelIndexForCommand:currentCommand] + 1);
+        y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
+        NSLog(@"y:%f", y);
         width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
-        height = channelHeightForCommandCluster;
+        height = TRACK_ITEM_HEIGHT - 2;
         
         // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
         if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
@@ -361,6 +362,9 @@
             [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.2 alpha:0.7] andStroke:YES];
             selectedCommand = nil;
         }
+        
+        // Used for drawing the channels
+        trackIndex++;
     }
 }
 

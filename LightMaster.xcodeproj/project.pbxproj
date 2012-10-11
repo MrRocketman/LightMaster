@@ -279,8 +279,6 @@
 		1A028A65161CD36300B97A5B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1A028AC6161CDA2A00B97A5B /* MNSynchronizedScrollView.h */,
-				1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */,
 				1AAA04A5162655210052A779 /* TimelineViews */,
 				1A028A08161CD20800B97A5B /* MainMenu.xib */,
 			);
@@ -389,6 +387,8 @@
 				1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */,
 				1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */,
 				1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */,
+				1A028AC6161CDA2A00B97A5B /* MNSynchronizedScrollView.h */,
+				1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */,
 			);
 			name = TimelineViews;
 			sourceTree = "<group>";
