@@ -373,7 +373,7 @@
     [topBarBackgroundImage drawInRect:topBarFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
     
     // TopBar Mouse Checking
-    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && ![data currentTimeMarkerIsSelected])
+    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
     {
         [data setCurrentTime:[data xToTime:mousePoint.x]];
         mouseEvent = nil;
@@ -447,7 +447,7 @@
 	}
     
     // Mouse Checking
-    if(mouseAction == MNMouseDragged && [data currentTimeMarkerIsSelected] && mouseEvent != nil)
+    if(mouseAction == MNMouseDragged && currentTimeMarkerIsSelected && mouseEvent != nil)
     {
         float newCurrentTime = [data xToTime:mousePoint.x];
         
@@ -481,14 +481,14 @@
         [data setCurrentTimeMarkerIsSelected:YES];
         mouseEvent = nil;
     }
-    else if([data currentTimeMarkerIsSelected] && mouseAction == MNMouseUp && mouseEvent != nil)
+    else if(currentTimeMarkerIsSelected && mouseAction == MNMouseUp && mouseEvent != nil)
     {
         [data setCurrentTimeMarkerIsSelected:NO];
         mouseEvent = nil;
     }
 	
     // Set the color according to whether it is clicked or not
-	if(![data currentTimeMarkerIsSelected])
+	if(!currentTimeMarkerIsSelected)
     {
         [[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:0.5] setFill];
     }
@@ -547,7 +547,7 @@
     [autoScrollTimer invalidate];
     autoScrollTimer = nil;
     autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:AUTO_SCROLL_REFRESH_RATE target:self selector:@selector(updateTimeAtLeftEdgeOfTimelineView:) userInfo:nil repeats:YES];
-    timerIsRunning = YES;
+    autoscrollTimerIsRunning = YES;
     
     [self setNeedsDisplay:YES];
 }
@@ -570,7 +570,7 @@
     
     [autoScrollTimer invalidate];
     autoScrollTimer = nil;
-    timerIsRunning = NO;
+    autoscrollTimerIsRunning = NO;
     
     [self setNeedsDisplay:YES];
 }

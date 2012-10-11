@@ -35,7 +35,8 @@ enum
     int mouseAction;
     NSEvent *mouseEvent;
     NSTimer *autoScrollTimer;
-    BOOL timerIsRunning;
+    BOOL autoscrollTimerIsRunning;
+    BOOL currentTimeMarkerIsSelected;
     
     NSMutableDictionary *selectedCommandCluster;
     NSMutableDictionary *selectedCommand;

@@ -41,7 +41,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentTimeMarkerIsSelected;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel;
 
 #pragma mark - System
 

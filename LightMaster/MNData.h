@@ -35,7 +35,6 @@ enum
     float currentTime;
     float timeAtLeftEdgeOfTimelineView;
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
-    BOOL currentTimeMarkerIsSelected;
 }
 
 @property(readonly) NSString *libraryFolder;
@@ -43,7 +42,6 @@ enum
 @property(readwrite) float currentTime;
 @property(readwrite) float timeAtLeftEdgeOfTimelineView;
 @property(readwrite) float zoomLevel;
-@property(readwrite) BOOL currentTimeMarkerIsSelected;
 
 #pragma mark - Other Methods
 // Other Methods
