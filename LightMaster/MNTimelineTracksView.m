@@ -323,7 +323,6 @@
         float x, y, width , height;
         x  = [data timeToX:[data startTimeForCommand:currentCommand]];
         y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
-        NSLog(@"y:%f", y);
         width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
         height = TRACK_ITEM_HEIGHT - 2;
         

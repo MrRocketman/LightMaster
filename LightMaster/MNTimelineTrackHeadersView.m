@@ -11,6 +11,8 @@
 @interface MNTimelineTrackHeadersView()
 
 - (void)drawTrackWithStyle:(int)style text:(NSString *)text trackIndex:(int)trackIndex trackItemsCount:(int)trackItemsCount andDataIndex:(int)dataIndex;
+- (NSFont *)fontSizedForAreaSize:(NSSize)size withString:(NSString *)string usingFont:(NSFont *)font;
+- (float)scaleToAspectFit:(CGSize)source into:(CGSize)into padding:(float)padding;
 
 @end
 
@@ -33,6 +35,19 @@
     }
     
     return self;
+}
+
+- (NSFont *)fontSizedForAreaSize:(NSSize)size withString:(NSString *)string usingFont:(NSFont *)font
+{
+    NSFont *sampleFont = [NSFont fontWithDescriptor:font.fontDescriptor size:12.0];
+    CGSize sampleSize = [string sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:sampleFont, NSFontAttributeName, nil]];
+    float scale = [self scaleToAspectFit:sampleSize into:size padding:10];
+    return [NSFont fontWithDescriptor:font.fontDescriptor size:scale * sampleFont.pointSize];
+}
+
+- (float)scaleToAspectFit:(CGSize)source into:(CGSize)into padding:(float)padding
+{
+    return MIN((into.width - padding) / source.width, (into.height - padding) / source.height);
 }
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -124,11 +139,12 @@
     
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:20];
+    NSRect textFrame = NSMakeRect(10, trackFrame.origin.y + 10, TRACK_WIDTH - 60, TRACK_ITEM_HEIGHT * trackItemsCount - 20);
+    font = [self fontSizedForAreaSize:textFrame.size withString:text usingFont:font];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     [paragraphStyle setLineBreakMode:NSLineBreakByCharWrapping];
     [attributes setObject:font forKey:NSFontAttributeName];
     [attributes setObject:paragraphStyle forKey:NSParagraphStyleAttributeName];
-    NSRect textFrame = NSMakeRect(10, trackFrame.origin.y + 10, TRACK_WIDTH - 60, TRACK_ITEM_HEIGHT * trackItemsCount - 20);
     [text drawInRect:textFrame withAttributes:attributes];
     
     if(NO)
