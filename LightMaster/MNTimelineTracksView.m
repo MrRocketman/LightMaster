@@ -134,58 +134,78 @@
 
 - (void)drawAudioClipsAtTrackIndex:(int)index
 {
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
     for(int i = 0; i < [data audioClipFilePathsCountForSequence:currentSequence]; i ++)
     {
         NSMutableDictionary *currentAudioClip = [data audioClipFromFilePath:[data audioClipFilePathAtIndex:i forSequence:currentSequence]];
-        NSRect audioClipRect = NSMakeRect([data timeToX:[data startTimeForAudioClip:currentAudioClip]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForAudioClip:currentAudioClip] - [data startTimeForAudioClip:currentAudioClip]], TRACK_HEIGHT - 2);
         
-        // AudioClip Mouse Checking here
-        if([[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
+        // Check to see if this audioClip is in the visible range
+        if(([data startTimeForAudioClip:currentAudioClip] > timeAtLeftEdge && [data startTimeForAudioClip:currentAudioClip] < timeAtRightEdge) || ([data endTimeForAudioClip:currentAudioClip] > timeAtLeftEdge && [data endTimeForAudioClip:currentAudioClip] < timeAtRightEdge) || ([data startTimeForAudioClip:currentAudioClip] <= timeAtLeftEdge && [data endTimeForAudioClip:currentAudioClip] >= timeAtRightEdge))
         {
-            [self drawRect:audioClipRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-            selectedAudioClip = currentAudioClip;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectAudioClip" object:selectedAudioClip];
-            mouseEvent = nil;
-        }
-        else
-        {
-            [self drawRect:audioClipRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.7] andStroke:YES];
-            selectedAudioClip = nil;
+            NSRect audioClipRect = NSMakeRect([data timeToX:[data startTimeForAudioClip:currentAudioClip]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForAudioClip:currentAudioClip] - [data startTimeForAudioClip:currentAudioClip]], TRACK_HEIGHT - 2);
+            
+            // AudioClip Mouse Checking here
+            if([[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
+            {
+                [self drawRect:audioClipRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+                selectedAudioClip = currentAudioClip;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectAudioClip" object:selectedAudioClip];
+                mouseEvent = nil;
+            }
+            else
+            {
+                [self drawRect:audioClipRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:0.7] andStroke:YES];
+                selectedAudioClip = nil;
+            }
         }
     }
 }
 
 - (void)drawControlBoxCommandClustersAtTrackIndex:(int)index controlBoxIndex:(int)controlBoxIndex
 {
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
     for(int i = 0; i < [data commandClusterFilePathsCountForSequence:currentSequence]; i ++)
     {
         NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:currentSequence]];
+        
         // Command Cluster is for this controlBox
         if([[data controlBoxFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data controlBoxFilePathAtIndex:controlBoxIndex forSequence:currentSequence]])
         {
-            NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
-            
-            // Command Cluster is selected
-            if([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
+            // Check to see if this commandCluster is in the visible range
+            if(([data startTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data startTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data endTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data startTimeForCommandCluster:currentCommandCluster] <= timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] >= timeAtRightEdge))
             {
-                [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-                selectedCommandCluster = currentCommandCluster;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
-            }
-            // Normal comand cluster
-            else
-            {
-                [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.7] andStroke:YES];
-                selectedCommandCluster = nil;
-            }
-            
-            // Draw the commands and check for mouse clicks
-            [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNControlBox];
-            
-            // Get rid of the mouseEvent
-            if(selectedCommandCluster != nil)
-            {
-                mouseEvent = nil;
+                NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
+                
+                // Command Cluster is selected
+                if([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
+                {
+                    [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+                    selectedCommandCluster = currentCommandCluster;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
+                }
+                // Normal comand cluster
+                else
+                {
+                    [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.7] andStroke:YES];
+                    selectedCommandCluster = nil;
+                }
+                
+                // Draw the commands and check for mouse clicks
+                [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNControlBox];
+                
+                // Get rid of the mouseEvent
+                if(selectedCommandCluster != nil)
+                {
+                    mouseEvent = nil;
+                }
             }
         }
     }
@@ -193,34 +213,43 @@
 
 - (void)drawChannelGroupCommandClustersAtTrackIndex:(int)index channelGroupIndex:(int)channelGroupIndex
 {
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
     for(int i = 0; i < [data commandClusterFilePathsCountForSequence:currentSequence]; i ++)
     {
         NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:currentSequence]];
         // Command Cluster is for this channelGroup
         if([[data channelGroupFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data channelGroupFilePathAtIndex:channelGroupIndex forSequence:currentSequence]])
         {
-            NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
-            
-            // Command Cluster Mouse Checking here
-            if([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
+            // Check to see if this commandCluster is in the visible range
+            if(([data startTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data startTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data endTimeForCommandCluster:currentCommandCluster] > timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] < timeAtRightEdge) || ([data startTimeForCommandCluster:currentCommandCluster] <= timeAtLeftEdge && [data endTimeForCommandCluster:currentCommandCluster] >= timeAtRightEdge))
             {
-                [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-                selectedCommandCluster = currentCommandCluster;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
-            }
-            else
-            {
-                [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.7] andStroke:YES];
-                selectedCommandCluster = nil;
-            }
-            
-            // Draw the commands and check for mouse clicks
-            [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNChannelGroup];
-            
-            // Get rid of the mouseEvent
-            if(selectedCommandCluster != nil)
-            {
-                mouseEvent = nil;
+                NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_HEIGHT - 2);
+                
+                // Command Cluster Mouse Checking here
+                if([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
+                {
+                    [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+                    selectedCommandCluster = currentCommandCluster;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
+                }
+                else
+                {
+                    [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.7] andStroke:YES];
+                    selectedCommandCluster = nil;
+                }
+                
+                // Draw the commands and check for mouse clicks
+                [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:index forControlBoxOrChannelGroup:MNChannelGroup];
+                
+                // Get rid of the mouseEvent
+                if(selectedCommandCluster != nil)
+                {
+                    mouseEvent = nil;
+                }
             }
         }
     }
@@ -242,7 +271,25 @@
     for(int i = 0; i < [data commandsCountForCommandCluster:commandCluster]; i ++)
     {
         NSMutableDictionary *currentCommand = [data commandAtIndex:i fromCommandCluster:commandCluster];
-        NSRect commandRect = NSMakeRect([data timeToX:[data startTimeForCommand:currentCommand]], self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + (TRACK_HEIGHT - 5) - channelHeightForCommandCluster * ([data channelIndexForCommand:currentCommand] + 1), [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]], channelHeightForCommandCluster);
+        
+        NSRect commandRect;
+        float x, y, width , height;
+        x  = [data timeToX:[data startTimeForCommand:currentCommand]];
+        y = self.frame.size.height - (index + 1) * TRACK_HEIGHT - TOP_BAR_HEIGHT + (TRACK_HEIGHT - 5) - channelHeightForCommandCluster * ([data channelIndexForCommand:currentCommand] + 1);
+        width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
+        height = channelHeightForCommandCluster;
+        
+        // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
+        if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
+        {
+            width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommand:currentCommand]];
+        }
+        // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
+        else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
+        {
+            x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
+        }
+        commandRect = NSMakeRect(x, y, width, height);
         
         // Command Mouse Checking Here
         if([[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
