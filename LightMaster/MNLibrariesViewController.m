@@ -18,6 +18,8 @@
 @interface MNLibrariesViewController ()
 
 // External Notifications
+- (void)selectControlBox:(NSNotification *)aNotification;
+- (void)selectChannelGroup:(NSNotification *)aNotification;
 - (void)selectCommandCluster:(NSNotification *)aNotification;
 - (void)selectCommand:(NSNotification *)aNotification;
 - (void)selectAudioClip:(NSNotification *)aNotification;
@@ -46,6 +48,8 @@
     if (self)
     {
         // External Notifications
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectControlBox:) name:@"SelectControlBox" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectChannelGroup:) name:@"SelectChannelGroup" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommandCluster:) name:@"SelectCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCommand:) name:@"SelectCommand" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectAudioClip:) name:@"SelectAudioClip" object:nil];
@@ -216,7 +220,24 @@
 
 #pragma mark - External Notifications
 
-// External Notifications
+- (void)selectControlBox:(NSNotification *)aNotification
+{
+    [self displayLibrary:kControlBoxLibrary];
+    
+    // Select the control box
+    int controlBoxIndex = (int)[[data controlBoxFilePaths] indexOfObject:[data filePathForControlBox:[aNotification object]]];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:controlBoxIndex] byExtendingSelection:NO];
+}
+
+- (void)selectChannelGroup:(NSNotification *)aNotification
+{
+    [self displayLibrary:kChannelGroupLibrary];
+    
+    // Select the channel group
+    int channelGroupIndex = (int)[[data channelGroupFilePaths] indexOfObject:[data filePathForChannelGroup:[aNotification object]]];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:channelGroupIndex] byExtendingSelection:NO];
+}
+
 - (void)selectCommandCluster:(NSNotification *)aNotification
 {
     [self displayLibrary:kCommandClusterLibrary];

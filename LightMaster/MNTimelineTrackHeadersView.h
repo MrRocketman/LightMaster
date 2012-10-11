@@ -31,6 +31,10 @@ enum
     NSImage *audioClipImage;
     NSImage *recordImage;
     NSImage *blankRecordImage;
+    
+    NSPoint mousePoint;
+    int mouseAction;
+    NSEvent *mouseEvent;
 }
 
 @end

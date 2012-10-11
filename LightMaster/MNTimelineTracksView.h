@@ -17,13 +17,6 @@
 
 enum
 {
-    MNMouseDown,
-    MNMouseDragged,
-    MNMouseUp
-};
-
-enum
-{
     MNControlBox,
     MNChannelGroup
 };

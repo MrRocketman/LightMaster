@@ -13,6 +13,13 @@
 // This is how many pixels per second there are are a zoom level of 1
 #define PIXEL_TO_ZOOM_RATIO 25
 
+enum
+{
+    MNMouseDown,
+    MNMouseDragged,
+    MNMouseUp
+};
+
 @interface MNData : NSObject
 {
     NSMutableDictionary *sequenceLibrary;
