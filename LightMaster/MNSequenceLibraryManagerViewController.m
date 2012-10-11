@@ -11,7 +11,6 @@
 #import "MNSequenceControlBoxSelectorViewController.h"
 #import "MNSequenceChannelGroupSelectorViewController.h"
 #import "MNSequenceCommandClusterSelectorViewController.h"
-#import "MNSequenceEffectClusterSelectorViewController.h"
 #import "MNSequenceAudioClipSelectorViewController.h"
 
 
@@ -20,7 +19,6 @@
 - (void)addControlBoxFilePathToSequence:(NSNotification *)aNotification;
 - (void)addChannelGroupFilePathToSequence:(NSNotification *)aNotification;
 - (void)addCommandClusterFilePathToSequence:(NSNotification *)aNotification;
-- (void)addEffectClusterFilePathToSequence:(NSNotification *)aNotification;
 - (void)addAudioClipFilePathToSequence:(NSNotification *)aNotification;
 
 - (void)textDidEndEditing:(NSNotification *)aNotification;
@@ -41,7 +39,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addControlBoxFilePathToSequence:) name:@"AddControlBoxFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addChannelGroupFilePathToSequence:) name:@"AddChannelGroupFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterFilePathToSequence:) name:@"AddCommandClusterFilePathToSequence" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addEffectClusterFilePathToSequence:) name:@"AddEffectClusterFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAudioClipFilePathToSequence:) name:@"AddAudioClipFilePathToSequence" object:nil];
         
         // Text Editing Notifications
@@ -64,7 +61,6 @@
         [addControlBoxToSequenceButton setEnabled:YES];
         [addChannelGroupToSequenceButton setEnabled:YES];
         [addCommandClusterToSequenceButton setEnabled:YES];
-        [addEffectClusterToSequenceButton setEnabled:YES];
         [addAudioClipToSequenceButton setEnabled:YES];
         
         [descriptionTextField setStringValue:[data descriptionForSequence:sequence]];
@@ -83,8 +79,6 @@
         [deleteChannleGroupFromSequenceButton setEnabled:NO];
         [addCommandClusterToSequenceButton setEnabled:NO];
         [deleteCommandClusterFromSequenceButton setEnabled:NO];
-        [addEffectClusterToSequenceButton setEnabled:NO];
-        [deleteEffectClusterFromSequenceButton setEnabled:NO];
         [addAudioClipToSequenceButton setEnabled:NO];
         [deleteAudioClipFromSequenceButton setEnabled:NO];
         
@@ -96,7 +90,6 @@
     [controlBoxesTableView reloadData];
     [channelGroupsTableView reloadData];
     [commandClustersTableView reloadData];
-    [effectClustersTableView reloadData];
     [audioClipsTableView reloadData];
 }
 
@@ -125,15 +118,6 @@
     [sequenceCommandClusterSelectorPopover performClose:nil];
     [data addCommandClusterFilePath:[aNotification object] forSequence:sequence];
     [commandClustersTableView reloadData];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
-}
-
-- (void)addEffectClusterFilePathToSequence:(NSNotification *)aNotification
-{
-    [sequenceEffectClusterSelectorPopover performClose:nil];
-    [data addEffectClusterFilePath:[aNotification object] forSequence:sequence];
-    [effectClustersTableView reloadData];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
@@ -207,25 +191,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
-- (IBAction)deleteEffectClusterFromSequenceButtonPress:(id)sender
-{
-    [data removeEffectClusterFilePath:[data effectClusterFilePathAtIndex:(int)[effectClustersTableView selectedRow]] forSequence:sequence];
-    [effectClustersTableView reloadData];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
-}
-
-- (IBAction)addEffectClusterToSequenceButtonPress:(id)sender
-{
-    [sequenceEffectClusterSelectorPopover showRelativeToRect:[effectClustersTableView rectOfRow:[effectClustersTableView selectedRow]] ofView:effectClustersTableView preferredEdge:NSMaxYEdge];
-    [sequenceEffectClusterSelectorViewController reload];
-    if([effectClustersTableView selectedRow] > -1)
-    {
-        [sequenceEffectClusterSelectorViewController setSelectedEffectClusterFilePath:[data effectClusterFilePathAtIndex:(int)[effectClustersTableView selectedRow] forSequence:sequence]];
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
-}
-
 - (IBAction)deleteAudioClipFromSequenceButtonPress:(id)sender
 {
     [data removeAudioClipFilePath:[data audioClipFilePathAtIndex:(int)[audioClipsTableView selectedRow]] forSequence:sequence];
@@ -261,10 +226,6 @@
     {
         return [data commandClusterFilePathsCountForSequence:sequence];
     }
-    else if(aTableView == effectClustersTableView)
-    {
-        return [data effectClusterFilePathsCountForSequence:sequence];
-    }
     else if(aTableView == audioClipsTableView)
     {
         return [data audioClipFilePathsCountForSequence:sequence];
@@ -286,10 +247,6 @@
     else if(aTableView == commandClustersTableView)
     {
         return [data descriptionForCommandCluster:[data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
-    }
-    else if(aTableView == effectClustersTableView)
-    {
-        return [data descriptionForEffectCluster:[data effectClusterFromFilePath:[data effectClusterFilePathAtIndex:(int)rowIndex forSequence:sequence]]];
     }
     else if(aTableView == audioClipsTableView)
     {
@@ -328,15 +285,6 @@
     else
     {
         [deleteCommandClusterFromSequenceButton setEnabled:NO];
-    }
-    
-    if([effectClustersTableView selectedRow] > -1)
-    {
-        [deleteEffectClusterFromSequenceButton setEnabled:YES];
-    }
-    else
-    {
-        [deleteEffectClusterFromSequenceButton setEnabled:NO];
     }
     
     if([audioClipsTableView selectedRow] > -1)

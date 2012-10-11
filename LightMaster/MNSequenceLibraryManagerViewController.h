@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@class MNData, MNSequenceControlBoxSelectorViewController, MNSequenceChannelGroupSelectorViewController, MNSequenceCommandClusterSelectorViewController, MNSequenceEffectClusterSelectorViewController, MNSequenceAudioClipSelectorViewController;
+@class MNData, MNSequenceControlBoxSelectorViewController, MNSequenceChannelGroupSelectorViewController, MNSequenceCommandClusterSelectorViewController, MNSequenceAudioClipSelectorViewController;
 
 @interface MNSequenceLibraryManagerViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
 {
@@ -40,13 +40,6 @@
     IBOutlet NSButton *deleteCommandClusterFromSequenceButton;
     IBOutlet NSButton *addCommandClusterToSequenceButton;
     
-    // Effect Clusters
-    IBOutlet MNSequenceEffectClusterSelectorViewController *sequenceEffectClusterSelectorViewController;
-    IBOutlet NSPopover *sequenceEffectClusterSelectorPopover;
-    IBOutlet NSTableView *effectClustersTableView;
-    IBOutlet NSButton *deleteEffectClusterFromSequenceButton;
-    IBOutlet NSButton *addEffectClusterToSequenceButton;
-    
     // Audio Clips
     IBOutlet MNSequenceAudioClipSelectorViewController *sequenceAudioClipSelectorViewController;
     IBOutlet NSPopover *sequenceAudioClipSelectorPopover;
@@ -67,9 +60,6 @@
 
 - (IBAction)deleteCommandClusterFromSequenceButtonPress:(id)sender;
 - (IBAction)addCommandClusterToSequenceButtonPress:(id)sender;
-
-- (IBAction)deleteEffectClusterFromSequenceButtonPress:(id)sender;
-- (IBAction)addEffectClusterToSequenceButtonPress:(id)sender;
 
 - (IBAction)deleteAudioClipFromSequenceButtonPress:(id)sender;
 - (IBAction)addAudioClipToSequenceButtonPress:(id)sender;

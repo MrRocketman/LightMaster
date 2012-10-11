@@ -86,7 +86,7 @@
     *effectClustersFilePaths (NSMutableArray)
         *effectClusterFilepath (NSString)
  
-    *effectCluster (NSMutableDictionary)
+    *effectCluster (NSMutableDictionary) - These create command clusters when they are "compiled"
         *versionNumber (NSNumber)
         *filePath (NSString)
         *description (NSString)
