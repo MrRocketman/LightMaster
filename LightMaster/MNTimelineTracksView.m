@@ -478,12 +478,12 @@
     // CurrentTime Marker Mouse checking
     if([triangle containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil)
     {
-        [data setCurrentTimeMarkerIsSelected:YES];
+        currentTimeMarkerIsSelected = YES;
         mouseEvent = nil;
     }
     else if(currentTimeMarkerIsSelected && mouseAction == MNMouseUp && mouseEvent != nil)
     {
-        [data setCurrentTimeMarkerIsSelected:NO];
+        currentTimeMarkerIsSelected = NO;
         mouseEvent = nil;
     }
 	
