@@ -431,6 +431,8 @@
         {
             case kSequenceLibrary:
                 [sequenceLibraryManagerViewController setSequence:nil];
+                [data setCurrentSequence:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
                 break;
             case kControlBoxLibrary:
                 [controlBoxLibraryManagerViewController setControlBoxIndex:-1];
