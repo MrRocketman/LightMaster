@@ -37,7 +37,6 @@
 		1A028A87161CD36E00B97A5B /* MNAudioClipStyle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A76161CD36E00B97A5B /* MNAudioClipStyle.tiff */; };
 		1A028A90161CD40000B97A5B /* MNData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A8F161CD40000B97A5B /* MNData.m */; };
 		1A028A9A161CD45700B97A5B /* MNToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A99161CD45700B97A5B /* MNToolbarViewController.m */; };
-		1A028AAF161CD91C00B97A5B /* MNCommandClusterEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AAE161CD91C00B97A5B /* MNCommandClusterEditorViewController.m */; };
 		1A028AB6161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AB5161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m */; };
 		1A028AB9161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AB8161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m */; };
 		1A028ABC161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ABB161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m */; };
@@ -47,8 +46,6 @@
 		1A028AC8161CDA2A00B97A5B /* MNSynchronizedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */; };
 		1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */; };
 		1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */; };
-		1A028AD1161CDAA800B97A5B /* MNCommandClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */; };
-		1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
@@ -119,8 +116,6 @@
 		1A028A91161CD41B00B97A5B /* MNData_Model_Description.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MNData_Model_Description.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1A028A98161CD45700B97A5B /* MNToolbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNToolbarViewController.h; sourceTree = "<group>"; };
 		1A028A99161CD45700B97A5B /* MNToolbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNToolbarViewController.m; sourceTree = "<group>"; };
-		1A028AAD161CD91C00B97A5B /* MNCommandClusterEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterEditorViewController.h; sourceTree = "<group>"; };
-		1A028AAE161CD91C00B97A5B /* MNCommandClusterEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterEditorViewController.m; sourceTree = "<group>"; };
 		1A028AB4161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxLibraryManagerViewController.h; sourceTree = "<group>"; };
 		1A028AB5161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNControlBoxLibraryManagerViewController.m; sourceTree = "<group>"; };
 		1A028AB7161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterLibraryManagerViewController.h; sourceTree = "<group>"; };
@@ -139,10 +134,6 @@
 		1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTracksView.m; sourceTree = "<group>"; };
 		1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineTrackHeadersView.h; sourceTree = "<group>"; };
 		1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTrackHeadersView.m; sourceTree = "<group>"; };
-		1A028ACF161CDAA800B97A5B /* MNCommandClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterView.h; sourceTree = "<group>"; };
-		1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterView.m; sourceTree = "<group>"; };
-		1A028AD2161CDAE100B97A5B /* MNCommandClusterChannelsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterChannelsView.h; sourceTree = "<group>"; };
-		1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelsView.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
@@ -279,8 +270,6 @@
 			children = (
 				1A028A2B161CD23D00B97A5B /* MNTimelineViewController.h */,
 				1A028A2C161CD23D00B97A5B /* MNTimelineViewController.m */,
-				1A028AAD161CD91C00B97A5B /* MNCommandClusterEditorViewController.h */,
-				1A028AAE161CD91C00B97A5B /* MNCommandClusterEditorViewController.m */,
 				1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */,
 				1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */,
 				1A028A98161CD45700B97A5B /* MNToolbarViewController.h */,
@@ -296,7 +285,6 @@
 				1A028AC6161CDA2A00B97A5B /* MNSynchronizedScrollView.h */,
 				1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */,
 				1AAA04A5162655210052A779 /* TimelineViews */,
-				1AAA04A6162655300052A779 /* CommandClusterViews */,
 				1A028A08161CD20800B97A5B /* MainMenu.xib */,
 			);
 			name = Views;
@@ -406,17 +394,6 @@
 				1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */,
 			);
 			name = TimelineViews;
-			sourceTree = "<group>";
-		};
-		1AAA04A6162655300052A779 /* CommandClusterViews */ = {
-			isa = PBXGroup;
-			children = (
-				1A028ACF161CDAA800B97A5B /* MNCommandClusterView.h */,
-				1A028AD0161CDAA800B97A5B /* MNCommandClusterView.m */,
-				1A028AD2161CDAE100B97A5B /* MNCommandClusterChannelsView.h */,
-				1A028AD3161CDAE100B97A5B /* MNCommandClusterChannelsView.m */,
-			);
-			name = CommandClusterViews;
 			sourceTree = "<group>";
 		};
 		1ADD72521623EF2C0071467F /* ControlBoxLibrary */ = {
@@ -582,7 +559,6 @@
 				1A028A2D161CD23D00B97A5B /* MNTimelineViewController.m in Sources */,
 				1A028A90161CD40000B97A5B /* MNData.m in Sources */,
 				1A028A9A161CD45700B97A5B /* MNToolbarViewController.m in Sources */,
-				1A028AAF161CD91C00B97A5B /* MNCommandClusterEditorViewController.m in Sources */,
 				1A028AB6161CD95A00B97A5B /* MNControlBoxLibraryManagerViewController.m in Sources */,
 				1A028AB9161CD96F00B97A5B /* MNCommandClusterLibraryManagerViewController.m in Sources */,
 				1A028ABC161CD99C00B97A5B /* MNEffectClusterLibraryManagerViewController.m in Sources */,
@@ -592,8 +568,6 @@
 				1A028AC8161CDA2A00B97A5B /* MNSynchronizedScrollView.m in Sources */,
 				1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */,
 				1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */,
-				1A028AD1161CDAA800B97A5B /* MNCommandClusterView.m in Sources */,
-				1A028AD4161CDAE100B97A5B /* MNCommandClusterChannelsView.m in Sources */,
 				1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */,
 				1AFA925B1623DA64000E13B7 /* MNSequenceControlBoxSelectorViewController.m in Sources */,
 				1AFA92601623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.m in Sources */,

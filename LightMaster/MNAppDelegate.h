@@ -9,7 +9,6 @@
 #import <Cocoa/Cocoa.h>
 #import "MNData.h"
 #import "MNTimelineViewController.h"
-#import "MNCommandClusterEditorViewController.h"
 #import "MNLibrariesViewController.h"
 #import "MNToolbarViewController.h"
 
@@ -17,8 +16,7 @@
 {
     IBOutlet MNData *data;
     
-    IBOutlet MNTimelineViewController *timelineViewController;
-    IBOutlet MNCommandClusterEditorViewController *commandClusterEditorViewController;
+    IBOutlet MNTimelineViewController *timelineViewController; 
     IBOutlet MNLibrariesViewController *librariesViewController;
     IBOutlet MNToolbarViewController *toolbarViewController;
 }
