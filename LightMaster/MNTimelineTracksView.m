@@ -322,10 +322,12 @@
 - (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
 {
     trackItems = 1;
+    int startingTrackIndex = trackIndex;
     
     for(int i = 0; i < [data commandsCountForCommandCluster:commandCluster]; i ++)
     {
         NSMutableDictionary *currentCommand = [data commandAtIndex:i fromCommandCluster:commandCluster];
+        trackIndex = [data channelIndexForCommand:currentCommand] + startingTrackIndex;
         
         NSRect commandRect;
         float x, y, width , height;
@@ -361,6 +363,12 @@
                 mouseDraggingEvent = MNCommandMouseDrag;
                 mouseDraggingEventObjectIndex = i;
                 [data moveCommandAtIndex:i byTime:[data xToTime:[mouseEvent deltaX]] whichIsPartOfCommandCluster:commandCluster];
+                // Mouse drag is changing the channel index
+                if(mousePoint.y > y + height || mousePoint.y < y)
+                {
+                    int newIndex = (self.frame.size.height - mousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
+                    [data setChannelIndex:newIndex forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+                }
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
             }
             
@@ -371,9 +379,6 @@
             [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.2 alpha:0.7] andStroke:YES];
             selectedCommand = nil;
         }
-        
-        // Used for drawing the channels
-        trackIndex++;
     }
 }
 
