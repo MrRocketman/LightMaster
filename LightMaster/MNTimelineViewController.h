@@ -24,6 +24,7 @@
     NSTimer *playTimer;
     NSDate *playButtonStartDate;
     float playButtonStartTime;
+    float newTimeForPlayTimer;
 }
 
 @property(readwrite, assign) float zoomLevel;

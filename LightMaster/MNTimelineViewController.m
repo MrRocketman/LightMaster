@@ -16,6 +16,8 @@
 - (void)skipBackButtonPress:(NSNotification *)aNotification;
 - (void)playButtonPress:(NSNotification *)aNotification;
 - (void)recordButtonPress:(NSNotification *)aNotification;
+- (void)currentTimeChange:(NSNotification *)aNotification;
+
 - (void)playTimerFire:(NSTimer *)theTimer;
 
 @end
@@ -37,6 +39,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(skipBackButtonPress:) name:@"SkipBackButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playButtonPress:) name:@"PlayButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordButtonPress:) name:@"RecordButtonPress" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentTimeChange:) name:@"CurrentTimeChange" object:nil];
         
         // Update the zoom level
         [data setZoomLevel:self.zoomLevel];
@@ -104,12 +107,24 @@
     
 }
 
+- (void)currentTimeChange:(NSNotification *)aNotification
+{
+    // Current time changed externally while where sending time updates based on the timer. We need to change some things to continue functioning
+    if(playTimer && (int)([data currentTime] * 1000) != (int)(newTimeForPlayTimer * 1000))
+    {
+        playButtonStartDate = [NSDate date];
+        playButtonStartTime = [data currentTime];
+        [data setCurrentSequenceIsPlaying:NO];
+        [data setCurrentSequenceIsPlaying:YES];
+    }
+}
+
 - (void)playTimerFire:(NSTimer *)theTimer
 {
     float timeDifference = [[NSDate date] timeIntervalSinceDate:playButtonStartDate];
-    float newTime = playButtonStartTime + timeDifference;
-    [data setCurrentTime:newTime];
-    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:newTime] - timelineTracksView.superview.frame.size.width / 2, 0)];
+    newTimeForPlayTimer = playButtonStartTime + timeDifference;
+    [data setCurrentTime:newTimeForPlayTimer];
+    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:newTimeForPlayTimer] - timelineTracksView.superview.frame.size.width / 2, 0)];
     [timelineTracksView setNeedsDisplay:YES];
 }
 

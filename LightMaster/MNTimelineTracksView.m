@@ -467,6 +467,7 @@
     if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
     {
         [data setCurrentTime:[data xToTime:mousePoint.x]];
+        NSLog(@"mouseClick currentTime:%f", [data currentTime]);
         mouseEvent = nil;
     }
 }
@@ -512,11 +513,14 @@
 
 - (void)updateTimeAtLeftEdgeOfTimelineView:(NSTimer *)theTimer;
 {
-    BOOL didAutoscroll = [[self superview] autoscroll:mouseEvent];
-    if(didAutoscroll)
+    if(mouseEvent)
     {
-        [data setCurrentTime:[data xToTime:[data currentTime] + mouseEvent.deltaX]];
-        [self setNeedsDisplay:YES];
+        BOOL didAutoscroll = [[self superview] autoscroll:mouseEvent];
+        if(didAutoscroll)
+        {
+            [data setCurrentTime:[data xToTime:[data currentTime] + mouseEvent.deltaX]];
+            [self setNeedsDisplay:YES];
+        }
     }
 }
 
