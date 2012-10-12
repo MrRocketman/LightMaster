@@ -20,6 +20,16 @@ enum
     MNChannelGroup
 };
 
+enum
+{
+    MNMouseDragNotInUse,
+    MNAudioClipMouseDrag,
+    MNControlBoxCommandClusterMouseDrag,
+    MNChannelGroupCommandClusterMouseDrag,
+    MNCommandMouseDrag,
+    MNTimeMarkerMouseDrag
+};
+
 @interface MNTimelineTracksView : NSView
 {
     IBOutlet MNData *data;
@@ -35,6 +45,8 @@ enum
     int mouseAction;
     NSEvent *mouseEvent;
     NSTimer *autoScrollTimer;
+    int mouseDraggingEvent;
+    int mouseDraggingEventObjectIndex;
     BOOL autoscrollTimerIsRunning;
     BOOL currentTimeMarkerIsSelected;
     

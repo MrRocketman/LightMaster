@@ -159,7 +159,7 @@
             NSRect audioClipRect = NSMakeRect([data timeToX:[data startTimeForAudioClip:currentAudioClip]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForAudioClip:currentAudioClip] - [data startTimeForAudioClip:currentAudioClip]], TRACK_ITEM_HEIGHT - 2);
             
             // AudioClip Mouse Checking here
-            if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint] && mouseEvent != nil))
+            if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNAudioClipMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
             {
                 [self drawRect:audioClipRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
                 
@@ -170,6 +170,8 @@
                 }
                 else if(mouseAction == MNMouseDragged)
                 {
+                    mouseDraggingEvent = MNAudioClipMouseDrag;
+                    mouseDraggingEventObjectIndex = i;
                     [data moveAudioClip:currentAudioClip byTime:[data xToTime:[mouseEvent deltaX]]];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                 }
@@ -207,7 +209,7 @@
                 NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_ITEM_HEIGHT * trackItems - 2);
                 
                 // Command Cluster is selected
-                if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseEvent != nil))
+                if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Draw the commands first and check for mouse clicks
                     [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
@@ -224,6 +226,8 @@
                         }
                         else if(mouseAction == MNMouseDragged)
                         {
+                            mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
+                            mouseDraggingEventObjectIndex = i;
                             [data moveCommandCluster:currentCommandCluster byTime:[data xToTime:[mouseEvent deltaX]]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                         }
@@ -270,7 +274,7 @@
                 NSRect commandClusterRect = NSMakeRect([data timeToX:[data startTimeForCommandCluster:currentCommandCluster]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForCommandCluster:currentCommandCluster] - [data startTimeForCommandCluster:currentCommandCluster]], TRACK_ITEM_HEIGHT * trackItems - 2);
                 
                 // Command Cluster Mouse Checking here
-                if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] && mouseEvent != nil))
+                if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNChannelGroupCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Draw the commands first and check for mouse clicks
                     [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
@@ -287,6 +291,8 @@
                         }
                         else if(mouseAction == MNMouseDragged)
                         {
+                            mouseDraggingEvent = MNChannelGroupCommandClusterMouseDrag;
+                            mouseDraggingEventObjectIndex = i;
                             [data moveCommandCluster:currentCommandCluster byTime:[data xToTime:[mouseEvent deltaX]]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                         }
@@ -341,7 +347,7 @@
         commandRect = NSMakeRect(x, y, width, height);
         
         // Command Mouse Checking Here
-        if((mouseAction == MNMouseDown || mouseAction == MNMouseDragged) && ([[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint] && mouseEvent != nil))
+        if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNCommandMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
         {
             [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
             
@@ -352,6 +358,8 @@
             }
             else if(mouseAction == MNMouseDragged)
             {
+                mouseDraggingEvent = MNCommandMouseDrag;
+                mouseDraggingEventObjectIndex = i;
                 [data moveCommandAtIndex:i byTime:[data xToTime:[mouseEvent deltaX]] whichIsPartOfCommandCluster:commandCluster];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
             }
@@ -449,8 +457,10 @@
     [self drawInvertedTriangleAndLineWithTipPoint:trianglePoint width:20 andHeight:20];
     
     // Mouse Checking
-    if(mouseAction == MNMouseDragged && currentTimeMarkerIsSelected && mouseEvent != nil)
+    if(mouseAction == MNMouseDragged && (mouseDraggingEvent == MNMouseDragNotInUse || mouseDraggingEvent == MNTimeMarkerMouseDrag) && currentTimeMarkerIsSelected && mouseEvent != nil)
     {
+        mouseDraggingEvent = MNTimeMarkerMouseDrag;
+        mouseDraggingEventObjectIndex = 0;
         float newCurrentTime = [data xToTime:mousePoint.x];
         
         // Bind the minimum time to 0
@@ -575,6 +585,8 @@
 	mousePoint = [self convertPoint:eventLocation fromView:nil];
     mouseAction = MNMouseUp;
     mouseEvent = theEvent;
+    mouseDraggingEvent = MNMouseDragNotInUse;
+    mouseDraggingEventObjectIndex = -1;
     
     [autoScrollTimer invalidate];
     autoScrollTimer = nil;
