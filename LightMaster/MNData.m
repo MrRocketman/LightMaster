@@ -15,6 +15,7 @@
 @interface MNData()
 
 - (NSString *)findOrCreateDirectory:(NSSearchPathDirectory)searchPathDirectory inDomain:(NSSearchPathDomainMask)domainMask appendPathComponent:(NSString *)appendComponent error:(NSError **)errorOut;
+- (NSString *)applicationSupportDirectory;
 - (void)loadLibaries;
 - (void)saveLibraries;
 - (void)saveControlBoxLibrary;
@@ -41,7 +42,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying;
 
 #pragma mark - System
 
@@ -442,15 +443,86 @@
 	return (timeInterval * zoomLevel * PIXEL_TO_ZOOM_RATIO);
 }
 
+- (void)setCurrentSequence:(NSMutableDictionary *)newSequence
+{
+    currentSequence = newSequence;
+    
+    currentSequenceNSSounds = nil;
+    currentSequenceNSSounds = [[NSMutableArray alloc] init];
+    
+    // Load the sounds
+    for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]]]];
+        NSSound *newSound = [[NSSound alloc] initWithContentsOfFile:soundFilePath byReference:NO];
+        [newSound setName:[self audioClipFilePathAtIndex:i forSequence:currentSequence]];
+        [newSound play];
+        [newSound stop];
+        [currentSequenceNSSounds addObject:newSound];
+    }
+}
+
+- (NSMutableDictionary *)currentSequence
+{
+    return currentSequence;
+}
+
+- (void)setCurrentTime:(float)newTime
+{
+    currentTime = newTime;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CurrentTimeChange" object:nil];
+    
+    if(currentSequenceIsPlaying)
+    {
+        // Play/Pause the necessary NSSounds
+        for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
+        {
+            float startTime = [self startTimeForAudioClip:[self audioClipFromFilePath:[[currentSequenceNSSounds objectAtIndex:i] name]]];
+            float endTime = [self endTimeForAudioClip:[self audioClipFromFilePath:[[currentSequenceNSSounds objectAtIndex:i] name]]];
+            
+            // Play the sound
+            if(currentTime >= startTime && currentTime < endTime && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == NO)
+            {
+                float seekTime = [self seekTimeForAudioClip:[self audioClipFromFilePath:[[currentSequenceNSSounds objectAtIndex:i] name]]];
+                
+                // Seek to the appropriate time
+                [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] setCurrentTime:seekTime + currentTime - startTime];
+                [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] play];
+            }
+            // Pause the sound
+            else if((currentTime < startTime || currentTime >= endTime) && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == YES)
+            {
+                [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] stop];
+            }
+        }
+    }
+}
+
 - (float)currentTime
 {
     return currentTime;
 }
 
-- (void)setCurrentTime:(float)newCurrentTime
+- (void)setCurrentSequenceIsPlaying:(BOOL)isPlaying
 {
-    currentTime = newCurrentTime;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CurrentTimeChange" object:nil];
+    currentSequenceIsPlaying = isPlaying;
+    
+    // If the user pauses, pause all sounds
+    if(!currentSequenceIsPlaying)
+    {
+        for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
+        {
+            if([(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == YES)
+            {
+                [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] stop];
+            }
+        }
+    }
+}
+
+- (BOOL)currentSequenceIsPlaying
+{
+    return currentSequenceIsPlaying;
 }
 
 - (int)trackItemsCount
@@ -711,6 +783,17 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    // Load the NSSound
+    if(sequence == currentSequence)
+    {
+        NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipFromFilePath:filePath]]];
+        NSSound *newSound = [[NSSound alloc] initWithContentsOfFile:soundFilePath byReference:NO];
+        [newSound setName:filePath];
+        [newSound play];
+        [newSound stop];
+        [currentSequenceNSSounds addObject:newSound];
+    }
 }
 
 - (void)removeAudioClipFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -721,6 +804,18 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    // Unload the NSSound
+    if(sequence == currentSequence)
+    {
+        for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
+        {
+            if([[[currentSequenceNSSounds objectAtIndex:i] name] isEqualToString:filePath])
+            {
+                [currentSequenceNSSounds removeObjectAtIndex:i];
+            }
+        }
+    }
 }
 
 - (void)addControlBoxFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence

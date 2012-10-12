@@ -41,6 +41,8 @@
         
         // Register for the notifications on the scrollView
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronizedViewContentBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[self superview]];
+        
+        audioClipNSSounds = [[NSMutableArray alloc] init];
     }
     
     return self;

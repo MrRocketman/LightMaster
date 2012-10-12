@@ -41,6 +41,8 @@ enum
     NSMutableDictionary *selectedCommandCluster;
     NSMutableDictionary *selectedCommand;
     NSMutableDictionary *selectedAudioClip;
+    
+    NSMutableArray *audioClipNSSounds;
 }
 
 @end

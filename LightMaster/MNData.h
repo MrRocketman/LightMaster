@@ -30,18 +30,20 @@ enum
     NSMutableDictionary *effectLibrary;
     
     NSString *libraryFolder;
-    
     NSMutableDictionary *currentSequence;
+    NSMutableArray *currentSequenceNSSounds;
     float currentTime;
     float timeAtLeftEdgeOfTimelineView;
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
+    BOOL currentSequenceIsPlaying;
 }
 
-@property(readonly) NSString *libraryFolder;
-@property(readwrite, strong) NSMutableDictionary *currentSequence;
-@property(readwrite) float currentTime;
-@property(readwrite) float timeAtLeftEdgeOfTimelineView;
-@property(readwrite) float zoomLevel;
+@property() NSString *libraryFolder;
+@property(strong) NSMutableDictionary *currentSequence;
+@property() float currentTime;
+@property() float timeAtLeftEdgeOfTimelineView;
+@property() float zoomLevel;
+@property() BOOL currentSequenceIsPlaying;
 
 #pragma mark - Other Methods
 // Other Methods
@@ -49,7 +51,6 @@ enum
 - (float)xToTime:(int)x;
 - (int)widthForTimeInterval:(float)timeInterval;
 - (int)trackItemsCount;
-- (NSString *)applicationSupportDirectory;
 
 #pragma mark - Sequence Library Methods
 // Management Methods

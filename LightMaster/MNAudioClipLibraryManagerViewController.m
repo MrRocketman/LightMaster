@@ -124,7 +124,7 @@
              NSString *filePath = [[openPanel URL] path];
              NSString *newFilePath;
              //NSLog(@"filePath:%@", filePath);
-             NSString *libraryFolder = [data applicationSupportDirectory];
+             NSString *libraryFolder = [data libraryFolder];
              NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", libraryFolder];
              NSRange textRange = [[filePath lowercaseString] rangeOfString:[audioClipLibraryDirectory lowercaseString]];
              
@@ -173,7 +173,7 @@
              NSString *filePath = [[openPanel URL] path];
              NSString *newFilePath;
              //NSLog(@"filePath:%@", filePath);
-             NSString *libraryFolder = [data applicationSupportDirectory];
+             NSString *libraryFolder = [data libraryFolder];
              NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", libraryFolder];
              NSRange textRange = [[filePath lowercaseString] rangeOfString:[audioClipLibraryDirectory lowercaseString]];
              

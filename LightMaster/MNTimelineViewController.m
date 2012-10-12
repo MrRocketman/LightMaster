@@ -87,12 +87,15 @@
     {
         [playTimer invalidate];
         playTimer = nil;
+        [data setCurrentSequenceIsPlaying:NO];
+        [timelineTracksView setNeedsDisplay:YES];
     }
     else
     {
         playTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(playTimerFire:) userInfo:nil repeats:YES];
         playButtonStartDate = [NSDate date];
         playButtonStartTime = [data currentTime];
+        [data setCurrentSequenceIsPlaying:YES];
     }
 }
 
