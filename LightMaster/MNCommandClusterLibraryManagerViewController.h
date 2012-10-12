@@ -17,7 +17,7 @@
     IBOutlet NSTextField *descriptionTextField;
     IBOutlet NSTextField *startTimeTextField;
     IBOutlet NSTextField *endTimeTextField;
-    IBOutlet NSTextField *adjustByTimeTextTextField;
+    IBOutlet NSTextField *moveClusterByTimeTextField;
     
     IBOutlet MNCommandClusterChannelGroupSelectorViewController *commandClusterChannelGroupSelectorViewController;
     IBOutlet NSPopover *commandClusterChannelGroupSelectorPopover;
@@ -34,6 +34,7 @@
     IBOutlet NSButton *chooseChannelForCommandButton;
     IBOutlet NSButton *addCommandButton;
     IBOutlet NSButton *deleteCommandButton;
+    IBOutlet NSTextField *moveCommandByTimeTextField;
 }
 
 @property() int commandClusterIndex;

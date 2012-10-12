@@ -467,7 +467,6 @@
     if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
     {
         [data setCurrentTime:[data xToTime:mousePoint.x]];
-        NSLog(@"mouseClick currentTime:%f", [data currentTime]);
         mouseEvent = nil;
     }
 }

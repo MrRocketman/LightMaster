@@ -63,7 +63,7 @@
         [descriptionTextField setEnabled:YES];
         [startTimeTextField setEnabled:YES];
         [endTimeTextField setEnabled:YES];
-        [adjustByTimeTextTextField setEnabled:YES];
+        [moveClusterByTimeTextField setEnabled:YES];
         
         [chooseControlBoxForCommandClusterButton setEnabled:YES];
         [chooseChannelGroupForCommandClusterButton setEnabled:YES];
@@ -93,7 +93,7 @@
         [descriptionTextField setEnabled:NO];
         [startTimeTextField setEnabled:NO];
         [endTimeTextField setEnabled:NO];
-        [adjustByTimeTextTextField setEnabled:NO];
+        [moveClusterByTimeTextField setEnabled:NO];
         
         [chooseControlBoxForCommandClusterButton setEnabled:NO];
         [chooseChannelGroupForCommandClusterButton setEnabled:NO];
@@ -290,11 +290,13 @@
     {
         [deleteCommandButton setEnabled:YES];
         [chooseChannelForCommandButton setEnabled:YES];
+        [moveCommandByTimeTextField setEnabled:YES];
     }
     else
     {
         [deleteCommandButton setEnabled:NO];
         [chooseChannelForCommandButton setEnabled:NO];
+        [moveCommandByTimeTextField setEnabled:NO];
     }
 }
 
@@ -325,10 +327,15 @@
     {
         [data setEndTime:[endTimeTextField floatValue] forCommandcluster:[self commandCluster]];
     }
-    else if([aNotification object] == adjustByTimeTextTextField)
+    else if([aNotification object] == moveClusterByTimeTextField)
     {
-        [data moveCommandCluster:[self commandCluster] byTime:[adjustByTimeTextTextField floatValue]];
-        [adjustByTimeTextTextField setFloatValue:0.0];
+        [data moveCommandCluster:[self commandCluster] byTime:[moveClusterByTimeTextField floatValue]];
+        [moveClusterByTimeTextField setFloatValue:0.0];
+    }
+    else if([aNotification object] == moveCommandByTimeTextField)
+    {
+        [data moveCommandAtIndex:(int)[commandsTableView selectedRow] byTime:[moveCommandByTimeTextField floatValue] whichIsPartOfCommandCluster:[self commandCluster]];
+        [moveCommandByTimeTextField setFloatValue:0.0];
     }
     else if([[aNotification userInfo] objectForKey:@"NSFieldEditor"])
     {
