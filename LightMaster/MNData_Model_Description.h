@@ -74,7 +74,7 @@
             *command (NSMutableDictionary)
                 *startTime (NSNumber) (float in seconds)
                 *endTime (NSNumber) (float in seconds)
-                *channelIndex (NSNumber) (channelIndex can also be though of as itemData index when the command is for a channelGroup)
+                *channelIndex (NSNumber) (channelIndex can also be though of as itemData index when the command is for a channelGroup, it is the channel number (graphically and the one that gets sent out for the command))
                 *brightness (NSNumber) (int 0-100)
                 *fadeInDuration (NSNumber) (float in seconds)
                 *fadeOutDuration (NSNumber) (float in seconds)
