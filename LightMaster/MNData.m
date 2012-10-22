@@ -7,6 +7,9 @@
 //
 
 #import "MNData.h"
+#import "AMSerialPort.h"
+#import "AMSerialPortList.h"
+#import "AMSerialPortAdditions.h"
 
 #define LARGEST_NUMBER 999999
 #define LIBRARY_VERSION_NUMBER 1.0
@@ -539,6 +542,83 @@
     }
     
     return trackItemsCount;
+}
+
+#pragma mark -
+#pragma mark SerialPort
+
+- (void)disconnect
+{
+	[serialPort close];
+    self.serialPort = nil;
+
+	NSLog(@"\n\nDisconnected\n\n\n");
+}
+
+- (void)initPort:(NSString *)deviceName
+{
+	[self disconnect];
+	
+	if (![deviceName isEqualToString:[serialPort bsdPath]]) {
+		[serialPort close];
+		
+        self.serialPort = [[AMSerialPort alloc] init:deviceName withName:deviceName type:(NSString *)CFSTR(kIOSerialBSDModemType)];
+		[serialPort setDelegate:self];
+		
+		if ([serialPort open]) {
+			
+			//Then I suppose we connected!
+			NSLog(@"successfully connected");
+			
+			//The standard speeds defined in termios.h are listed near
+			//the top of AMSerialPort.h. Those can be preceeded with a 'B' as below. However, I've had success
+			//with non standard rates (such as the one for the MIDI protocol). Just omit the 'B' for those.
+			
+			[serialPort setSpeed:B115200];
+			//[serialPort setSpeed:B9600];
+			
+			// listen for data in a separate thread
+			[serialPort readDataInBackground];
+		}
+		else { // an error occured while creating port
+			
+			NSLog(@"error connecting");
+			self.serialPort = nil;
+		}
+	}
+}
+
+- (void)serialPortReadData:(NSDictionary *)dataDictionary
+{
+	AMSerialPort *sendPort = [dataDictionary objectForKey:@"serialPort"];
+	NSData *data = [dataDictionary objectForKey:@"data"];
+	
+	if ([data length] > 0) {
+		
+		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+		NSLog(@"Serial Port Data Received: %@",receivedText);
+		
+		// ToDo: Do something with received text
+		
+		// continue listening
+		[sendPort readDataInBackground];
+	}
+	else
+	{
+		// port closed
+		NSLog(@"Port was closed on a readData operation...not good!");
+	}
+}
+
+- (void)sendText:(NSString *)text
+{
+	if([serialPort isOpen])
+	{
+		//NSLog(@"Writing:%@:", text);
+		[serialPort writeString:text usingEncoding:NSUTF8StringEncoding error:NULL];
+	}
+	else
+		NSLog(@"Can't send:%@", text);
 }
 
 #pragma mark - Sequence Library Methods

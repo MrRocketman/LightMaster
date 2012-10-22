@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class AMSerialPort;
+
 // See 'MNData_Model_Description'
 
 // This is how many pixels per second there are are a zoom level of 1
@@ -36,6 +38,8 @@ enum
     float timeAtLeftEdgeOfTimelineView;
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
     BOOL currentSequenceIsPlaying;
+    
+    AMSerialPort *serialPort;
 }
 
 @property() NSString *libraryFolder;
@@ -44,6 +48,7 @@ enum
 @property() float timeAtLeftEdgeOfTimelineView;
 @property() float zoomLevel;
 @property() BOOL currentSequenceIsPlaying;
+@property() AMSerialPort *serialPort;
 
 #pragma mark - Other Methods
 // Other Methods
