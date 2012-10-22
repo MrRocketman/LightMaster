@@ -169,13 +169,14 @@
                 if(mouseAction == MNMouseDown)
                 {
                     selectedAudioClip = currentAudioClip;
+                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForAudioClip:currentAudioClip]];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectAudioClip" object:selectedAudioClip];
                 }
                 else if(mouseAction == MNMouseDragged)
                 {
                     mouseDraggingEvent = MNAudioClipMouseDrag;
                     mouseDraggingEventObjectIndex = i;
-                    [data moveAudioClip:currentAudioClip byTime:[data xToTime:[mouseEvent deltaX]]];
+                    [data moveAudioClip:currentAudioClip toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x]];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                 }
                 

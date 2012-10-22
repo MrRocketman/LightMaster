@@ -2010,6 +2010,13 @@
     [self saveDictionaryToItsFilePath:audioClip];
 }
 
+- (void)moveAudioClip:(NSMutableDictionary *)audioClip toStartTime:(float)startTime
+{
+    float startTimeOffset = startTime - [self startTimeForAudioClip:audioClip];
+    
+    [self moveAudioClip:audioClip byTime:startTimeOffset];
+}
+
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"seekTime"];

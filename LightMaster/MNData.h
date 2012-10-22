@@ -232,13 +232,13 @@ enum
 - (void)setStartTime:(float)time forCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setEndTime:(float)time forCommandcluster:(NSMutableDictionary *)commandCluster;
 - (void)moveCommandCluster:(NSMutableDictionary *)commandCluster byTime:(float)time;
-- (void)moveCommandCluster:(NSMutableDictionary *)commandCluster toStartTime:(float)time;
+- (void)moveCommandCluster:(NSMutableDictionary *)commandCluster toStartTime:(float)startTime;
 - (int)createCommandAndReturnNewCommandIndexForCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)removeCommand:(NSMutableDictionary *)command fromCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setStartTime:(float)time forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setEndTime:(float)time forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)moveCommandAtIndex:(int)index byTime:(float)time whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
-- (void)moveCommandAtIndex:(int)index toStartTime:(float)time whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
+- (void)moveCommandAtIndex:(int)index toStartTime:(float)startTime whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setChannelIndex:(int)channelIndex forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setBrightness:(int)brightness forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
 - (void)setFadeInDuration:(int)fadeInDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster;
@@ -312,6 +312,7 @@ enum
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time;
+- (void)moveAudioClip:(NSMutableDictionary *)audioClip toStartTime:(float)startTime;
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 
 @end
