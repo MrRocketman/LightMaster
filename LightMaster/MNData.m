@@ -1574,9 +1574,16 @@
         [self setEndTime:([self endTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time) forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
     }
     
-    [commandCluster setObject:[NSNumber numberWithFloat:[self startTimeForCommandCluster:commandCluster] + time] forKey:@"startTime"];
-    [commandCluster setObject:[NSNumber numberWithFloat:[self endTimeForCommandCluster:commandCluster] + time] forKey:@"endTime"];
+    [self setStartTime:[self startTimeForCommandCluster:commandCluster] + time forCommandCluster:commandCluster];
+    [self setEndTime:[self endTimeForCommandCluster:commandCluster] + time forCommandcluster:commandCluster];
     [self saveDictionaryToItsFilePath:commandCluster];
+}
+
+- (void)moveCommandCluster:(NSMutableDictionary *)commandCluster toStartTime:(float)startTime
+{
+    float startTimeOffset = startTime - [self startTimeForCommandCluster:commandCluster];
+    
+    [self moveCommandCluster:commandCluster byTime:startTimeOffset];
 }
 
 - (void)setAudioClipFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
@@ -1635,6 +1642,13 @@
 {
     [self setStartTime:[self startTimeForCommand:[self commandAtIndex:index fromCommandCluster:commandCluster]] + time forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
     [self setEndTime:[self endTimeForCommand:[self commandAtIndex:index fromCommandCluster:commandCluster]] + time forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
+}
+
+- (void)moveCommandAtIndex:(int)index toStartTime:(float)startTime whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
+{
+    float startTimeOffset = startTime - [self startTimeForCommand:[self commandAtIndex:index fromCommandCluster:commandCluster]];
+    
+    [self moveCommandAtIndex:index byTime:startTimeOffset whichIsPartOfCommandCluster:commandCluster];
 }
 
 - (void)setChannelIndex:(int)channelIndex forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster

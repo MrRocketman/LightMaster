@@ -43,6 +43,8 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronizedViewContentBoundsDidChange:) name:NSViewBoundsDidChangeNotification object:[self superview]];
         
         audioClipNSSounds = [[NSMutableArray alloc] init];
+        
+        mouseDraggingEventObjectIndex = -1;
     }
     
     return self;
@@ -128,11 +130,12 @@
 - (void)drawRect:(NSRect)aRect withCornerRadius:(float)radius fillColor:(NSColor *)color andStroke:(BOOL)yesOrNo
 {
     NSBezierPath *thePath = [NSBezierPath bezierPathWithRoundedRect:aRect xRadius:radius yRadius:radius];
-	[color setFill];
-	
-	//NSLog(@"drawRect x:%f, y:%f, w:%f, h:%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     
-	[[NSColor whiteColor] setStroke];
+	[color setFill];
+    [[NSColor whiteColor] setStroke];
+	
+    //NSLog(@"drawRect x:%f, y:%f, w:%f, h:%f", aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height);
+    //NSLog(@"Color: %@", color);
 	if(yesOrNo)
     {
         [thePath stroke];
@@ -211,28 +214,29 @@
                 // Command Cluster is selected
                 if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
-                    // Draw the commands first and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
+                    // Check the commands for mouse down clicks
+                    [self checkMouseEventForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
                     {
-                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-                        
                         if(mouseAction == MNMouseDown)
                         {
                             selectedCommandCluster = currentCommandCluster;
+                            mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommandCluster:currentCommandCluster]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
                         }
                         else if(mouseAction == MNMouseDragged)
                         {
                             mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
                             mouseDraggingEventObjectIndex = i;
-                            [data moveCommandCluster:currentCommandCluster byTime:[data xToTime:[mouseEvent deltaX]]];
+                            [data moveCommandCluster:currentCommandCluster toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                         }
                         
                         mouseEvent = nil;
+                        
+                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
                     }
                     // Else just draw normally
                     else
@@ -246,10 +250,10 @@
                 {
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.7] andStroke:YES];
                     selectedCommandCluster = nil;
-                    
-                    // Draw the commands first and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
                 }
+                
+                // Draw the commands and check for mouse drags
+                [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
             }
         }
     }
@@ -276,28 +280,29 @@
                 // Command Cluster Mouse Checking here
                 if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNChannelGroupCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
-                    // Draw the commands first and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    // Check the commands for mouse clicks
+                    [self checkMouseEventForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
                     {
-                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-                        
                         if(mouseAction == MNMouseDown)
                         {
                             selectedCommandCluster = currentCommandCluster;
+                            mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommandCluster:currentCommandCluster]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
                         }
                         else if(mouseAction == MNMouseDragged)
                         {
                             mouseDraggingEvent = MNChannelGroupCommandClusterMouseDrag;
                             mouseDraggingEventObjectIndex = i;
-                            [data moveCommandCluster:currentCommandCluster byTime:[data xToTime:[mouseEvent deltaX]]];
+                            [data moveCommandCluster:currentCommandCluster byTime:[data xToTime:mousePoint.x - mouseDownPoint.x]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                         }
                         
                         mouseEvent = nil;
+                        
+                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
                     }
                     // Just draw normally
                     else
@@ -310,10 +315,10 @@
                 {
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.7] andStroke:YES];
                     selectedCommandCluster = nil;
-                    
-                    // Draw the commands and check for mouse clicks
-                    [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                 }
+                
+                // Draw the commands first and check for mouse clicks
+                [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
             }
         }
     }
@@ -349,10 +354,8 @@
         commandRect = NSMakeRect(x, y, width, height);
         
         // Command Mouse Checking Here
-        if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNCommandMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+        if(((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNCommandMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
         {
-            [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-            
             if(mouseAction == MNMouseDown)
             {
                 selectedCommand = currentCommand;
@@ -362,7 +365,73 @@
             {
                 mouseDraggingEvent = MNCommandMouseDrag;
                 mouseDraggingEventObjectIndex = i;
-                [data moveCommandAtIndex:i byTime:[data xToTime:[mouseEvent deltaX]] whichIsPartOfCommandCluster:commandCluster];
+                [data moveCommandAtIndex:i toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
+                // Mouse drag is changing the channel index
+                if(mousePoint.y > y + height || mousePoint.y < y)
+                {
+                    int newIndex = (self.frame.size.height - mousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
+                    [data setChannelIndex:newIndex forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
+            }
+            
+            mouseEvent = nil;
+            
+            [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+        }
+        else
+        {
+            [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.2 alpha:0.7] andStroke:YES];
+            selectedCommand = nil;
+        }
+    }
+}
+
+- (void)checkMouseEventForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
+{
+    trackItems = 1;
+    int startingTrackIndex = trackIndex;
+    
+    for(int i = 0; i < [data commandsCountForCommandCluster:commandCluster]; i ++)
+    {
+        NSMutableDictionary *currentCommand = [data commandAtIndex:i fromCommandCluster:commandCluster];
+        trackIndex = [data channelIndexForCommand:currentCommand] + startingTrackIndex;
+        
+        NSRect commandRect;
+        float x, y, width , height;
+        x  = [data timeToX:[data startTimeForCommand:currentCommand]];
+        y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
+        width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
+        height = TRACK_ITEM_HEIGHT - 2;
+        
+        // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
+        if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
+        {
+            width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommand:currentCommand]];
+        }
+        // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
+        else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
+        {
+            x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
+        }
+        commandRect = NSMakeRect(x, y, width, height);
+        
+        // Command Mouse Checking Here
+        if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNCommandMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+        {
+            //[self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+            
+            if(mouseAction == MNMouseDown)
+            {
+                selectedCommand = currentCommand;
+                mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:currentCommand, commandCluster, nil]];
+            }
+            else if(mouseAction == MNMouseDragged)
+            {
+                mouseDraggingEvent = MNCommandMouseDrag;
+                mouseDraggingEventObjectIndex = i;
+                [data moveCommandAtIndex:i toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
                 // Mouse drag is changing the channel index
                 if(mousePoint.y > y + height || mousePoint.y < y)
                 {
@@ -376,7 +445,7 @@
         }
         else
         {
-            [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.2 alpha:0.7] andStroke:YES];
+            //[self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.2 alpha:0.7] andStroke:YES];
             selectedCommand = nil;
         }
     }
@@ -465,7 +534,7 @@
     if(mouseAction == MNMouseDragged && (mouseDraggingEvent == MNMouseDragNotInUse || mouseDraggingEvent == MNTimeMarkerMouseDrag) && currentTimeMarkerIsSelected && mouseEvent != nil)
     {
         mouseDraggingEvent = MNTimeMarkerMouseDrag;
-        mouseDraggingEventObjectIndex = 0;
+        mouseDraggingEventObjectIndex = -1;
         float newCurrentTime = [data xToTime:mousePoint.x];
         
         // Bind the minimum time to 0
@@ -564,6 +633,7 @@
 {
 	NSPoint eventLocation = [theEvent locationInWindow];
 	mousePoint = [self convertPoint:eventLocation fromView:nil];
+    mouseDownPoint = mousePoint;
     mouseAction = MNMouseDown;
     mouseEvent = theEvent;
     
