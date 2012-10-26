@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AMSerialPort.h"
+#import "ORSSerialPort.h"
+#import "ORSSerialPortManager.h"
 
 // See 'MNData_Model_Description'
 
@@ -21,7 +22,7 @@ enum
     MNMouseUp
 };
 
-@interface MNData : NSObject <AMSerialPortReadDelegate>
+@interface MNData : NSObject <ORSSerialPortDelegate>
 {
     NSMutableDictionary *sequenceLibrary;
     NSMutableDictionary *controlBoxLibrary;
@@ -38,8 +39,8 @@ enum
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
     BOOL currentSequenceIsPlaying;
     
-    
-    AMSerialPort *serialPort;
+    ORSSerialPort *serialPort;
+    ORSSerialPortManager *serialPortManager;
     BOOL channelState[256][1024]; // This represents all of the channels. They are accessed as follows: [controlBoxIndex][channelIndex]
 }
 
@@ -49,7 +50,8 @@ enum
 @property() float timeAtLeftEdgeOfTimelineView;
 @property() float zoomLevel;
 @property() BOOL currentSequenceIsPlaying;
-@property() AMSerialPort *serialPort;
+@property() ORSSerialPort *serialPort;
+@property() ORSSerialPortManager *serialPortManager;
 
 #pragma mark - Other Methods
 // Other Methods
@@ -57,10 +59,6 @@ enum
 - (float)xToTime:(int)x;
 - (int)widthForTimeInterval:(float)timeInterval;
 - (int)trackItemsCount;
-
-#pragma mark - Serial Port
-
-- (void)openSerialPort:(NSString *)deviceName;
 
 #pragma mark - Sequence Library Methods
 // Management Methods

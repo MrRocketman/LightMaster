@@ -7,7 +7,7 @@
 //
 
 #import "MNToolbarViewController.h"
-#import "AMSerialPortList.h"
+#import "ORSSerialPortManager.h"
 
 
 @interface MNToolbarViewController ()
@@ -35,10 +35,6 @@
 - (void)awakeFromNib
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCurrentTime:) name:@"CurrentTimeChange" object:nil];
-    // register for port add/remove notification
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddPorts:) name:AMSerialPortListDidAddPortsNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemovePorts:) name:AMSerialPortListDidRemovePortsNotification object:nil];
-	[AMSerialPortList sharedPortList]; // initialize port list to arm notifications
     
     [self updateSerialPortsPopUpButton];
     [self updateCurrentTime:nil];
@@ -55,34 +51,24 @@
 {
     [serialPortsPopUpButton removeAllItems];
     
-    for (AMSerialPort* aPort in [[AMSerialPortList sharedPortList] serialPorts])
+    for (ORSSerialPort* aPort in [[data serialPortManager] availablePorts])
     {
         // print port name
         NSLog(@"Name:%@", [aPort name]);
-        NSLog(@"BSDPath:%@", [aPort bsdPath]);
-        [serialPortsPopUpButton addItemWithTitle:[aPort bsdPath]];
+        NSLog(@"BSDPath:%@", [aPort path]);
+        [serialPortsPopUpButton addItemWithTitle:[aPort path]];
 	}
-}
-
-#pragma mark - SERIAL PORT NOTIFICATIONS
-
-- (void)didAddPorts:(NSNotification *)theNotification
-{
-	NSLog(@"Added Port:%@", [[theNotification userInfo] description]);
-    [self updateSerialPortsPopUpButton];
-}
-
-- (void)didRemovePorts:(NSNotification *)theNotification
-{
-	NSLog(@"Removed Port:%@", [[theNotification userInfo] description]);
-    [self updateSerialPortsPopUpButton];
 }
 
 #pragma mark - IBActions Methods
 
 - (IBAction)serialPortSelection:(id)sender
 {
-    [data openSerialPort:[[serialPortsPopUpButton selectedItem] title]];
+    ORSSerialPort *serialPort = [ORSSerialPort serialPortWithPath:[[serialPortsPopUpButton selectedItem] title]];
+    [serialPort setDelegate:data];
+    [serialPort setBaudRate:@115200];
+    [serialPort open];
+    data.serialPort = serialPort;
 }
 
 - (IBAction)rewindButtonPress:(id)sender

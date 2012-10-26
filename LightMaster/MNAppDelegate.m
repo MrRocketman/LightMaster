@@ -17,6 +17,12 @@
     
 }
 
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+	NSArray *ports = [[ORSSerialPortManager sharedSerialPortManager] availablePorts];
+	for (ORSSerialPort *port in ports) { [port close]; }
+}
+
 #pragma mark - Menu Items
 
 - (IBAction)newSequence:(id)sender

@@ -7,8 +7,6 @@
 //
 
 #import "MNData.h"
-#import "AMSerialPortList.h"
-#import "AMSerialPortAdditions.h"
 
 #define LARGEST_NUMBER 999999
 #define LIBRARY_VERSION_NUMBER 1.0
@@ -48,7 +46,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, serialPort;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, serialPort, serialPortManager;
 
 #pragma mark - System
 
@@ -60,6 +58,7 @@
         [self loadLibaries];
         zoomLevel = 3.0;
         [self setCurrentTime:1.0];
+        self.serialPortManager = [ORSSerialPortManager sharedSerialPortManager];
     }
     
     return self;
@@ -633,42 +632,6 @@
 
 #pragma mark - SerialPort
 
-- (void)openSerialPort:(NSString *)deviceName
-{
-	[self disconnectFromSerialPort];
-	
-	if (![deviceName isEqualToString:[serialPort bsdPath]])
-    {
-		[serialPort close];
-		
-        self.serialPort = [[AMSerialPortList sharedPortList] serialPortForPath:deviceName];
-        self.serialPort.readDelegate = self;
-		
-        // Open the serial port - it may take a few seconds
-		if ([self.serialPort open])
-        {
-			//Then I suppose we connected!
-			NSLog(@"successfully connected");
-			
-			//The standard speeds defined in termios.h are listed near
-			//the top of AMSerialPort.h. Those can be preceeded with a 'B' as below. However, I've had success
-			//with non standard rates (such as the one for the MIDI protocol). Just omit the 'B' for those.
-			[self.serialPort setSpeed:B115200];
-			[self.serialPort commitChanges];
-			
-			// listen for data in a separate thread
-			[self.serialPort readDataInBackground];
-		}
-		else
-        { // an error occured while creating port
-			
-			NSLog(@"error connecting");
-            self.serialPort.readDelegate = nil;
-			self.serialPort = nil;
-		}
-	}
-}
-
 - (void)disconnectFromSerialPort
 {
 	[self.serialPort close];
@@ -682,7 +645,7 @@
 	if([self.serialPort isOpen])
 	{
 		//NSLog(@"Writing:%@:", text);
-		[serialPort writeString:text usingEncoding:NSUTF8StringEncoding error:NULL];
+        [serialPort sendData:[text dataUsingEncoding:NSUTF8StringEncoding]];
 	}
 	else
     {
@@ -690,26 +653,44 @@
     }
 }
 
-#pragma mark - SerialPortReadDelegate
+#pragma mark - ORSSerialPortDelegate
 
-- (void)serialPort:(AMSerialPort *)sendPort didReadData:(NSData *)data
+- (void)serialPortWasOpened:(ORSSerialPort *)serialPort
+{
+	//self.openCloseButton.title = @"Close";
+}
+
+- (void)serialPortWasClosed:(ORSSerialPort *)serialPort
+{
+	//self.openCloseButton.title = @"Open";
+}
+
+- (void)serialPort:(ORSSerialPort *)serialPort didReceiveData:(NSData *)data
 {
     // This method is called if data arrives
 	if ([data length] > 0)
     {
-		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 		NSLog(@"Serial Port Data Received: %@",receivedText);
         
         // ToDo: Do something with received text
-        
-		// Continue listening
-		[sendPort readDataInBackground];
 	}
     // Port closed
     else
     { 
 		NSLog(@"Port was closed on a readData operation...not good!");
 	}
+}
+
+- (void)serialPortWasRemovedFromSystem:(ORSSerialPort *)serialPort;
+{
+	// After a serial port is removed from the system, it is invalid and we must discard any references to it
+	self.serialPort = nil;
+}
+
+- (void)serialPort:(ORSSerialPort *)theSerialPort didEncounterError:(NSError *)error
+{
+	NSLog(@"Serial port %@ encountered an error: %@", theSerialPort, error);
 }
 
 #pragma mark - Sequence Library Methods

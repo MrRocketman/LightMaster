@@ -47,6 +47,10 @@
 		1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */; };
 		1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */; };
 		1A487307163A44D000820C1D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A487306163A44D000820C1D /* IOKit.framework */; };
+		1A487313163A542900820C1D /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487310163A542900820C1D /* ORSSerialPort.m */; };
+		1A487314163A542900820C1D /* ORSSerialPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487312163A542900820C1D /* ORSSerialPortManager.m */; };
+		1A487315163A543000820C1D /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487310163A542900820C1D /* ORSSerialPort.m */; };
+		1A487316163A543400820C1D /* ORSSerialPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487312163A542900820C1D /* ORSSerialPortManager.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
@@ -135,6 +139,10 @@
 		1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineTrackHeadersView.h; sourceTree = "<group>"; };
 		1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTrackHeadersView.m; sourceTree = "<group>"; };
 		1A487306163A44D000820C1D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		1A48730F163A542900820C1D /* ORSSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialPort.h; sourceTree = "<group>"; };
+		1A487310163A542900820C1D /* ORSSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPort.m; sourceTree = "<group>"; };
+		1A487311163A542900820C1D /* ORSSerialPortManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialPortManager.h; sourceTree = "<group>"; };
+		1A487312163A542900820C1D /* ORSSerialPortManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPortManager.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
@@ -344,6 +352,10 @@
 		1A37E8791634ECD9000105B5 /* Serial */ = {
 			isa = PBXGroup;
 			children = (
+				1A48730F163A542900820C1D /* ORSSerialPort.h */,
+				1A487310163A542900820C1D /* ORSSerialPort.m */,
+				1A487311163A542900820C1D /* ORSSerialPortManager.h */,
+				1A487312163A542900820C1D /* ORSSerialPortManager.m */,
 			);
 			name = Serial;
 			sourceTree = "<group>";
@@ -561,6 +573,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A487316163A543400820C1D /* ORSSerialPortManager.m in Sources */,
+				1A487315163A543000820C1D /* ORSSerialPort.m in Sources */,
 				1A028A00161CD20800B97A5B /* main.m in Sources */,
 				1A028A07161CD20800B97A5B /* MNAppDelegate.m in Sources */,
 				1A028A2D161CD23D00B97A5B /* MNTimelineViewController.m in Sources */,
@@ -592,6 +606,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A028A1E161CD20800B97A5B /* LightMasterTests.m in Sources */,
+				1A487313163A542900820C1D /* ORSSerialPort.m in Sources */,
+				1A487314163A542900820C1D /* ORSSerialPortManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
