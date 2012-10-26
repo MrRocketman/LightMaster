@@ -64,6 +64,12 @@
 
 - (IBAction)serialPortSelection:(id)sender
 {
+    // Remove the old port
+    data.serialPort.delegate = nil;
+    [data.serialPort close];
+    data.serialPort = nil;
+    
+    // Open the new port
     ORSSerialPort *serialPort = [ORSSerialPort serialPortWithPath:[[serialPortsPopUpButton selectedItem] title]];
     [serialPort setDelegate:data];
     [serialPort setBaudRate:@115200];

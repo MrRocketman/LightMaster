@@ -632,14 +632,6 @@
 
 #pragma mark - SerialPort
 
-- (void)disconnectFromSerialPort
-{
-	[self.serialPort close];
-    self.serialPort = nil;
-    
-	NSLog(@"\n\nDisconnected\n\n\n");
-}
-
 - (void)sendStringToSerialPort:(NSString *)text
 {
 	if([self.serialPort isOpen])
