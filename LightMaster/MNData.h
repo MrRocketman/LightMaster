@@ -58,6 +58,10 @@ enum
 - (int)widthForTimeInterval:(float)timeInterval;
 - (int)trackItemsCount;
 
+#pragma mark - Serial Port
+
+- (void)openSerialPort:(NSString *)deviceName;
+
 #pragma mark - Sequence Library Methods
 // Management Methods
 - (NSString *)createSequenceAndReturnFilePath;

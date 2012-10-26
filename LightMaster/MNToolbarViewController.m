@@ -7,10 +7,13 @@
 //
 
 #import "MNToolbarViewController.h"
+#import "AMSerialPortList.h"
+
 
 @interface MNToolbarViewController ()
 
 - (void)updateCurrentTime:(NSNotification *)aNotification;
+- (void)updateSerialPortsPopUpButton;
 
 @end
 
@@ -32,7 +35,12 @@
 - (void)awakeFromNib
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCurrentTime:) name:@"CurrentTimeChange" object:nil];
+    // register for port add/remove notification
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddPorts:) name:AMSerialPortListDidAddPortsNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemovePorts:) name:AMSerialPortListDidRemovePortsNotification object:nil];
+	[AMSerialPortList sharedPortList]; // initialize port list to arm notifications
     
+    [self updateSerialPortsPopUpButton];
     [self updateCurrentTime:nil];
 }
 
@@ -43,7 +51,39 @@
     [currentTimeTextField setStringValue:[NSString stringWithFormat:@"%.03f", [data currentTime]]];
 }
 
-#pragma mark - Button Methods
+- (void)updateSerialPortsPopUpButton
+{
+    [serialPortsPopUpButton removeAllItems];
+    
+    for (AMSerialPort* aPort in [[AMSerialPortList sharedPortList] serialPorts])
+    {
+        // print port name
+        NSLog(@"Name:%@", [aPort name]);
+        NSLog(@"BSDPath:%@", [aPort bsdPath]);
+        [serialPortsPopUpButton addItemWithTitle:[aPort bsdPath]];
+	}
+}
+
+#pragma mark - SERIAL PORT NOTIFICATIONS
+
+- (void)didAddPorts:(NSNotification *)theNotification
+{
+	NSLog(@"Added Port:%@", [[theNotification userInfo] description]);
+    [self updateSerialPortsPopUpButton];
+}
+
+- (void)didRemovePorts:(NSNotification *)theNotification
+{
+	NSLog(@"Removed Port:%@", [[theNotification userInfo] description]);
+    [self updateSerialPortsPopUpButton];
+}
+
+#pragma mark - IBActions Methods
+
+- (IBAction)serialPortSelection:(id)sender
+{
+    [data openSerialPort:[[serialPortsPopUpButton selectedItem] title]];
+}
 
 - (IBAction)rewindButtonPress:(id)sender
 {

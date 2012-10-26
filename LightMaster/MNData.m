@@ -40,6 +40,8 @@
 - (void)addBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (void)removeBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (NSMutableDictionary *)dictionaryFromFilePath:(NSString *)filePath;
+- (void)disconnectFromSerialPort;
+- (void)sendStringToSerialPort:(NSString *)text;
 
 @end
 
@@ -581,7 +583,7 @@
             }
             
             // Send the command!
-            [self sendText:[NSString stringWithFormat:@"%@`", command]];
+            [self sendStringToSerialPort:[NSString stringWithFormat:@"%@`", command]];
         }
     }
 }
@@ -629,20 +631,11 @@
     return trackItemsCount;
 }
 
-#pragma mark -
-#pragma mark SerialPort
+#pragma mark - SerialPort
 
-- (void)disconnect
+- (void)openSerialPort:(NSString *)deviceName
 {
-	[serialPort close];
-    self.serialPort = nil;
-
-	NSLog(@"\n\nDisconnected\n\n\n");
-}
-
-- (void)initPort:(NSString *)deviceName
-{
-	[self disconnect];
+	[self disconnectFromSerialPort];
 	
 	if (![deviceName isEqualToString:[serialPort bsdPath]])
     {
@@ -676,7 +669,15 @@
 	}
 }
 
-- (void)sendText:(NSString *)text
+- (void)disconnectFromSerialPort
+{
+	[self.serialPort close];
+    self.serialPort = nil;
+    
+	NSLog(@"\n\nDisconnected\n\n\n");
+}
+
+- (void)sendStringToSerialPort:(NSString *)text
 {
 	if([self.serialPort isOpen])
 	{
@@ -709,18 +710,6 @@
     { 
 		NSLog(@"Port was closed on a readData operation...not good!");
 	}
-}
-
-#pragma mark - SERIAL PORT NOTIFICATIONS
-
-- (void)didAddPorts:(NSNotification *)theNotification
-{
-	NSLog(@"Added Port:%@", [[theNotification userInfo] description]);
-}
-
-- (void)didRemovePorts:(NSNotification *)theNotification
-{
-	NSLog(@"Removed Port:%@", [[theNotification userInfo] description]);
 }
 
 #pragma mark - Sequence Library Methods

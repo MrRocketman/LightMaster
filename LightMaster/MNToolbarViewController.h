@@ -13,6 +13,8 @@
 {
     IBOutlet MNData *data;
     
+    IBOutlet NSPopUpButton *serialPortsPopUpButton;
+    
     IBOutlet NSButton *rewindButton;
     IBOutlet NSButton *fastForwardButton;
     IBOutlet NSButton *skipBackButton;
@@ -21,6 +23,7 @@
     IBOutlet NSTextField *currentTimeTextField;
 }
 
+- (IBAction)serialPortSelection:(id)sender;
 
 - (IBAction)rewindButtonPress:(id)sender;
 - (IBAction)fastForwardButtonPress:(id)sender;
