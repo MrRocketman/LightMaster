@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@class AMSerialPort;
+#import "AMSerialPort.h"
 
 // See 'MNData_Model_Description'
 
@@ -22,7 +21,7 @@ enum
     MNMouseUp
 };
 
-@interface MNData : NSObject
+@interface MNData : NSObject <AMSerialPortReadDelegate>
 {
     NSMutableDictionary *sequenceLibrary;
     NSMutableDictionary *controlBoxLibrary;
@@ -39,7 +38,9 @@ enum
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
     BOOL currentSequenceIsPlaying;
     
+    
     AMSerialPort *serialPort;
+    BOOL channelState[256][1024]; // This represents all of the channels. They are accessed as follows: [controlBoxIndex][channelIndex]
 }
 
 @property() NSString *libraryFolder;

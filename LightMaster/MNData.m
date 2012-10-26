@@ -7,7 +7,6 @@
 //
 
 #import "MNData.h"
-#import "AMSerialPort.h"
 #import "AMSerialPortList.h"
 #import "AMSerialPortAdditions.h"
 
@@ -47,7 +46,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, serialPort;
 
 #pragma mark - System
 
@@ -502,7 +501,6 @@
         }
         
         // Determine the channel states
-        BOOL channelState[1024] = {0}; // This represents all of the channels. They are accessed as follows: [controlBoxFilePaths objectAtIndex:i] * channelIndex
         NSMutableDictionary *currentCommandCluster;
         NSMutableDictionary *currentCommand;
         int currentControlBoxIndex = -1;
@@ -536,11 +534,11 @@
                     // Check if this command should be played
                     if(currentTime >= [self startTimeForCommand:currentCommand] && currentTime <= [self endTimeForCommand:currentCommand])
                     {
-                        channelState[currentControlBoxIndex * currentChannelIndex] = YES;
+                        channelState[currentControlBoxIndex][currentChannelIndex] = YES;
                     }
                     else
                     {
-                        channelState[currentControlBoxIndex * currentChannelIndex] = NO;
+                        channelState[currentControlBoxIndex][currentChannelIndex] = NO;
                     }
                 }
             }
@@ -554,13 +552,13 @@
         for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
         {
             uint8_t commandCharacters[128] = {0};
-            NSMutableString *command = [NSString stringWithFormat:@"%c", i];
+            NSMutableString *command = [NSMutableString stringWithFormat:@"%@", [self controlBoxIDForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]]];
             
             // Loop through each channel to build the command
             int i2;
             for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]]]; i2 ++)
             {
-                if(channelState[i * i2] == YES)
+                if(channelState[i][i2] == YES)
                 {
                     setBit(commandCharacters[i2 / 8], i2 % 8);
                 }
@@ -646,66 +644,83 @@
 {
 	[self disconnect];
 	
-	if (![deviceName isEqualToString:[serialPort bsdPath]]) {
+	if (![deviceName isEqualToString:[serialPort bsdPath]])
+    {
 		[serialPort close];
 		
-        self.serialPort = [[AMSerialPort alloc] init:deviceName withName:deviceName type:(NSString *)CFSTR(kIOSerialBSDModemType)];
-		[serialPort setDelegate:self];
+        self.serialPort = [[AMSerialPortList sharedPortList] serialPortForPath:deviceName];
+        self.serialPort.readDelegate = self;
 		
-		if ([serialPort open]) {
-			
+        // Open the serial port - it may take a few seconds
+		if ([self.serialPort open])
+        {
 			//Then I suppose we connected!
 			NSLog(@"successfully connected");
 			
 			//The standard speeds defined in termios.h are listed near
 			//the top of AMSerialPort.h. Those can be preceeded with a 'B' as below. However, I've had success
 			//with non standard rates (such as the one for the MIDI protocol). Just omit the 'B' for those.
-			
-			[serialPort setSpeed:B115200];
-			//[serialPort setSpeed:B9600];
+			[self.serialPort setSpeed:B115200];
+			[self.serialPort commitChanges];
 			
 			// listen for data in a separate thread
-			[serialPort readDataInBackground];
+			[self.serialPort readDataInBackground];
 		}
-		else { // an error occured while creating port
+		else
+        { // an error occured while creating port
 			
 			NSLog(@"error connecting");
+            self.serialPort.readDelegate = nil;
 			self.serialPort = nil;
 		}
 	}
 }
 
-- (void)serialPortReadData:(NSDictionary *)dataDictionary
-{
-	AMSerialPort *sendPort = [dataDictionary objectForKey:@"serialPort"];
-	NSData *data = [dataDictionary objectForKey:@"data"];
-	
-	if ([data length] > 0) {
-		
-		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-		NSLog(@"Serial Port Data Received: %@",receivedText);
-		
-		// ToDo: Do something with received text
-		
-		// continue listening
-		[sendPort readDataInBackground];
-	}
-	else
-	{
-		// port closed
-		NSLog(@"Port was closed on a readData operation...not good!");
-	}
-}
-
 - (void)sendText:(NSString *)text
 {
-	if([serialPort isOpen])
+	if([self.serialPort isOpen])
 	{
 		//NSLog(@"Writing:%@:", text);
 		[serialPort writeString:text usingEncoding:NSUTF8StringEncoding error:NULL];
 	}
 	else
-		NSLog(@"Can't send:%@", text);
+    {
+        NSLog(@"Can't send:%@", text);
+    }
+}
+
+#pragma mark - SerialPortReadDelegate
+
+- (void)serialPort:(AMSerialPort *)sendPort didReadData:(NSData *)data
+{
+    // This method is called if data arrives
+	if ([data length] > 0)
+    {
+		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+		NSLog(@"Serial Port Data Received: %@",receivedText);
+        
+        // ToDo: Do something with received text
+        
+		// Continue listening
+		[sendPort readDataInBackground];
+	}
+    // Port closed
+    else
+    { 
+		NSLog(@"Port was closed on a readData operation...not good!");
+	}
+}
+
+#pragma mark - SERIAL PORT NOTIFICATIONS
+
+- (void)didAddPorts:(NSNotification *)theNotification
+{
+	NSLog(@"Added Port:%@", [[theNotification userInfo] description]);
+}
+
+- (void)didRemovePorts:(NSNotification *)theNotification
+{
+	NSLog(@"Removed Port:%@", [[theNotification userInfo] description]);
 }
 
 #pragma mark - Sequence Library Methods

@@ -111,9 +111,9 @@ typedef enum {
 @interface AMSerialPort : NSObject
 {
 @private
-	NSString *bsdPath;
-	NSString *serviceName;
-	NSString *serviceType;
+	__unsafe_unretained NSString *bsdPath;
+	__unsafe_unretained NSString *serviceName;
+	__unsafe_unretained NSString *serviceType;
 	int fileDescriptor;
 	struct termios * __strong options;
 	struct termios * __strong originalOptions;
@@ -123,8 +123,8 @@ typedef enum {
 	char * __strong buffer;
 	NSTimeInterval readTimeout; // for public blocking read methods and doRead
 	fd_set * __strong readfds;
-	id <AMSerialPortReadDelegate> readDelegate;
-	id <AMSerialPortWriteDelegate> writeDelegate;
+	__unsafe_unretained id <AMSerialPortReadDelegate> readDelegate;
+	__unsafe_unretained id <AMSerialPortWriteDelegate> writeDelegate;
 	NSLock *writeLock;
 	NSLock *readLock;
 	NSLock *closeLock;

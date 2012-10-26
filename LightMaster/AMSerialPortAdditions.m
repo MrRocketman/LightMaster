@@ -121,7 +121,7 @@
 	NSString *result = nil;
 	NSData *data = [self readAndStopAfterBytes:NO bytes:0 stopAtChar:NO stopChar:0 error:error];
 	if (data) {
-		result = [[[NSString alloc] initWithData:data encoding:encoding] autorelease];
+		result = [[NSString alloc] initWithData:data encoding:encoding];
 	}
 	return result;
 }
@@ -131,7 +131,7 @@
 	NSString *result = nil;
 	NSData *data = [self readAndStopAfterBytes:YES bytes:bytes stopAtChar:NO stopChar:0 error:error];
 	if (data) {
-		result = [[[NSString alloc] initWithData:data encoding:encoding] autorelease];
+		result = [[NSString alloc] initWithData:data encoding:encoding];
 	}
 	return result;
 }
@@ -142,7 +142,7 @@
 	NSString *result = nil;
 	NSData *data = [self readAndStopAfterBytes:NO bytes:0 stopAtChar:YES stopChar:stopChar error:error];
 	if (data) {
-		result = [[[NSString alloc] initWithData:data encoding:encoding] autorelease];
+		result = [[NSString alloc] initWithData:data encoding:encoding];
 	}
 	return result;
 }
@@ -152,7 +152,7 @@
 	NSString *result = nil;
 	NSData *data = [self readAndStopAfterBytes:YES bytes:bytes stopAtChar:YES stopChar:stopChar error:error];
 	if (data) {
-		result = [[[NSString alloc] initWithData:data encoding:encoding] autorelease];
+		result = [[NSString alloc] initWithData:data encoding:encoding];
 	}
 	return result;
 }
@@ -324,7 +324,7 @@ static int64_t AMMicrosecondsSinceBoot (void)
 
 	localBuffer = malloc(AMSER_MAXBUFSIZE);
 	stopReadInBackground = NO;
-	NSAutoreleasePool *localAutoreleasePool = [[NSAutoreleasePool alloc] init];
+	//NSAutoreleasePool *localAutoreleasePool = [[NSAutoreleasePool alloc] init];
 	[closeLock lock];
 	if ((fileDescriptor >= 0) && (!stopReadInBackground)) {
 		//NSLog(@"readDataInBackgroundThread - [closeLock lock]");
@@ -351,7 +351,7 @@ static int64_t AMMicrosecondsSinceBoot (void)
 	} else {
 		[closeLock unlock];
 	}
-	[localAutoreleasePool drain];
+	//[localAutoreleasePool drain];
 	free(localReadFDs);
 	free(localBuffer);
 
@@ -442,9 +442,9 @@ static int64_t AMMicrosecondsSinceBoot (void)
 	long estimatedTime;
 	BOOL error = NO;
 	
-	NSAutoreleasePool *localAutoreleasePool = [[NSAutoreleasePool alloc] init];
+	//NSAutoreleasePool *localAutoreleasePool = [[NSAutoreleasePool alloc] init];
 
-	[data retain];
+	//[data retain];
 	localBuffer = malloc(AMSER_MAXBUFSIZE);
 	stopWriteInBackground = NO;
 	[writeLock lock];	// write in sequence
@@ -485,8 +485,7 @@ static int64_t AMMicrosecondsSinceBoot (void)
 	countWriteInBackgroundThreads--;
 	
 	free(localBuffer);
-	[data release];
-	[localAutoreleasePool drain];
+	//[localAutoreleasePool drain];
 }
 
 - (id)am_readTarget
@@ -497,8 +496,6 @@ static int64_t AMMicrosecondsSinceBoot (void)
 - (void)am_setReadTarget:(id)newReadTarget
 {
 	if (am_readTarget != newReadTarget) {
-		[newReadTarget retain];
-		[am_readTarget release];
 		am_readTarget = newReadTarget;
 	}
 }

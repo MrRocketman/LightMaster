@@ -64,9 +64,9 @@ NSString * const AMSerialPortListRemovedPorts = @"AMSerialPortListRemovedPorts";
 		CFStringRef serviceType = (CFStringRef)IORegistryEntryCreateCFProperty(serialService, CFSTR(kIOSerialBSDTypeKey), kCFAllocatorDefault, 0);
 		if (modemName && bsdPath) {
 			// If the port already exists in the list of ports, we want that one.  We only create a new one as a last resort.
-			serialPort = [self serialPortForName:(NSString*)bsdPath];
+			serialPort = [self serialPortForName:(NSString*)CFBridgingRelease(bsdPath)];
 			if (!serialPort) {
-				serialPort = [[[AMSerialPort alloc] initWithPath:(NSString*)bsdPath name:(NSString*)modemName type:(NSString*)serviceType] autorelease];
+				serialPort = [[AMSerialPort alloc] initWithPath:(NSString*)CFBridgingRelease(bsdPath) name:(NSString*)CFBridgingRelease(modemName) type:(NSString*)CFBridgingRelease(serviceType)];
 			}
 		}
 		if (modemName) {
@@ -217,7 +217,7 @@ static void AMSerialPortWasRemovedNotification(void *refcon, io_iterator_t itera
 {
     self = [super init];
     if (self) {
-        portList = [[NSMutableArray array] retain];
+        portList = [NSMutableArray array];
 
         [self addAllSerialPortsToArray:portList];
         [self registerForSerialPortChangeNotifications];
@@ -225,20 +225,19 @@ static void AMSerialPortWasRemovedNotification(void *refcon, io_iterator_t itera
     return self;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     if (notificationPort)
         IONotificationPortDestroy(notificationPort);
 
-    [portList release];
-
-    [super dealloc];
+    //[super dealloc];
 }
 
 #pragma mark -
 
 - (NSArray *)serialPorts
 {
-	return [[portList copy] autorelease];
+	return [portList copy];
 }
 
 - (AMSerialPort *)serialPortForPath:(NSString *)bsdPath
@@ -268,8 +267,9 @@ static void AMSerialPortWasRemovedNotification(void *refcon, io_iterator_t itera
 - (NSArray *)serialPortsOfType:(NSString *)serialTypeKey
 {
     __block NSMutableArray *result = [NSMutableArray array];
-    [portList enumerateObjectsUsingBlock:^(id port, NSUInteger idx, BOOL *stop) {
-        if (![[port type] isEqualToString:serialTypeKey])
+    [portList enumerateObjectsUsingBlock:^(id port, NSUInteger idx, BOOL *stop)
+    {
+        if (![[(AMSerialPort *)port type] isEqualToString:serialTypeKey])
             return;
         [result addObject:port];
     }];

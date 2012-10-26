@@ -77,7 +77,7 @@ NSString * const AMSerialOptionCanonicalMode = @"AMSerialOptionCanonicalMode";
 		bsdPath = [path copy];
 		serviceName = [name copy];
 		serviceType = [type copy];
-		optionsDictionary = [[NSMutableDictionary dictionaryWithCapacity:8] retain];
+		optionsDictionary = [NSMutableDictionary dictionaryWithCapacity:8];
 		options = (struct termios* __strong)malloc(sizeof(*options));
 		originalOptions = (struct termios* __strong)malloc(sizeof(*originalOptions));
 		buffer = (char* __strong)malloc(AMSER_MAXBUFSIZE);
@@ -109,20 +109,20 @@ NSString * const AMSerialOptionCanonicalMode = @"AMSerialOptionCanonicalMode";
 		NSLog(@"It is a programmer error to have not called -close on an AMSerialPort you have opened");
 #endif
 
-	[readLock release]; readLock = nil;
-	[writeLock release]; writeLock = nil;
-	[closeLock release]; closeLock = nil;
-	[am_readTarget release]; am_readTarget = nil;
+	readLock = nil;
+	writeLock = nil;
+	closeLock = nil;
+	am_readTarget = nil;
 
 	free(readfds); readfds = NULL;
 	free(buffer); buffer = NULL;
 	free(originalOptions); originalOptions = NULL;
 	free(options); options = NULL;
-	[optionsDictionary release]; optionsDictionary = nil;
-	[serviceName release]; serviceName = nil;
-	[serviceType release]; serviceType = nil;
-	[bsdPath release]; bsdPath = nil;
-	[super dealloc];
+	optionsDictionary = nil;
+	serviceName = nil;
+	serviceType = nil;
+	bsdPath = nil;
+	//[super dealloc];
 }
 
 - (id)copy {
@@ -166,7 +166,7 @@ NSString * const AMSerialOptionCanonicalMode = @"AMSerialOptionCanonicalMode";
 			CFMutableDictionaryRef propertiesDict = NULL;
 			kernResult = IORegistryEntryCreateCFProperties(serialService, &propertiesDict, kCFAllocatorDefault, 0);
 			if (kernResult == KERN_SUCCESS) {
-				result = [[(NSDictionary*)propertiesDict copy] autorelease];
+				result = [(NSDictionary*)CFBridgingRelease(propertiesDict) copy];
 			}
 			if (propertiesDict) {
 				CFRelease(propertiesDict);
@@ -315,7 +315,6 @@ NSString * const AMSerialOptionCanonicalMode = @"AMSerialOptionCanonicalMode";
 		[fileHandle closeFile];
 
 		// Release the fileHandle
-		[fileHandle release];
 		fileHandle = nil;
 		
 #ifdef AMSerialDebug

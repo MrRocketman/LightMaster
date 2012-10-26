@@ -52,6 +52,7 @@
 		1A4872FF163A432F00820C1D /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872F7163A432600820C1D /* AMSerialPort.m */; };
 		1A487300163A433300820C1D /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872F9163A432600820C1D /* AMSerialPortAdditions.m */; };
 		1A487301163A433700820C1D /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872FB163A432600820C1D /* AMSerialPortList.m */; };
+		1A487307163A44D000820C1D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A487306163A44D000820C1D /* IOKit.framework */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
@@ -146,6 +147,7 @@
 		1A4872F9163A432600820C1D /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
 		1A4872FA163A432600820C1D /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
 		1A4872FB163A432600820C1D /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
+		1A487306163A44D000820C1D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A487307163A44D000820C1D /* IOKit.framework in Frameworks */,
 				1A0289F4161CD20800B97A5B /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,6 +216,7 @@
 		1A0289F2161CD20800B97A5B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1A487306163A44D000820C1D /* IOKit.framework */,
 				1A0289F3161CD20800B97A5B /* Cocoa.framework */,
 				1A028A11161CD20800B97A5B /* SenTestingKit.framework */,
 				1A0289F5161CD20800B97A5B /* Other Frameworks */,
