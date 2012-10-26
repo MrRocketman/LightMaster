@@ -38,7 +38,6 @@
 - (void)addBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (void)removeBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (NSMutableDictionary *)dictionaryFromFilePath:(NSString *)filePath;
-- (void)disconnectFromSerialPort;
 - (void)sendStringToSerialPort:(NSString *)text;
 
 @end
