@@ -2,7 +2,7 @@
 //  AMSerialPortAdditions.h
 //
 //  Created by Andreas on Thu May 02 2002.
-//  Copyright (c) 2001 Andreas Mayer. All rights reserved.
+//  Copyright (c) 2001-2009 Andreas Mayer. All rights reserved.
 //
 //  2002-10-04 Andreas Mayer
 //  - readDataInBackgroundWithTarget:selector: and writeDataInBackground: added
@@ -23,8 +23,8 @@
 //	- see AMSerialPort_Deprecated for old interfaces
 //  2007-10-26 Sean McBride
 //  - made code 64 bit and garbage collection clean
-
-#import "AMSDKCompatibility.h"
+//  2009-05-08 Sean McBride
+//  - added writeBytes:length:error: method
 
 #import <Foundation/Foundation.h>
 #import "AMSerialPort.h"
@@ -67,13 +67,12 @@
 
 - (BOOL)writeString:(NSString *)string usingEncoding:(NSStringEncoding)encoding error:(NSError **)error;
 
+- (BOOL)writeBytes:(const void *)bytes length:(NSUInteger)length error:(NSError **)error;
+
 
 - (void)readDataInBackground;
 //
-// Will send serialPortReadData: to delegate
-// the dataDictionary object will contain these entries:
-// 1. "serialPort": the AMSerialPort object that sent the message
-// 2. "data": (NSData *)data - received data
+// Will message delegate with serialPort:readData:
 
 - (void)stopReadInBackground;
 

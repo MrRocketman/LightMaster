@@ -14,6 +14,8 @@
 #define LARGEST_NUMBER 999999
 #define LIBRARY_VERSION_NUMBER 1.0
 #define DATA_VERSION_NUMBER 1.0
+#define setBit(var, mask)   ((var) |= (uint16_t)(1 << mask))
+#define clearBit(var, mask)   ((var) &= (uint16_t)~(1 << mask))
 
 @interface MNData()
 
@@ -497,6 +499,91 @@
             {
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] stop];
             }
+        }
+        
+        // Determine the channel states
+        BOOL channelState[1024] = {0}; // This represents all of the channels. They are accessed as follows: [controlBoxFilePaths objectAtIndex:i] * channelIndex
+        NSMutableDictionary *currentCommandCluster;
+        NSMutableDictionary *currentCommand;
+        int currentControlBoxIndex = -1;
+        BOOL isChannelGroupCommand = YES;
+        int currentChannelIndex = -1;
+        for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
+        {
+            currentCommandCluster = [self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]];
+            // See if this is a controlBox cluster
+            if([[self controlBoxFilePathForCommandCluster:currentCommandCluster] length] > 0)
+            {
+                isChannelGroupCommand = NO;
+                currentControlBoxIndex = (int)[[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self controlBoxFilePathForCommandCluster:currentCommandCluster]];
+            }
+            
+            // Check to see if the current time is withing the command cluster's range (plus a little extra at the so we can turn all channels off if they haven't been already)
+            if(currentTime >= [self startTimeForCommandCluster:currentCommandCluster] && currentTime <= [self endTimeForCommandCluster:currentCommandCluster] + 0.25)
+            {
+                // Loop through this clusters commands and determine the chanel's state
+                for(int i2 = 0; i2 < [self commandsCountForCommandCluster:currentCommandCluster]; i2 ++)
+                {
+                    currentCommand = [self commandAtIndex:i2 fromCommandCluster:currentCommandCluster];
+                    currentChannelIndex = [self channelIndexForCommand:currentCommand];
+                    
+                    // Determine the controlBoxIndex for this command if it's a channelGroup command
+                    if(currentControlBoxIndex == -1)
+                    {
+                        currentControlBoxIndex = (int)[[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self controlBoxFilePathForItemData:[self itemDataAtIndex:currentChannelIndex forChannelGroup:[self channelGroupFromFilePath:[self channelGroupFilePathForCommandCluster:currentCommandCluster]]]]];
+                    }
+                    
+                    // Check if this command should be played
+                    if(currentTime >= [self startTimeForCommand:currentCommand] && currentTime <= [self endTimeForCommand:currentCommand])
+                    {
+                        channelState[currentControlBoxIndex * currentChannelIndex] = YES;
+                    }
+                    else
+                    {
+                        channelState[currentControlBoxIndex * currentChannelIndex] = NO;
+                    }
+                }
+            }
+            
+            currentControlBoxIndex = -1;
+            isChannelGroupCommand = YES;
+            currentChannelIndex = -1;
+        }
+        
+        // Send out the necessary commands over the serial port
+        for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
+        {
+            uint8_t commandCharacters[128] = {0};
+            NSMutableString *command = [NSString stringWithFormat:@"%c", i];
+            
+            // Loop through each channel to build the command
+            int i2;
+            for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]]]; i2 ++)
+            {
+                if(channelState[i * i2] == YES)
+                {
+                    setBit(commandCharacters[i2 / 8], i2 % 8);
+                }
+                else
+                {
+                    clearBit(commandCharacters[i2 / 8], i2 % 8);
+                }
+                
+                // Add each command character to the command string as it is completed
+                if(i2 % 8 == 7)
+                {
+                    [command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                }
+            }
+            
+            // Add the final command character if neccessary
+            if(i2 % 8 != 0)
+            {
+                [command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+            }
+            
+            // Send the command!
+            [self sendText:[NSString stringWithFormat:@"%@`", command]];
         }
     }
 }

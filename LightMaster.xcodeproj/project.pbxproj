@@ -46,11 +46,12 @@
 		1A028AC8161CDA2A00B97A5B /* MNSynchronizedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */; };
 		1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */; };
 		1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */; };
-		1A37E8731634ECD3000105B5 /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E8691634ECD2000105B5 /* AMSerialPort.m */; };
-		1A37E8741634ECD3000105B5 /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E86B1634ECD2000105B5 /* AMSerialPortAdditions.m */; };
-		1A37E8751634ECD3000105B5 /* AMSerialPortList_Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E86D1634ECD2000105B5 /* AMSerialPortList_Deprecated.m */; };
-		1A37E8761634ECD3000105B5 /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E86F1634ECD2000105B5 /* AMSerialPortList.m */; };
-		1A37E8771634ECD3000105B5 /* AMStandardEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E8721634ECD2000105B5 /* AMStandardEnumerator.m */; };
+		1A4872FC163A432600820C1D /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872F7163A432600820C1D /* AMSerialPort.m */; };
+		1A4872FD163A432600820C1D /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872F9163A432600820C1D /* AMSerialPortAdditions.m */; };
+		1A4872FE163A432600820C1D /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872FB163A432600820C1D /* AMSerialPortList.m */; };
+		1A4872FF163A432F00820C1D /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872F7163A432600820C1D /* AMSerialPort.m */; };
+		1A487300163A433300820C1D /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872F9163A432600820C1D /* AMSerialPortAdditions.m */; };
+		1A487301163A433700820C1D /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4872FB163A432600820C1D /* AMSerialPortList.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
 		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
@@ -138,18 +139,13 @@
 		1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTracksView.m; sourceTree = "<group>"; };
 		1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineTrackHeadersView.h; sourceTree = "<group>"; };
 		1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTrackHeadersView.m; sourceTree = "<group>"; };
-		1A37E8671634ECD2000105B5 /* AMSerialErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialErrors.h; sourceTree = "<group>"; };
-		1A37E8681634ECD2000105B5 /* AMSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPort.h; sourceTree = "<group>"; };
-		1A37E8691634ECD2000105B5 /* AMSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPort.m; sourceTree = "<group>"; };
-		1A37E86A1634ECD2000105B5 /* AMSerialPortAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortAdditions.h; sourceTree = "<group>"; };
-		1A37E86B1634ECD2000105B5 /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
-		1A37E86C1634ECD2000105B5 /* AMSerialPortList_Deprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList_Deprecated.h; sourceTree = "<group>"; };
-		1A37E86D1634ECD2000105B5 /* AMSerialPortList_Deprecated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList_Deprecated.m; sourceTree = "<group>"; };
-		1A37E86E1634ECD2000105B5 /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
-		1A37E86F1634ECD2000105B5 /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
-		1A37E8701634ECD2000105B5 /* AMSDKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSDKCompatibility.h; sourceTree = "<group>"; };
-		1A37E8711634ECD2000105B5 /* AMStandardEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMStandardEnumerator.h; sourceTree = "<group>"; };
-		1A37E8721634ECD2000105B5 /* AMStandardEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMStandardEnumerator.m; sourceTree = "<group>"; };
+		1A4872F5163A432600820C1D /* AMSerialErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialErrors.h; sourceTree = "<group>"; };
+		1A4872F6163A432600820C1D /* AMSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPort.h; sourceTree = "<group>"; };
+		1A4872F7163A432600820C1D /* AMSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPort.m; sourceTree = "<group>"; };
+		1A4872F8163A432600820C1D /* AMSerialPortAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortAdditions.h; sourceTree = "<group>"; };
+		1A4872F9163A432600820C1D /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
+		1A4872FA163A432600820C1D /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
+		1A4872FB163A432600820C1D /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
 		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
@@ -357,18 +353,13 @@
 		1A37E8791634ECD9000105B5 /* Serial */ = {
 			isa = PBXGroup;
 			children = (
-				1A37E8671634ECD2000105B5 /* AMSerialErrors.h */,
-				1A37E8681634ECD2000105B5 /* AMSerialPort.h */,
-				1A37E8691634ECD2000105B5 /* AMSerialPort.m */,
-				1A37E86A1634ECD2000105B5 /* AMSerialPortAdditions.h */,
-				1A37E86B1634ECD2000105B5 /* AMSerialPortAdditions.m */,
-				1A37E86C1634ECD2000105B5 /* AMSerialPortList_Deprecated.h */,
-				1A37E86D1634ECD2000105B5 /* AMSerialPortList_Deprecated.m */,
-				1A37E86E1634ECD2000105B5 /* AMSerialPortList.h */,
-				1A37E86F1634ECD2000105B5 /* AMSerialPortList.m */,
-				1A37E8701634ECD2000105B5 /* AMSDKCompatibility.h */,
-				1A37E8711634ECD2000105B5 /* AMStandardEnumerator.h */,
-				1A37E8721634ECD2000105B5 /* AMStandardEnumerator.m */,
+				1A4872F5163A432600820C1D /* AMSerialErrors.h */,
+				1A4872F6163A432600820C1D /* AMSerialPort.h */,
+				1A4872F7163A432600820C1D /* AMSerialPort.m */,
+				1A4872F8163A432600820C1D /* AMSerialPortAdditions.h */,
+				1A4872F9163A432600820C1D /* AMSerialPortAdditions.m */,
+				1A4872FA163A432600820C1D /* AMSerialPortList.h */,
+				1A4872FB163A432600820C1D /* AMSerialPortList.m */,
 			);
 			name = Serial;
 			sourceTree = "<group>";
@@ -586,6 +577,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A487301163A433700820C1D /* AMSerialPortList.m in Sources */,
+				1A487300163A433300820C1D /* AMSerialPortAdditions.m in Sources */,
+				1A4872FF163A432F00820C1D /* AMSerialPort.m in Sources */,
 				1A028A00161CD20800B97A5B /* main.m in Sources */,
 				1A028A07161CD20800B97A5B /* MNAppDelegate.m in Sources */,
 				1A028A2D161CD23D00B97A5B /* MNTimelineViewController.m in Sources */,
@@ -617,11 +611,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A028A1E161CD20800B97A5B /* LightMasterTests.m in Sources */,
-				1A37E8731634ECD3000105B5 /* AMSerialPort.m in Sources */,
-				1A37E8741634ECD3000105B5 /* AMSerialPortAdditions.m in Sources */,
-				1A37E8751634ECD3000105B5 /* AMSerialPortList_Deprecated.m in Sources */,
-				1A37E8761634ECD3000105B5 /* AMSerialPortList.m in Sources */,
-				1A37E8771634ECD3000105B5 /* AMStandardEnumerator.m in Sources */,
+				1A4872FC163A432600820C1D /* AMSerialPort.m in Sources */,
+				1A4872FD163A432600820C1D /* AMSerialPortAdditions.m in Sources */,
+				1A4872FE163A432600820C1D /* AMSerialPortList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
