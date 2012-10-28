@@ -295,6 +295,12 @@
                     {
                         if(mouseAction == MNMouseDown)
                         {
+                            if(mouseEvent.modifierFlags & NSCommandKeyMask)
+                            {
+                                int channelIndex = (self.frame.size.height - mousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
+                                float time = [data xToTime:mousePoint.x];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], currentCommandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
+                            }
                             selectedCommandCluster = currentCommandCluster;
                             mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommandCluster:currentCommandCluster]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
@@ -357,6 +363,7 @@
         else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
         {
             x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
+            width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data xToTime:x]];
         }
         commandRect = NSMakeRect(x, y, width, height);
         
