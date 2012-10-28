@@ -247,7 +247,9 @@
     // Select the commmand cluster
     int commandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:[data filePathForCommandCluster:[aNotification object]]];
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
-
+    
+    NSViewController *theLibrary = (NSViewController *)[libraries objectAtIndex:selectedLibrary];
+    [theLibrary.view scrollPoint:NSMakePoint(0, theLibrary.view.frame.size.height)];
 }
 
 - (void)selectCommand:(NSNotification *)aNotification
@@ -260,6 +262,8 @@
     
     // Select the command cluster
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
+    NSViewController *theLibrary = (NSViewController *)[libraries objectAtIndex:selectedLibrary];
+    [theLibrary.view scrollPoint:NSMakePoint(0, 25)];
     
     // Select the command
     [commandClusterLibraryManagerViewController selectCommandAtIndex:(int)[[data commandsFromCommandCluster:commandCluster] indexOfObject:command]];

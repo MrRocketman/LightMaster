@@ -116,6 +116,7 @@
 - (void)selectCommandAtIndex:(int)index
 {
     [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    [commandsTableView scrollRowToVisible:index];
     [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
 }
 
@@ -167,6 +168,7 @@
     [data setChannelIndex:[[aNotification object] intValue] forCommandAtIndex:(int)[commandsTableView selectedRow] whichIsPartOfCommandCluster:[self commandCluster]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+    [commandsTableView reloadData];
 }
 
 #pragma mark - Button Actions
@@ -209,6 +211,7 @@
     [commandsTableView reloadData];
     [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:(int)([data commandsCountForCommandCluster:[self commandCluster]] - 1)] byExtendingSelection:NO];
     [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
+    [commandsTableView scrollRowToVisible:(int)([data commandsCountForCommandCluster:[self commandCluster]] - 1)];
     [self chooseChannelForCommandButtonPress:nil];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];

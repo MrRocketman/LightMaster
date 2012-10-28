@@ -11,7 +11,6 @@
 		1A0289FE161CD20800B97A5B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A0289FC161CD20800B97A5B /* InfoPlist.strings */; };
 		1A028A00161CD20800B97A5B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A0289FF161CD20800B97A5B /* main.m */; };
 		1A028A04161CD20800B97A5B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A02161CD20800B97A5B /* Credits.rtf */; };
-		1A028A07161CD20800B97A5B /* MNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028A06161CD20800B97A5B /* MNAppDelegate.m */; };
 		1A028A0A161CD20800B97A5B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A028A08161CD20800B97A5B /* MainMenu.xib */; };
 		1A028A12161CD20800B97A5B /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A028A11161CD20800B97A5B /* SenTestingKit.framework */; };
 		1A028A13161CD20800B97A5B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0289F3161CD20800B97A5B /* Cocoa.framework */; };
@@ -46,6 +45,7 @@
 		1A028AC8161CDA2A00B97A5B /* MNSynchronizedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */; };
 		1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */; };
 		1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */; };
+		1A37E895163CC86C000105B5 /* MNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E894163CC86C000105B5 /* MNAppDelegate.m */; };
 		1A487307163A44D000820C1D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A487306163A44D000820C1D /* IOKit.framework */; };
 		1A487313163A542900820C1D /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487310163A542900820C1D /* ORSSerialPort.m */; };
 		1A487314163A542900820C1D /* ORSSerialPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487312163A542900820C1D /* ORSSerialPortManager.m */; };
@@ -87,8 +87,6 @@
 		1A0289FF161CD20800B97A5B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1A028A01161CD20800B97A5B /* LightMaster-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LightMaster-Prefix.pch"; sourceTree = "<group>"; };
 		1A028A03161CD20800B97A5B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		1A028A05161CD20800B97A5B /* MNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MNAppDelegate.h; sourceTree = "<group>"; };
-		1A028A06161CD20800B97A5B /* MNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MNAppDelegate.m; sourceTree = "<group>"; };
 		1A028A09161CD20800B97A5B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1A028A10161CD20800B97A5B /* LightMasterTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LightMasterTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A028A11161CD20800B97A5B /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -138,6 +136,8 @@
 		1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTracksView.m; sourceTree = "<group>"; };
 		1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineTrackHeadersView.h; sourceTree = "<group>"; };
 		1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTrackHeadersView.m; sourceTree = "<group>"; };
+		1A37E893163CC86C000105B5 /* MNAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNAppDelegate.h; sourceTree = "<group>"; };
+		1A37E894163CC86C000105B5 /* MNAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNAppDelegate.m; sourceTree = "<group>"; };
 		1A487306163A44D000820C1D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		1A48730F163A542900820C1D /* ORSSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialPort.h; sourceTree = "<group>"; };
 		1A487310163A542900820C1D /* ORSSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPort.m; sourceTree = "<group>"; };
@@ -232,8 +232,8 @@
 		1A0289F9161CD20800B97A5B /* LightMaster */ = {
 			isa = PBXGroup;
 			children = (
-				1A028A05161CD20800B97A5B /* MNAppDelegate.h */,
-				1A028A06161CD20800B97A5B /* MNAppDelegate.m */,
+				1A37E893163CC86C000105B5 /* MNAppDelegate.h */,
+				1A37E894163CC86C000105B5 /* MNAppDelegate.m */,
 				1A37E8791634ECD9000105B5 /* Serial */,
 				1A028A8D161CD38400B97A5B /* Data */,
 				1A028A4F161CD34A00B97A5B /* View Controllers */,
@@ -576,7 +576,6 @@
 				1A487316163A543400820C1D /* ORSSerialPortManager.m in Sources */,
 				1A487315163A543000820C1D /* ORSSerialPort.m in Sources */,
 				1A028A00161CD20800B97A5B /* main.m in Sources */,
-				1A028A07161CD20800B97A5B /* MNAppDelegate.m in Sources */,
 				1A028A2D161CD23D00B97A5B /* MNTimelineViewController.m in Sources */,
 				1A028A90161CD40000B97A5B /* MNData.m in Sources */,
 				1A028A9A161CD45700B97A5B /* MNToolbarViewController.m in Sources */,
@@ -598,6 +597,7 @@
 				1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */,
 				1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */,
 				1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */,
+				1A37E895163CC86C000105B5 /* MNAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
