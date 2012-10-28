@@ -552,7 +552,8 @@
         for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
         {
             uint8_t commandCharacters[128] = {0};
-            NSMutableString *command = [NSMutableString stringWithFormat:@"%@", [self controlBoxIDForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]]];
+            NSString *controlBoxID = [self controlBoxIDForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]];
+            NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
             
             // Loop through each channel to build the command
             int i2;
@@ -570,14 +571,16 @@
                 // Add each command character to the command string as it is completed
                 if(i2 % 8 == 7)
                 {
-                    [command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                    [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                    //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
                 }
             }
             
             // Add the final command character if neccessary
             if(i2 % 8 != 0)
             {
-                [command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
             }
             
             // Send the command!
