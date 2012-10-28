@@ -15,7 +15,6 @@
 - (void)fastForwardButtonPress:(NSNotification *)aNotification;
 - (void)skipBackButtonPress:(NSNotification *)aNotification;
 - (void)playButtonPress:(NSNotification *)aNotification;
-- (void)recordButtonPress:(NSNotification *)aNotification;
 - (void)currentTimeChange:(NSNotification *)aNotification;
 
 - (void)playTimerFire:(NSTimer *)theTimer;
@@ -38,7 +37,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fastForwardButtonPress:) name:@"FastForwardButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(skipBackButtonPress:) name:@"SkipBackButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playButtonPress:) name:@"PlayButtonPress" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordButtonPress:) name:@"RecordButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentTimeChange:) name:@"CurrentTimeChange" object:nil];
         
         // Update the zoom level
@@ -100,11 +98,6 @@
         playButtonStartTime = [data currentTime];
         [data setCurrentSequenceIsPlaying:YES];
     }
-}
-
-- (void)recordButtonPress:(NSNotification *)aNotification
-{
-    
 }
 
 - (void)currentTimeChange:(NSNotification *)aNotification

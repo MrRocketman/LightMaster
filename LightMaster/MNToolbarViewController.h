@@ -19,7 +19,7 @@
     IBOutlet NSButton *fastForwardButton;
     IBOutlet NSButton *skipBackButton;
     IBOutlet NSButton *playButton;
-    IBOutlet NSButton *recordButton;
+    IBOutlet NSButton *loopButton;
     IBOutlet NSTextField *currentTimeTextField;
 }
 
@@ -29,6 +29,6 @@
 - (IBAction)fastForwardButtonPress:(id)sender;
 - (IBAction)skipBackButtonPress:(id)sender;
 - (IBAction)playButtonPress:(id)sender;
-- (IBAction)recordButtonPress:(id)sender;
+- (IBAction)loopButtonPress:(id)sender;
 
 @end

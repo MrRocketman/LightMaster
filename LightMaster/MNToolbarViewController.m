@@ -13,7 +13,6 @@
 @interface MNToolbarViewController ()
 
 - (void)updateCurrentTime:(NSNotification *)aNotification;
-- (void)updateSerialPortsPopUpButton;
 
 @end
 
@@ -110,9 +109,9 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
 }
 
-- (IBAction)recordButtonPress:(id)sender
+- (IBAction)loopButtonPress:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RecordButtonPress" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LoopButtonPress" object:nil];
 }
 
 @end

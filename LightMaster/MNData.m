@@ -39,6 +39,7 @@
 - (void)removeBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (NSMutableDictionary *)dictionaryFromFilePath:(NSString *)filePath;
 - (void)sendStringToSerialPort:(NSString *)text;
+- (void)loopButtonPress:(NSNotification *)aNotification;
 
 @end
 
@@ -58,6 +59,8 @@
         zoomLevel = 3.0;
         [self setCurrentTime:1.0];
         self.serialPortManager = [ORSSerialPortManager sharedSerialPortManager];
+        loop = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
     }
     
     return self;
@@ -427,6 +430,11 @@
     }
 }
 
+- (void)loopButtonPress:(NSNotification *)aNotification
+{
+    loop = !loop;
+}
+
 #pragma mark - Other Methods
 
 - (int)timeToX:(float)time
@@ -478,6 +486,14 @@
     
     if(currentSequenceIsPlaying)
     {
+        if(loop)
+        {
+            if(currentTime >= [self endTimeForSequence:currentSequence])
+            {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SkipBackButtonPress" object:nil];
+            }
+        }
+        
         // Play/Pause the necessary NSSounds
         for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
         {

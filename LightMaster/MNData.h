@@ -38,6 +38,7 @@ enum
     float timeAtLeftEdgeOfTimelineView;
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
     BOOL currentSequenceIsPlaying;
+    BOOL loop;
     
     ORSSerialPort *serialPort;
     ORSSerialPortManager *serialPortManager;
