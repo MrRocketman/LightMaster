@@ -20,6 +20,8 @@
 - (void)selectControlBoxForCommandCluster:(NSNotification *)aNotification;
 - (void)selectChannelGroupForCommandcluster:(NSNotification *)aNotification;
 - (void)selectChannelForCommand:(NSNotification *)aNotification;
+- (void)addCommandForCommandCluster:(NSNotification *)aNotification;
+- (void)addCommandAtChannelIndex:(int)index withStartTime:(float)startTime andDuration:(float)duration forCommandCluster:(NSMutableDictionary *)commandCluster;
 
 @end
 
@@ -41,6 +43,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectControlBoxForCommandCluster:) name:@"SelectControlBoxForCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectChannelGroupForCommandcluster:) name:@"SelectChannelGroupForCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectChannelForCommand:) name:@"SelectChannelForCommand" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandForCommandCluster:) name:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil];
         
         commandClusterIndex = -1;
     }
@@ -120,6 +123,30 @@
     [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
 }
 
+- (void)addCommandAtChannelIndex:(int)index withStartTime:(float)startTime andDuration:(float)duration forCommandCluster:(NSMutableDictionary *)commandCluster
+{
+    int newCommandIndex = [data createCommandAndReturnNewCommandIndexForCommandCluster:commandCluster];
+    [data setStartTime:startTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+    [data setEndTime:startTime + duration forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+    if(index >= 0)
+    {
+        [data setChannelIndex:index forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+    }
+    
+    [commandsTableView reloadData];
+    [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:newCommandIndex] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
+    [commandsTableView scrollRowToVisible:newCommandIndex];
+    if(index == -1)
+    {
+        [self chooseChannelForCommandButtonPress:nil];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+#pragma mark - NSNotifications
+
 - (void)selectControlBoxForCommandCluster:(NSNotification *)aNotification
 {
     [commandClusterControlBoxSelectorPopover performClose:nil];
@@ -171,6 +198,11 @@
     [commandsTableView reloadData];
 }
 
+- (void)addCommandForCommandCluster:(NSNotification *)aNotification
+{
+    [self addCommandAtChannelIndex:[[[aNotification userInfo] objectForKey:@"channelIndex"] intValue] withStartTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] andDuration:1.0 forCommandCluster:[[aNotification userInfo] objectForKey:@"commandCluster"]];
+}
+
 #pragma mark - Button Actions
 
 - (IBAction)chooseControlBoxForCommandClusterButtonPress:(id)sender
@@ -207,14 +239,7 @@
 
 - (IBAction)addCommandButtonPress:(id)sender
 {
-    [data createCommandAndReturnNewCommandIndexForCommandCluster:[self commandCluster]];
-    [commandsTableView reloadData];
-    [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:(int)([data commandsCountForCommandCluster:[self commandCluster]] - 1)] byExtendingSelection:NO];
-    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
-    [commandsTableView scrollRowToVisible:(int)([data commandsCountForCommandCluster:[self commandCluster]] - 1)];
-    [self chooseChannelForCommandButtonPress:nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+    [self addCommandAtChannelIndex:-1 withStartTime:0.0 andDuration:1.0 forCommandCluster:[self commandCluster]];
 }
 
 - (IBAction)deleteCommandButtonPress:(id)sender

@@ -7,6 +7,7 @@
 //
 
 #import "MNAppDelegate.h"
+#import "ORSSerialPortManager.h"
 
 @implementation MNAppDelegate
 
@@ -19,8 +20,23 @@
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-	NSArray *ports = [[ORSSerialPortManager sharedSerialPortManager] availablePorts];
-	for (ORSSerialPort *port in ports) { [port close]; }
+	NSArray *ports = [[data serialPortManager] availablePorts];
+    
+	for (ORSSerialPort *port in ports)
+    {
+        [port close];
+    }
+}
+
+- (NSSize)windowWillResize:(NSWindow *)window toSize:(NSSize)proposedFrameSize
+{
+    NSLog(@"size w:%f h:%f", proposedFrameSize.width, proposedFrameSize.height);
+    return proposedFrameSize;
+}
+
+- (void)windowWillStartLiveResize:(NSNotification *)notification
+{
+    NSLog(@"notification:%@", notification);
 }
 
 #pragma mark - Menu Items

@@ -12,7 +12,7 @@
 #import "MNLibrariesViewController.h"
 #import "MNToolbarViewController.h"
 
-@interface MNAppDelegate : NSObject <NSApplicationDelegate>
+@interface MNAppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 {
     IBOutlet MNData *data;
     

@@ -216,13 +216,19 @@
                 if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Check the commands for mouse down clicks
-                    [self checkMouseEventForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
                     {
                         if(mouseAction == MNMouseDown)
                         {
+                            if(mouseEvent.modifierFlags & NSCommandKeyMask)
+                            {
+                                int channelIndex = (self.frame.size.height - mousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
+                                float time = [data xToTime:mousePoint.x];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], currentCommandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
+                            }
                             selectedCommandCluster = currentCommandCluster;
                             mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommandCluster:currentCommandCluster]];
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
@@ -282,7 +288,7 @@
                 if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNChannelGroupCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Check the commands for mouse clicks
-                    [self checkMouseEventForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
@@ -388,7 +394,7 @@
     }
 }
 
-- (void)checkMouseEventForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
+- (void)checkCommandClusterForCommandMouseEvent:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
 {
     trackItems = 1;
     int startingTrackIndex = trackIndex;
@@ -668,6 +674,16 @@
     [self setNeedsDisplay:YES];
 }
 
+#pragma mark - Keyboard Methods
 
+- (void)keyDown:(NSEvent *)theEvent
+{
+    
+}
+
+- (void)keyUp:(NSEvent *)theEvent
+{
+    
+}
 
 @end
