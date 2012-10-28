@@ -36,7 +36,13 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCurrentTime:) name:@"CurrentTimeChange" object:nil];
     
-    [self updateSerialPortsPopUpButton];
+    [data.serialPortManager addObserver:self
+                             forKeyPath:@"availablePorts"
+                                options:NSKeyValueObservingOptionNew
+                                context:NULL];
+    [serialPortsPopUpButton performSelector:@selector(selectItemAtIndex:) withObject:0 afterDelay:2.0];
+    [self performSelector:@selector(serialPortSelection:) withObject:nil afterDelay:2.0];
+    
     [self updateCurrentTime:nil];
 }
 
@@ -47,17 +53,24 @@
     [currentTimeTextField setStringValue:[NSString stringWithFormat:@"%.03f", [data currentTime]]];
 }
 
-- (void)updateSerialPortsPopUpButton
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [serialPortsPopUpButton removeAllItems];
-    
-    for (ORSSerialPort* aPort in [[data serialPortManager] availablePorts])
+    if ([keyPath isEqual:@"availablePorts"])
     {
-        // print port name
-        NSLog(@"Name:%@", [aPort name]);
-        NSLog(@"BSDPath:%@", [aPort path]);
-        [serialPortsPopUpButton addItemWithTitle:[aPort path]];
-	}
+        if (![[change objectForKey:NSKeyValueChangeNewKey] containsObject:data.serialPort] && data.serialPort != nil)
+        {
+            // Remove the old port
+            data.serialPort.delegate = nil;
+            [data.serialPort close];
+            data.serialPort = nil;
+        }
+        else if([[change objectForKey:NSKeyValueChangeNewKey] count] > 0)
+        {
+            // Open the new port
+            [serialPortsPopUpButton performSelector:@selector(selectItemAtIndex:) withObject:0 afterDelay:2.0];
+            [self performSelector:@selector(serialPortSelection:) withObject:nil afterDelay:2.0];
+        }
+    }
 }
 
 #pragma mark - IBActions Methods
