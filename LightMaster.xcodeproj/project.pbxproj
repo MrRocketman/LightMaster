@@ -52,6 +52,18 @@
 		1A487315163A543000820C1D /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487310163A542900820C1D /* ORSSerialPort.m */; };
 		1A487316163A543400820C1D /* ORSSerialPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487312163A542900820C1D /* ORSSerialPortManager.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
+		1A68DC5B163EF3D300A0D6FD /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC3C163EF3D300A0D6FD /* .gitignore */; };
+		1A68DC5C163EF3D300A0D6FD /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC3D163EF3D300A0D6FD /* LICENSE */; };
+		1A68DC5D163EF3D300A0D6FD /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC43163EF3D300A0D6FD /* Credits.rtf */; };
+		1A68DC5E163EF3D300A0D6FD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC45163EF3D300A0D6FD /* InfoPlist.strings */; };
+		1A68DC5F163EF3D300A0D6FD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC47163EF3D300A0D6FD /* MainMenu.xib */; };
+		1A68DC60163EF3D300A0D6FD /* ORSSerialPortDemo-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC49163EF3D300A0D6FD /* ORSSerialPortDemo-Info.plist */; };
+		1A68DC61163EF3D300A0D6FD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A68DC4B163EF3D300A0D6FD /* main.m */; };
+		1A68DC62163EF3D300A0D6FD /* ORSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A68DC4D163EF3D300A0D6FD /* ORSAppDelegate.m */; };
+		1A68DC63163EF3D300A0D6FD /* ORSSerialPortDemoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A68DC50163EF3D300A0D6FD /* ORSSerialPortDemoController.m */; };
+		1A68DC64163EF3D300A0D6FD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC51163EF3D300A0D6FD /* README.md */; };
+		1A68DC65163EF3D300A0D6FD /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A68DC54163EF3D300A0D6FD /* ORSSerialPort.m */; };
+		1A68DC66163EF3D300A0D6FD /* ORSSerialPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A68DC56163EF3D300A0D6FD /* ORSSerialPortManager.m */; };
 		1A818A931624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */; };
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
 		1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */; };
@@ -73,6 +85,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1A0289EE161CD20800B97A5B;
 			remoteInfo = LightMaster;
+		};
+		1A68DC68163EF3D300A0D6FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A68DC3F163EF3D300A0D6FD /* ORSSerialPortDemo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9D66D80E159BCAB800EE6D09;
+			remoteInfo = ORSSerialPortDemo;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -145,6 +164,24 @@
 		1A487312163A542900820C1D /* ORSSerialPortManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPortManager.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
+		1A68DC3C163EF3D300A0D6FD /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1A68DC3D163EF3D300A0D6FD /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1A68DC3F163EF3D300A0D6FD /* ORSSerialPortDemo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ORSSerialPortDemo.xcodeproj; sourceTree = "<group>"; };
+		1A68DC44163EF3D300A0D6FD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		1A68DC46163EF3D300A0D6FD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1A68DC48163EF3D300A0D6FD /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1A68DC49163EF3D300A0D6FD /* ORSSerialPortDemo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ORSSerialPortDemo-Info.plist"; sourceTree = "<group>"; };
+		1A68DC4B163EF3D300A0D6FD /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1A68DC4C163EF3D300A0D6FD /* ORSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSAppDelegate.h; sourceTree = "<group>"; };
+		1A68DC4D163EF3D300A0D6FD /* ORSAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSAppDelegate.m; sourceTree = "<group>"; };
+		1A68DC4E163EF3D300A0D6FD /* ORSSerialPortDemo-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ORSSerialPortDemo-Prefix.pch"; sourceTree = "<group>"; };
+		1A68DC4F163EF3D300A0D6FD /* ORSSerialPortDemoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialPortDemoController.h; sourceTree = "<group>"; };
+		1A68DC50163EF3D300A0D6FD /* ORSSerialPortDemoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPortDemoController.m; sourceTree = "<group>"; };
+		1A68DC51163EF3D300A0D6FD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		1A68DC53163EF3D300A0D6FD /* ORSSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialPort.h; sourceTree = "<group>"; };
+		1A68DC54163EF3D300A0D6FD /* ORSSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPort.m; sourceTree = "<group>"; };
+		1A68DC55163EF3D300A0D6FD /* ORSSerialPortManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORSSerialPortManager.h; sourceTree = "<group>"; };
+		1A68DC56163EF3D300A0D6FD /* ORSSerialPortManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPortManager.m; sourceTree = "<group>"; };
 		1A818A911624CC9E0054936E /* MNControlBoxChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNControlBoxChannelSelectorViewController.h; sourceTree = "<group>"; };
 		1A818A921624CC9E0054936E /* MNControlBoxChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNControlBoxChannelSelectorViewController.m; sourceTree = "<group>"; };
 		1AAA049A162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandClusterControlBoxSelectorViewController.h; sourceTree = "<group>"; };
@@ -239,6 +276,7 @@
 				1A028A4F161CD34A00B97A5B /* View Controllers */,
 				1A028A65161CD36300B97A5B /* Views */,
 				1A028A88161CD37400B97A5B /* Images */,
+				1A68DC3B163EF3D300A0D6FD /* armadsen-ORSSerialPort-72e1219 */,
 				1A0289FA161CD20800B97A5B /* Supporting Files */,
 			);
 			path = LightMaster;
@@ -358,6 +396,71 @@
 				1A487312163A542900820C1D /* ORSSerialPortManager.m */,
 			);
 			name = Serial;
+			sourceTree = "<group>";
+		};
+		1A68DC3B163EF3D300A0D6FD /* armadsen-ORSSerialPort-72e1219 */ = {
+			isa = PBXGroup;
+			children = (
+				1A68DC3C163EF3D300A0D6FD /* .gitignore */,
+				1A68DC3D163EF3D300A0D6FD /* LICENSE */,
+				1A68DC3E163EF3D300A0D6FD /* ORSSerialPortDemo */,
+				1A68DC51163EF3D300A0D6FD /* README.md */,
+				1A68DC52163EF3D300A0D6FD /* Source */,
+			);
+			path = "armadsen-ORSSerialPort-72e1219";
+			sourceTree = "<group>";
+		};
+		1A68DC3E163EF3D300A0D6FD /* ORSSerialPortDemo */ = {
+			isa = PBXGroup;
+			children = (
+				1A68DC3F163EF3D300A0D6FD /* ORSSerialPortDemo.xcodeproj */,
+				1A68DC42163EF3D300A0D6FD /* Resources */,
+				1A68DC4A163EF3D300A0D6FD /* Sources */,
+			);
+			path = ORSSerialPortDemo;
+			sourceTree = "<group>";
+		};
+		1A68DC40163EF3D300A0D6FD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1A68DC69163EF3D300A0D6FD /* ORSSerialPortDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1A68DC42163EF3D300A0D6FD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1A68DC43163EF3D300A0D6FD /* Credits.rtf */,
+				1A68DC45163EF3D300A0D6FD /* InfoPlist.strings */,
+				1A68DC47163EF3D300A0D6FD /* MainMenu.xib */,
+				1A68DC49163EF3D300A0D6FD /* ORSSerialPortDemo-Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1A68DC4A163EF3D300A0D6FD /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1A68DC4B163EF3D300A0D6FD /* main.m */,
+				1A68DC4C163EF3D300A0D6FD /* ORSAppDelegate.h */,
+				1A68DC4D163EF3D300A0D6FD /* ORSAppDelegate.m */,
+				1A68DC4E163EF3D300A0D6FD /* ORSSerialPortDemo-Prefix.pch */,
+				1A68DC4F163EF3D300A0D6FD /* ORSSerialPortDemoController.h */,
+				1A68DC50163EF3D300A0D6FD /* ORSSerialPortDemoController.m */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		1A68DC52163EF3D300A0D6FD /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				1A68DC53163EF3D300A0D6FD /* ORSSerialPort.h */,
+				1A68DC54163EF3D300A0D6FD /* ORSSerialPort.m */,
+				1A68DC55163EF3D300A0D6FD /* ORSSerialPortManager.h */,
+				1A68DC56163EF3D300A0D6FD /* ORSSerialPortManager.m */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		1A818A8F1624C8FB0054936E /* ChannelGroupLibrary */ = {
@@ -502,6 +605,12 @@
 			mainGroup = 1A0289E4161CD20800B97A5B;
 			productRefGroup = 1A0289F0161CD20800B97A5B /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1A68DC40163EF3D300A0D6FD /* Products */;
+					ProjectRef = 1A68DC3F163EF3D300A0D6FD /* ORSSerialPortDemo.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				1A0289EE161CD20800B97A5B /* LightMaster */,
@@ -509,6 +618,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1A68DC69163EF3D300A0D6FD /* ORSSerialPortDemo.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ORSSerialPortDemo.app;
+			remoteRef = 1A68DC68163EF3D300A0D6FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		1A0289ED161CD20800B97A5B /* Resources */ = {
@@ -539,6 +658,13 @@
 				1ADB081C1623827B002EA46E /* LibraryBackground.png in Resources */,
 				1ADB08231623899B002EA46E /* TabButton.png in Resources */,
 				1ADB08241623899B002EA46E /* TabButtonAlternate.png in Resources */,
+				1A68DC5B163EF3D300A0D6FD /* .gitignore in Resources */,
+				1A68DC5C163EF3D300A0D6FD /* LICENSE in Resources */,
+				1A68DC5D163EF3D300A0D6FD /* Credits.rtf in Resources */,
+				1A68DC5E163EF3D300A0D6FD /* InfoPlist.strings in Resources */,
+				1A68DC5F163EF3D300A0D6FD /* MainMenu.xib in Resources */,
+				1A68DC60163EF3D300A0D6FD /* ORSSerialPortDemo-Info.plist in Resources */,
+				1A68DC64163EF3D300A0D6FD /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +724,11 @@
 				1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */,
 				1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */,
 				1A37E895163CC86C000105B5 /* MNAppDelegate.m in Sources */,
+				1A68DC61163EF3D300A0D6FD /* main.m in Sources */,
+				1A68DC62163EF3D300A0D6FD /* ORSAppDelegate.m in Sources */,
+				1A68DC63163EF3D300A0D6FD /* ORSSerialPortDemoController.m in Sources */,
+				1A68DC65163EF3D300A0D6FD /* ORSSerialPort.m in Sources */,
+				1A68DC66163EF3D300A0D6FD /* ORSSerialPortManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,6 +783,30 @@
 				1A028A1A161CD20800B97A5B /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1A68DC43163EF3D300A0D6FD /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A68DC44163EF3D300A0D6FD /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		1A68DC45163EF3D300A0D6FD /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A68DC46163EF3D300A0D6FD /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1A68DC47163EF3D300A0D6FD /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A68DC48163EF3D300A0D6FD /* en */,
+			);
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
