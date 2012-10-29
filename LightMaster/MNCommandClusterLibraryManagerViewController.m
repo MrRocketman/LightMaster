@@ -200,7 +200,7 @@
 
 - (void)addCommandForCommandCluster:(NSNotification *)aNotification
 {
-    [self addCommandAtChannelIndex:[[[aNotification userInfo] objectForKey:@"channelIndex"] intValue] withStartTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] andDuration:1.0 forCommandCluster:[[aNotification userInfo] objectForKey:@"commandCluster"]];
+    [self addCommandAtChannelIndex:[[[aNotification userInfo] objectForKey:@"channelIndex"] intValue] withStartTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] andDuration:0.1 / [data zoomLevel] forCommandCluster:[[aNotification userInfo] objectForKey:@"commandCluster"]];
 }
 
 #pragma mark - Button Actions

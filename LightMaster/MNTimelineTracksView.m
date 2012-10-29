@@ -334,25 +334,32 @@
                     // Check the commands for mouse down clicks
                     [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
+                    // Check for new command clicks
+                    if(mouseEvent != nil && mouseAction == MNMouseDown && mouseEvent.modifierFlags & NSCommandKeyMask)
+                    {
+                        int channelIndex = (self.frame.size.height - mousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
+                        float time = [data xToTime:mousePoint.x];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], currentCommandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
+                        int newCommandIndex = [data commandsCountForCommandCluster:currentCommandCluster] - 1;
+                        
+                        mouseDraggingEvent = MNCommandMouseDragEndTime;
+                        mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:currentCommandCluster]]];
+                        
+                        selectedCommandIndex = newCommandIndex;
+                        commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:currentSequence] indexOfObject:[data filePathForCommandCluster:currentCommandCluster]];
+                        
+                        mouseEvent = nil;
+                    }
+                    
                     // If a command didn't capture the mouse event, we use it
                     if(mouseEvent != nil)
                     {
                         if(mouseAction == MNMouseDown)
                         {
-                            // Add a new command
-                            if(mouseEvent.modifierFlags & NSCommandKeyMask)
-                            {
-                                int channelIndex = (self.frame.size.height - mousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
-                                float time = [data xToTime:mousePoint.x];
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], currentCommandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
-                            }
                             // Select this cluster
-                            else
-                            {
-                                selectedCommandCluster = currentCommandCluster;
-                                mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommandCluster:currentCommandCluster]];
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
-                            }
+                            selectedCommandCluster = currentCommandCluster;
+                            mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommandCluster:currentCommandCluster]];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:selectedCommandCluster];
                         }
                         else if(mouseAction == MNMouseDragged)
                         {
