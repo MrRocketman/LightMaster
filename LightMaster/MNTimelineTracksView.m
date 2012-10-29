@@ -12,11 +12,13 @@
 @interface MNTimelineTracksView()
 
 - (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems;
+- (void)drawChannelGuidlinesForControlBoxFilePathIndex:(int)controlBoxFilePathIndex atTrackIndex:(int)trackIndex channelsTall:(int)channelsTall;
 - (void)drawRect:(NSRect)aRect withCornerRadius:(float)radius fillColor:(NSColor *)color andStroke:(BOOL)yesOrNo;
 - (void)drawAudioClipsAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems;
 - (void)drawControlBoxCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems controlBoxIndex:(int)controlBoxIndex;
 - (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
 - (void)drawChannelGroupCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems channelGroupIndex:(int)channelGroupIndex;
+- (void)handleEmptySpaceMouseAction;
 
 - (void)drawTimelineBar;
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height;
@@ -100,6 +102,7 @@
         [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
         controlBoxIndex = (audioClipsCount > 0 ? trackItemsCount - audioClipsCount : trackItemsCount);
         [self drawControlBoxCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount controlBoxIndex:controlBoxIndex];
+        [self drawChannelGuidlinesForControlBoxFilePathIndex:controlBoxIndex atTrackIndex:trackItemsCount channelsTall:thisTrackItemsCount];
         trackItemsCount += thisTrackItemsCount;
         controlBoxCount += thisTrackItemsCount;
     }
@@ -117,6 +120,17 @@
     
     // Draw the timeline on top of everything
     [self drawTimelineBar];
+    
+    // Check for manual channel controls and new commandCluster/audioClip/channelGroup clicks
+    if(mouseEvent != nil)
+    {
+        [self handleEmptySpaceMouseAction];
+    }
+}
+
+- (void)handleEmptySpaceMouseAction
+{
+    
 }
 
 - (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems
@@ -125,6 +139,106 @@
     NSRect backgroundFrame = NSMakeRect(0, self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT, self.frame.size.width, TRACK_ITEM_HEIGHT * trackItems);
     NSSize imageSize = [clusterBackgroundImage size];
     [clusterBackgroundImage drawInRect:backgroundFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
+}
+
+- (void)drawChannelGuidlinesForControlBoxFilePathIndex:(int)controlBoxFilePathIndex atTrackIndex:(int)trackIndex channelsTall:(int)channelsTall
+{
+    for(int i = 0; i < channelsTall; i ++)
+    {
+        NSRect bottomOfChannelLine = NSMakeRect(0, self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - i * TRACK_ITEM_HEIGHT - TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT, self.frame.size.width, 1);
+        
+        NSColor *guidelineColor = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+        [guidelineColor setFill];
+        NSRectFill(bottomOfChannelLine);
+        
+        // Draw the channel index
+        NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+        NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12];
+        NSRect textFrame = NSMakeRect([data timeToX:[data timeAtLeftEdgeOfTimelineView]] + 3, bottomOfChannelLine.origin.y - 2, 20, TRACK_ITEM_HEIGHT);
+        [attributes setObject:font forKey:NSFontAttributeName];
+        
+        // Manual channel controls
+        // Channel on
+        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:textFrame] containsPoint:mousePoint]))
+        {
+            [attributes setObject:[NSColor redColor] forKey:NSForegroundColorAttributeName];
+            
+            uint8_t commandCharacters[128] = {0};
+            NSString *controlBoxID = [data controlBoxIDForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:currentSequence]]];
+            NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
+            
+            // Loop through each channel to build the command
+            int i2;
+            for(i2 = 0; i2 < [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex]]]; i2 ++)
+            {
+                if(i2 == i)
+                {
+                    setBit(commandCharacters[i2 / 8], i2 % 8);
+                }
+                else
+                {
+                    clearBit(commandCharacters[i2 / 8], i2 % 8);
+                }
+                
+                // Add each command character to the command string as it is completed
+                if(i2 % 8 == 7)
+                {
+                    [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                    //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                }
+            }
+            
+            // Add the final command character if neccessary
+            if(i2 % 8 != 0)
+            {
+                [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+            }
+            
+            // Send the command!
+            [data sendStringToSerialPort:[NSString stringWithFormat:@"%@`", command]];
+        }
+        // Channel off
+        else if(mouseEvent != nil && (mouseAction == MNMouseUp && [[NSBezierPath bezierPathWithRect:textFrame] containsPoint:mousePoint]))
+        {
+            [attributes setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+            
+            uint8_t commandCharacters[128] = {0};
+            NSString *controlBoxID = [data controlBoxIDForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:currentSequence]]];
+            NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
+            
+            // Loop through each channel to build the command
+            int i2;
+            for(i2 = 0; i2 < [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex]]]; i2 ++)
+            {
+                clearBit(commandCharacters[i2 / 8], i2 % 8);
+                
+                // Add each command character to the command string as it is completed
+                if(i2 % 8 == 7)
+                {
+                    [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                    //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                }
+            }
+            
+            // Add the final command character if neccessary
+            if(i2 % 8 != 0)
+            {
+                [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+            }
+            
+            // Send the command!
+            [data sendStringToSerialPort:[NSString stringWithFormat:@"%@`", command]];
+        }
+        // Normal
+        else
+        {
+            [attributes setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+        }
+        
+        [[NSString stringWithFormat:@"%d", [[data numberForChannel:[data channelAtIndex:i forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex]]]] intValue]] drawInRect:textFrame withAttributes:attributes];
+    }
 }
 
 - (void)drawRect:(NSRect)aRect withCornerRadius:(float)radius fillColor:(NSColor *)color andStroke:(BOOL)yesOrNo

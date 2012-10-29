@@ -54,7 +54,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqual:@"availablePorts"])
+    if ([keyPath isEqual:@"availablePorts"] && [change objectForKey:NSKeyValueChangeNewKey] != nil)
     {
         if (![[change objectForKey:NSKeyValueChangeNewKey] containsObject:data.serialPort] && data.serialPort != nil)
         {

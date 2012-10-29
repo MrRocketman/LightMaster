@@ -14,6 +14,8 @@
 
 // This is how many pixels per second there are are a zoom level of 1
 #define PIXEL_TO_ZOOM_RATIO 25
+#define setBit(var, mask)   ((var) |= (uint16_t)(1 << mask))
+#define clearBit(var, mask)   ((var) &= (uint16_t)~(1 << mask))
 
 enum
 {
@@ -60,6 +62,10 @@ enum
 - (float)xToTime:(int)x;
 - (int)widthForTimeInterval:(float)timeInterval;
 - (int)trackItemsCount;
+
+#pragma mark - SerialPort
+
+- (void)sendStringToSerialPort:(NSString *)text;
 
 #pragma mark - Sequence Library Methods
 // Management Methods

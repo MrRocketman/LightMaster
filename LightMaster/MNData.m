@@ -11,8 +11,6 @@
 #define LARGEST_NUMBER 999999
 #define LIBRARY_VERSION_NUMBER 1.0
 #define DATA_VERSION_NUMBER 1.0
-#define setBit(var, mask)   ((var) |= (uint16_t)(1 << mask))
-#define clearBit(var, mask)   ((var) &= (uint16_t)~(1 << mask))
 
 @interface MNData()
 
@@ -38,7 +36,6 @@
 - (void)addBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (void)removeBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (NSMutableDictionary *)dictionaryFromFilePath:(NSString *)filePath;
-- (void)sendStringToSerialPort:(NSString *)text;
 - (void)loopButtonPress:(NSNotification *)aNotification;
 
 @end

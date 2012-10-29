@@ -137,6 +137,7 @@
         [audioClipImage drawInRect:trackFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
     }
     
+    // Draw the text
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:60];
     NSRect textFrame = NSMakeRect(10, trackFrame.origin.y + 5, self.frame.size.width - 60, TRACK_ITEM_HEIGHT * trackItemsCount - 10);
@@ -147,7 +148,7 @@
     [attributes setObject:paragraphStyle forKey:NSParagraphStyleAttributeName];
     [text drawInRect:textFrame withAttributes:attributes];
     
-    if(NO)
+    /*if(NO)
     {
         NSSize imageSize = [recordImage size];
         NSRect recordImageRect = NSMakeRect(self.frame.size.width - 50, trackFrame.origin.y + TRACK_ITEM_HEIGHT * trackItemsCount / 2 - 20, 40, 40);
@@ -158,7 +159,7 @@
         NSSize imageSize = [blankRecordImage size];
         NSRect recordImageRect = NSMakeRect(self.frame.size.width - 50, trackFrame.origin.y + TRACK_ITEM_HEIGHT * trackItemsCount / 2 - 20, 40, 40);
         [blankRecordImage drawInRect:recordImageRect fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
-    }
+    }*/
 }
 
 #pragma mark Mouse Methods
