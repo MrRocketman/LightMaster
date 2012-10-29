@@ -13,6 +13,7 @@
 #define CLUSTER_CORNER_RADIUS 5.0
 #define COMMAND_CORNER_RADIUS 3.0
 #define AUTO_SCROLL_REFRESH_RATE 0.03
+#define TIME_ADJUST_PIXEL_BUFFER 8.0
 
 enum
 {
@@ -27,6 +28,8 @@ enum
     MNControlBoxCommandClusterMouseDrag,
     MNChannelGroupCommandClusterMouseDrag,
     MNCommandMouseDrag,
+    MNCommandMouseDragEndTime,
+    MNCommandMouseDragStartTime,
     MNTimeMarkerMouseDrag
 };
 
@@ -52,7 +55,8 @@ enum
     BOOL currentTimeMarkerIsSelected;
     
     NSMutableDictionary *selectedCommandCluster;
-    NSMutableDictionary *selectedCommand;
+    int selectedCommandIndex;
+    int commandClusterIndexForSelectedCommand;
     NSMutableDictionary *selectedAudioClip;
     
     NSMutableArray *audioClipNSSounds;

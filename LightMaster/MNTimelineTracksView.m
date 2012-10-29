@@ -47,6 +47,8 @@
         audioClipNSSounds = [[NSMutableArray alloc] init];
         
         mouseDraggingEventObjectIndex = -1;
+        selectedCommandIndex = -1;
+        commandClusterIndexForSelectedCommand = -1;
     }
     
     return self;
@@ -374,6 +376,9 @@
                 // Normal comand cluster
                 else
                 {
+                    // Check the commands for mouse down clicks
+                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.0 alpha:0.7] andStroke:YES];
                     selectedCommandCluster = nil;
                 }
@@ -450,11 +455,14 @@
                 }
                 else
                 {
+                    // Check the commands for mouse clicks
+                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:1.0 alpha:0.7] andStroke:YES];
                     selectedCommandCluster = nil;
                 }
                 
-                // Draw the commands first and check for mouse clicks
+                // Draw the commands
                 [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
             }
         }
@@ -465,6 +473,7 @@
 {
     trackItems = 1;
     int startingTrackIndex = trackIndex;
+    int commandClusterIndex = (int)[[data commandClusterFilePathsForSequence:currentSequence] indexOfObject:[data filePathForCommandCluster:commandCluster]];
     
     for(int i = 0; i < [data commandsCountForCommandCluster:commandCluster]; i ++)
     {
@@ -491,36 +500,14 @@
         }
         commandRect = NSMakeRect(x, y, width, height);
         
-        // Command Mouse Checking Here
-        if(((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNCommandMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+        // Draw the command
+        if(selectedCommandIndex == i && commandClusterIndexForSelectedCommand == commandClusterIndex)
         {
-            if(mouseAction == MNMouseDown)
-            {
-                selectedCommand = currentCommand;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:currentCommand, commandCluster, nil]];
-            }
-            else if(mouseAction == MNMouseDragged)
-            {
-                mouseDraggingEvent = MNCommandMouseDrag;
-                mouseDraggingEventObjectIndex = i;
-                [data moveCommandAtIndex:i toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
-                // Mouse drag is changing the channel index
-                if(mousePoint.y > y + height || mousePoint.y < y)
-                {
-                    int newIndex = (self.frame.size.height - mousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
-                    [data setChannelIndex:newIndex forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
-                }
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
-            }
-            
-            mouseEvent = nil;
-            
             [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
         }
         else
         {
             [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.2 alpha:0.7] andStroke:YES];
-            selectedCommand = nil;
         }
     }
 }
@@ -555,41 +542,77 @@
         commandRect = NSMakeRect(x, y, width, height);
         
         // Command Mouse Checking Here
-        if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNCommandMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]))
         {
-            if(mouseAction == MNMouseDown)
+            // Delete a command if it's 'command clicked'
+            if(mouseEvent.modifierFlags & NSCommandKeyMask)
             {
-                // Delete a command if it's 'command clicked'
-                if(mouseEvent.modifierFlags & NSCommandKeyMask)
+                [data removeCommand:currentCommand fromCommandCluster:commandCluster];
+            }
+            else
+            {
+                // Adjust start time
+                if(mousePoint.x <= x + TIME_ADJUST_PIXEL_BUFFER)
                 {
-                    [data removeCommand:currentCommand fromCommandCluster:commandCluster];
+                    mouseDraggingEvent = MNCommandMouseDragStartTime;
+                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
+                }
+                // Adjust the end time
+                else if(mousePoint.x >= x + width - TIME_ADJUST_PIXEL_BUFFER)
+                {
+                    mouseDraggingEvent = MNCommandMouseDragEndTime;
+                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
                 }
                 else
                 {
-                    selectedCommand = currentCommand;
+                    mouseDraggingEvent = MNCommandMouseDrag;
                     mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:currentCommand, commandCluster, nil]];
                 }
+                
+                selectedCommandIndex = i;
+                commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:currentSequence] indexOfObject:[data filePathForCommandCluster:commandCluster]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:currentCommand, commandCluster, nil]];
             }
-            else if(mouseAction == MNMouseDragged)
+            
+            mouseEvent = nil;
+        }
+        else if(mouseEvent != nil && mouseAction == MNMouseDragged && i == selectedCommandIndex)
+        {
+            //(mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint] && mouseDraggingEventObjectIndex == -1) || (mouseDraggingEvent == MNCommandMouseDrag && mouseDraggingEventObjectIndex == i) || mouseDraggingEvent == MNCommandMouseDragStartTime || mouseDraggingEvent == MNCommandMouseDragEndTime))
+            
+            if(mouseDraggingEvent == MNCommandMouseDragStartTime)
+            {
+                [data setStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+            }
+            else if(mouseDraggingEvent == MNCommandMouseDragEndTime)
+            {
+                [data setEndTime:[data xToTime:mousePoint.x - mouseDownPoint.x] forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+            }
+            else if(mouseDraggingEvent == MNCommandMouseDrag)
             {
                 mouseDraggingEvent = MNCommandMouseDrag;
-                mouseDraggingEventObjectIndex = i;
+                // Drag the command
                 [data moveCommandAtIndex:i toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
+                
                 // Mouse drag is changing the channel index
                 if(mousePoint.y > y + height || mousePoint.y < y)
                 {
                     int newIndex = (self.frame.size.height - mousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
                     [data setChannelIndex:newIndex forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
                 }
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
             }
+            
+            mouseDraggingEventObjectIndex = i;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
             
             mouseEvent = nil;
         }
-        else
+        else if(mouseEvent != nil && i == selectedCommandIndex)
         {
-            selectedCommand = nil;
+            selectedCommandIndex = -1;
+            commandClusterIndexForSelectedCommand = -1;
+            
+            mouseEvent = nil;
         }
     }
 }
