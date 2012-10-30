@@ -483,6 +483,7 @@
     
     if(currentSequenceIsPlaying)
     {
+        // Loop the currentSequence
         if(loop)
         {
             if(currentTime >= [self endTimeForSequence:currentSequence])
@@ -519,6 +520,13 @@
         int currentControlBoxIndex = -1;
         BOOL isChannelGroupCommand = YES;
         int currentChannelIndex = -1;
+        // Initialize all values to 0 to start off with
+        for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
+        {
+            memset(channelState[i], 0, 1024);
+        }
+        
+        // Go through each commandCluster
         for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
         {
             currentCommandCluster = [self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]];
@@ -529,7 +537,7 @@
                 currentControlBoxIndex = (int)[[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self controlBoxFilePathForCommandCluster:currentCommandCluster]];
             }
             
-            // Check to see if the current time is withing the command cluster's range (plus a little extra at the so we can turn all channels off if they haven't been already)
+            // Check to see if the current time is within the command cluster's range (plus a little extra at the so we can turn all channels off if they haven't been already)
             if(currentTime >= [self startTimeForCommandCluster:currentCommandCluster] && currentTime <= [self endTimeForCommandCluster:currentCommandCluster] + 0.25)
             {
                 // Loop through this clusters commands and determine the chanel's state
@@ -548,10 +556,6 @@
                     if(currentTime >= [self startTimeForCommand:currentCommand] && currentTime <= [self endTimeForCommand:currentCommand])
                     {
                         channelState[currentControlBoxIndex][currentChannelIndex] = YES;
-                    }
-                    else
-                    {
-                        channelState[currentControlBoxIndex][currentChannelIndex] = NO;
                     }
                 }
             }
