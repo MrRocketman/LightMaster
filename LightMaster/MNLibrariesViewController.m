@@ -256,9 +256,8 @@
 {
     [self displayLibrary:kCommandClusterLibrary];
     
-    NSMutableDictionary *command = [[aNotification object] objectAtIndex:0];
-    NSMutableDictionary *commandCluster = [[aNotification object] objectAtIndex:1];
-    int commandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:[data filePathForCommandCluster:commandCluster]];
+    int commandIndex = [[[aNotification object] objectAtIndex:0] intValue];
+    int commandClusterIndex = [[[aNotification object] objectAtIndex:1] intValue];
     
     // Select the command cluster
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
@@ -266,7 +265,7 @@
     [theLibrary.view scrollPoint:NSMakePoint(0, 25)];
     
     // Select the command
-    [commandClusterLibraryManagerViewController selectCommandAtIndex:(int)[[data commandsFromCommandCluster:commandCluster] indexOfObject:command]];
+    [commandClusterLibraryManagerViewController selectCommandAtIndex:commandIndex];
 }
 
 - (void)selectAudioClip:(NSNotification *)aNotification

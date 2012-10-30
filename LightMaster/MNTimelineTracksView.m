@@ -561,7 +561,26 @@
             if(mouseEvent.modifierFlags & NSCommandKeyMask)
             {
                 [data removeCommand:currentCommand fromCommandCluster:commandCluster];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
             }
+            // Duplicate a command if it's 'option clicked'
+            else if(mouseEvent.modifierFlags & NSAlternateKeyMask)
+            {
+                int newCommandIndex = [data createCommandAndReturnNewCommandIndexForCommandCluster:commandCluster];
+                [data setStartTime:[data startTimeForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+                [data setEndTime:[data endTimeForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+                [data setChannelIndex:[data channelIndexForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+                [data setBrightness:[data brightnessForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+                
+                mouseDraggingEvent = MNCommandMouseDrag;
+                mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:commandCluster]]];
+                
+                selectedCommandIndex = newCommandIndex;
+                commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:currentSequence] indexOfObject:[data filePathForCommandCluster:commandCluster]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [NSNumber numberWithInt:commandClusterIndexForSelectedCommand + 1], nil]];
+            }
+            // Drag a command
             else
             {
                 // Adjust start time
@@ -584,7 +603,7 @@
                 
                 selectedCommandIndex = i;
                 commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:currentSequence] indexOfObject:[data filePathForCommandCluster:commandCluster]];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:currentCommand, commandCluster, nil]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [NSNumber numberWithInt:commandClusterIndexForSelectedCommand + 1], nil]];
             }
             
             mouseEvent = nil;
