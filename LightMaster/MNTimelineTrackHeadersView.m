@@ -62,7 +62,6 @@
     [topBarImage drawInRect:trackFrame fromRect:NSMakeRect(0.0, 0.0, imageSize.width, imageSize.height) operation:NSCompositeSourceOver fraction:1.0];
     
     // Get some state variables
-    NSMutableDictionary *currentSequence = [data currentSequence];
     int trackItemsCount = [data trackItemsCount];
     
     // Set the Frame
@@ -78,27 +77,27 @@
     trackItemsCount = 0;
     int thisTrackItemsCount = 0;
     // Draw the audio track
-    if([data audioClipFilePathsCountForSequence:currentSequence] > 0)
+    if([data audioClipFilePathsCountForSequence:[data currentSequence]] > 0)
     {
-        thisTrackItemsCount = [data audioClipFilePathsCountForSequence:currentSequence];
+        thisTrackItemsCount = [data audioClipFilePathsCountForSequence:[data currentSequence]];
         [self drawTrackWithStyle:MNAudioClipStyle text:@"Audio" trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:-1];
         trackItemsCount += thisTrackItemsCount;
     }
     // Draw the controlBox tracks
-    for(int i = 0; i < [data controlBoxFilePathsCountForSequence:currentSequence]; i ++)
+    for(int i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i]]];
+        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i forSequence:[data currentSequence]]]];
         
-        [self drawTrackWithStyle:MNControlBoxStyle text:[data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i forSequence:currentSequence]]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
+        [self drawTrackWithStyle:MNControlBoxStyle text:[data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i forSequence:[data currentSequence]]]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
         
         trackItemsCount += thisTrackItemsCount;
     }
     // Draw the channelGroup tracks
-    for(int i = 0; i < [data channelGroupFilePathsCountForSequence:currentSequence]; i ++)
+    for(int i = 0; i < [data channelGroupFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
         thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i]]];
         
-        [self drawTrackWithStyle:MNChannelGroupStyle text:[data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i forSequence:currentSequence]]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
+        [self drawTrackWithStyle:MNChannelGroupStyle text:[data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i forSequence:[data currentSequence]]]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
         
         trackItemsCount += thisTrackItemsCount;
     }

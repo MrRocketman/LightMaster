@@ -43,7 +43,6 @@ enum
     NSPoint scrollViewOrigin;
     NSSize scrollViewVisibleSize;
     
-    NSMutableDictionary *currentSequence;
     NSPoint mouseDownPoint;
     NSPoint mousePoint;
     int mouseAction;
