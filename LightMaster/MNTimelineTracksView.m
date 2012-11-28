@@ -580,7 +580,7 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [NSNumber numberWithInt:commandClusterIndexForSelectedCommand + 1], nil]];
             }
-            // Drag a command
+            // Drag a command/select a command
             else
             {
                 // Adjust start time
@@ -603,7 +603,7 @@
                 
                 selectedCommandIndex = i;
                 commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:currentSequence] indexOfObject:[data filePathForCommandCluster:commandCluster]];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [NSNumber numberWithInt:commandClusterIndexForSelectedCommand + 1], nil]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [NSNumber numberWithInt:commandClusterIndexForSelectedCommand], nil]];
             }
             
             mouseEvent = nil;
