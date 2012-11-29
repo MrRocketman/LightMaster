@@ -26,6 +26,7 @@
 
 // Menu Items
 - (IBAction)newSequence:(id)sender;
+- (IBAction)convertRBC:(id)sender;
 - (IBAction)newControlBox:(id)sender;
 - (IBAction)newChannelGroup:(id)sender;
 - (IBAction)newCommandCluster:(id)sender;

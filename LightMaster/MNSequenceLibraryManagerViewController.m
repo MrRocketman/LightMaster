@@ -135,7 +135,7 @@
 
 - (IBAction)deleteControlBoxFromSequenceButtonPress:(id)sender
 {
-    [data removeControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow]] forSequence:sequence];
+    [data removeControlBoxFilePath:[data controlBoxFilePathAtIndex:(int)[controlBoxesTableView selectedRow] forSequence:sequence] forSequence:sequence];
     [controlBoxesTableView reloadData];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
@@ -155,7 +155,7 @@
 
 - (IBAction)deleteChannelGroupFromSequenceButtonPress:(id)sender
 {
-    [data removeChannelGroupFilePath:[data channelGroupFilePathAtIndex:(int)[channelGroupsTableView selectedRow]] forSequence:sequence];
+    [data removeChannelGroupFilePath:[data channelGroupFilePathAtIndex:(int)[channelGroupsTableView selectedRow] forSequence:sequence] forSequence:sequence];
     [channelGroupsTableView reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
@@ -174,7 +174,7 @@
 
 - (IBAction)deleteCommandClusterFromSequenceButtonPress:(id)sender
 {
-    [data removeCommandClusterFilePath:[data commandClusterFilePathAtIndex:(int)[commandClustersTableView selectedRow]] forSequence:sequence];
+    [data removeCommandClusterFilePath:[data commandClusterFilePathAtIndex:(int)[commandClustersTableView selectedRow] forSequence:sequence] forSequence:sequence];
     [commandClustersTableView reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
@@ -193,7 +193,7 @@
 
 - (IBAction)deleteAudioClipFromSequenceButtonPress:(id)sender
 {
-    [data removeAudioClipFilePath:[data audioClipFilePathAtIndex:(int)[audioClipsTableView selectedRow]] forSequence:sequence];
+    [data removeAudioClipFilePath:[data audioClipFilePathAtIndex:(int)[audioClipsTableView selectedRow] forSequence:sequence] forSequence:sequence];
     [audioClipsTableView reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }

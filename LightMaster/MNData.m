@@ -58,6 +58,7 @@
         self.serialPortManager = [ORSSerialPortManager sharedSerialPortManager];
         loop = YES;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
     }
     
     return self;
@@ -452,6 +453,99 @@
 	return (timeInterval * zoomLevel * PIXEL_TO_ZOOM_RATIO);
 }
 
+- (void)convertRBCFile
+{
+    [self loadOpenPanel];
+    
+    if(previousOpenPanelDirectory == nil)
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:@"~"]];
+    }
+    else
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:previousOpenPanelDirectory]];
+    }
+    
+    [openPanel beginWithCompletionHandler:^(NSInteger result)
+     {
+         if(result == NSFileHandlingPanelOKButton)
+         {
+             NSString *filePath = [[openPanel URL] path];
+             NSMutableDictionary *rbcDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
+             NSMutableArray *rbcCommandsArrayArray = [rbcDictionary objectForKey:@"Commands"];
+             NSString *rbcSequenceName = [[filePath lastPathComponent] stringByDeletingPathExtension];
+             NSString *rbcAudioClipFliePath = [rbcDictionary objectForKey:@"Music"];
+             int rbcNumberOfBoards = [(NSNumber *)[rbcDictionary objectForKey:@"NumberOfBoards"] intValue];
+             
+             // Create 1 commandCluster for each board
+             for(int i = 1; i <= rbcNumberOfBoards; i ++)
+             {
+                 NSString *newCommandClusterFilePath = [self createCommandClusterAndReturnFilePath];
+                 NSMutableDictionary *newCommandCluster = [self commandClusterFromFilePath:newCommandClusterFilePath];
+                 int maxCommandEndTimeForThisCommandCluster = 0.0;
+                 [self setDescription:[NSString stringWithFormat:@"%@ Cluster %d", rbcSequenceName, i] forCommandCluster:newCommandCluster];
+                 
+                 NSMutableArray *rbcCommandsArray;
+                 NSMutableDictionary *rbcCommand;
+                 // Cycle through each of the command arrays
+                 for(int i3 = 0; i3 < [rbcCommandsArrayArray count]; i3 ++)
+                 {
+                     // Read in a commands array
+                     rbcCommandsArray = [rbcCommandsArrayArray objectAtIndex:i3];
+                     
+                     // Read in the commands and add them to the command cluster
+                     for(int i2 = 0; i2 < [rbcCommandsArray count]; i2 ++)
+                     {
+                         // Get the next rbcCommand
+                         rbcCommand = [rbcCommandsArray objectAtIndex:i2];
+                         
+                         // Is this command for this commandCluster
+                         if([(NSNumber *)[rbcCommand objectForKey:@"BoardNumber"] intValue] == i)
+                         {
+                             // Create a new command
+                             int newCommandIndex = [self createCommandAndReturnNewCommandIndexForCommandCluster:newCommandCluster];
+                             
+                             // Set the new command data
+                             [self setChannelIndex:[(NSNumber *)[rbcCommand objectForKey:@"RelayNumber"] intValue] - 1 forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                             [self setStartTime:[(NSNumber *)[rbcCommand objectForKey:@"Time"] floatValue] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                             [self setEndTime:[(NSNumber *)[rbcCommand objectForKey:@"Time"] floatValue] + [(NSNumber *)[rbcCommand objectForKey:@"Duration"] floatValue] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                             
+                             // Compare maxCommandEndTime
+                             if([self endTimeForCommand:[self commandAtIndex:newCommandIndex fromCommandCluster:newCommandCluster]] > maxCommandEndTimeForThisCommandCluster)
+                             {
+                                 maxCommandEndTimeForThisCommandCluster = [self endTimeForCommand:[self commandAtIndex:newCommandIndex fromCommandCluster:newCommandCluster]];
+                             }
+                         }
+                     }
+                 }
+                 
+                 // Set newCommandCluster end time
+                 [self setEndTime:maxCommandEndTimeForThisCommandCluster forCommandcluster:newCommandCluster];
+             }
+             
+             // Create the audio clip
+             [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateNewAudioClipFromFilePath" object:rbcAudioClipFliePath];
+             
+             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
+         }
+     }
+     ];
+}
+
+- (void)loadOpenPanel
+{
+    // Load the open panel if neccessary
+    if(openPanel == nil)
+    {
+        openPanel = [NSOpenPanel openPanel];
+        [openPanel setCanChooseDirectories:NO];
+        [openPanel setCanChooseFiles:YES];
+        [openPanel setResolvesAliases:YES];
+        [openPanel setAllowsMultipleSelection:NO];
+        [openPanel setAllowedFileTypes:[NSArray arrayWithObject:@"rbc"]];
+    }
+}
+
 - (void)setCurrentSequence:(NSMutableDictionary *)newSequence
 {
     currentSequence = newSequence;
@@ -727,6 +821,7 @@
     [newSequence writeToFile:[NSString stringWithFormat:@"%@/%@", libraryFolder, filePath] atomically:YES];
     [self setVersionNumber:DATA_VERSION_NUMBER forSequence:newSequence];
     [self setDescription:@"New Sequence" forSequence:newSequence];
+    [self setEndTime:1.0 forSequence:newSequence];
     
     return filePath;
 }

@@ -15,6 +15,7 @@
 - (void)textDidEndEditing:(NSNotification *)aNotification;
 - (NSMutableDictionary *)audioClip;
 - (void)loadOpenPanel;
+- (void)createNewAudioClipFromAudioFilePathNotification:(NSNotification *)aNotification;
 
 @end
 
@@ -31,6 +32,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange:) name:@"NSTextDidChangeNotification" object:scriptTextView];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNewAudioClipFromAudioFilePathNotification:) name:@"CreateNewAudioClipFromFilePath" object:nil];
         
         audioClipIndex = -1;
     }
@@ -58,6 +60,13 @@
         [openPanel setAllowsMultipleSelection:NO];
         [openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"aac", @"aif", @"aiff", @"alac", @"mp3", @"m4a", @"wav", nil]];
     }
+}
+
+- (void)createNewAudioClipFromAudioFilePathNotification:(NSNotification *)aNotification
+{
+    [data createAudioClipAndReturnFilePath];
+    [self setAudioClipIndex:[data audioClipFilePathsCount] - 1];
+    [self createNewAudioClipFromAudioFilePath:[aNotification object]];
 }
 
 #pragma mark - Public Methods
@@ -104,6 +113,42 @@
     }
 }
 
+- (void)createNewAudioClipFromAudioFilePath:(NSString *)filePath
+{
+    NSString *newFilePath;
+    //NSLog(@"filePath:%@", filePath);
+    NSString *libraryFolder = [data libraryFolder];
+    NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", libraryFolder];
+    NSRange textRange = [[filePath lowercaseString] rangeOfString:[audioClipLibraryDirectory lowercaseString]];
+    
+    // Library audioClip
+    if(textRange.location != NSNotFound)
+    {
+        // Set the filePath
+        [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
+        newFilePath = filePath;
+        
+        [filePathLabel setStringValue:[filePath lastPathComponent]];
+    }
+    // External audioClip
+    else
+    {
+        // Make a copy of the audioClip file and store it in the library
+        newFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary/%@", [data libraryFolder], [filePath lastPathComponent]];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        [fileManager copyItemAtPath:filePath toPath:newFilePath error:NULL];
+        
+        // Set the filePath
+        [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
+        [filePathLabel setStringValue:[filePath lastPathComponent]];
+    }
+    NSSound *sound = [[NSSound alloc] initWithContentsOfFile:newFilePath byReference:NO];
+    [data setEndTime:[sound duration] forAudioClip:[self audioClip]];
+    [self updateContent];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
 - (IBAction)chooseAudioFileButtonPress:(id)sender
 {
     [self loadOpenPanel];
@@ -122,38 +167,7 @@
          if(result == NSFileHandlingPanelOKButton)
          {
              NSString *filePath = [[openPanel URL] path];
-             NSString *newFilePath;
-             //NSLog(@"filePath:%@", filePath);
-             NSString *libraryFolder = [data libraryFolder];
-             NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", libraryFolder];
-             NSRange textRange = [[filePath lowercaseString] rangeOfString:[audioClipLibraryDirectory lowercaseString]];
-             
-             // Library audioClip
-             if(textRange.location != NSNotFound)
-             {
-                 // Set the filePath
-                 [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
-                 newFilePath = filePath;
-                 
-                 [filePathLabel setStringValue:[filePath lastPathComponent]];
-             }
-             // External audioClip
-             else
-             {
-                 // Make a copy of the audioClip file and store it in the library
-                 newFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary/%@", [data libraryFolder], [filePath lastPathComponent]];
-                 NSFileManager *fileManager = [NSFileManager defaultManager];
-                 [fileManager copyItemAtPath:filePath toPath:newFilePath error:NULL];
-                 
-                 // Set the filePath
-                 [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
-                 [filePathLabel setStringValue:[filePath lastPathComponent]];
-             }
-             NSSound *sound = [[NSSound alloc] initWithContentsOfFile:newFilePath byReference:NO];
-             [data setEndTime:[sound duration] forAudioClip:[self audioClip]];
-             [self updateContent];
-             
-             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+             [self createNewAudioClipFromAudioFilePath:filePath];
          }
      }
      ];
@@ -171,38 +185,7 @@
          if(result == NSFileHandlingPanelOKButton)
          {
              NSString *filePath = [[openPanel URL] path];
-             NSString *newFilePath;
-             //NSLog(@"filePath:%@", filePath);
-             NSString *libraryFolder = [data libraryFolder];
-             NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", libraryFolder];
-             NSRange textRange = [[filePath lowercaseString] rangeOfString:[audioClipLibraryDirectory lowercaseString]];
-             
-             // Library audioClip
-             if(textRange.location != NSNotFound)
-             {
-                 // Set the filePath
-                 [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
-                 newFilePath = filePath;
-                 
-                 [filePathLabel setStringValue:[filePath lastPathComponent]];
-             }
-             // External audioClip
-             else
-             {
-                 // Make a copy of the audioClip file and store it in the library
-                 newFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary/%@", [data libraryFolder], [filePath lastPathComponent]];
-                 NSFileManager *fileManager = [NSFileManager defaultManager];
-                 [fileManager copyItemAtPath:filePath toPath:newFilePath error:NULL];
-                 
-                 // Set the filePath
-                 [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
-                 [filePathLabel setStringValue:[filePath lastPathComponent]];
-             }
-             NSSound *sound = [[NSSound alloc] initWithContentsOfFile:newFilePath byReference:NO];
-             [data setEndTime:[sound duration] forAudioClip:[self audioClip]];
-             [self updateContent];
-             
-             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+             [self createNewAudioClipFromAudioFilePath:filePath];
          }
      }
      ];

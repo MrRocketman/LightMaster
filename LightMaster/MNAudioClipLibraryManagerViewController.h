@@ -31,5 +31,6 @@
 
 - (IBAction)chooseAudioFileButtonPress:(id)sender;
 - (IBAction)chooseAudioFileFromLibraryButtonPress:(id)sender;
+- (void)createNewAudioClipFromAudioFilePath:(NSString *)filePath;
 
 @end

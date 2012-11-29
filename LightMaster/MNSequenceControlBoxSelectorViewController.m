@@ -71,20 +71,21 @@
         int beingUsedCount = [data controlBoxBeingUsedInSequenceFilePathsCount:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:(int)[tableView selectedRow]]]];
         if(beingUsedCount == 0)
         {
-            [addButton setEnabled:YES];
+            
             [beingUsedLabel setStringValue:@"Not Being Used"];
         }
         else if(beingUsedCount == 1)
         {
             [beingUsedLabel setStringValue:[NSString stringWithFormat:@"Being Used in %d Sequence", beingUsedCount]];
-            [addButton setEnabled:NO];
+            //[addButton setEnabled:NO];
         }
         else if(beingUsedCount > 1)
         {
             [beingUsedLabel setStringValue:[NSString stringWithFormat:@"Being Used in %d Sequences", beingUsedCount]];
-            [addButton setEnabled:NO];
+            //[addButton setEnabled:NO];
         }
         
+        [addButton setEnabled:YES];
         [addCopyButton setEnabled:YES];
     }
     else

@@ -46,6 +46,11 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NewSequence" object:nil userInfo:nil];
 }
 
+- (IBAction)convertRBC:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ConvertRBC" object:nil userInfo:nil];
+}
+
 - (IBAction)newControlBox:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NewControlBox" object:nil userInfo:nil];
