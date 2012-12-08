@@ -550,20 +550,6 @@
 {
     currentSequence = newSequence;
     
-    currentSequenceNSSounds = nil;
-    currentSequenceNSSounds = [[NSMutableArray alloc] init];
-    
-    // Load the sounds
-    for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
-    {
-        NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]]];
-        NSSound *newSound = [[NSSound alloc] initWithContentsOfFile:soundFilePath byReference:NO];
-        [newSound setName:[self audioClipFilePathAtIndex:i forSequence:currentSequence]];
-        [newSound play];
-        [newSound stop];
-        [currentSequenceNSSounds addObject:newSound];
-    }
-    
     // Load the Control Boxes
     currentSequenceControlBoxes = nil;
     currentSequenceControlBoxes = [[NSMutableArray alloc] init];
@@ -594,6 +580,19 @@
     for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
     {
         [currentSequenceChannelGroups addObject:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+    
+    // Load the sounds
+    currentSequenceNSSounds = nil;
+    currentSequenceNSSounds = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]]];
+        NSSound *newSound = [[NSSound alloc] initWithContentsOfFile:soundFilePath byReference:NO];
+        [newSound setName:[self audioClipFilePathAtIndex:i forSequence:currentSequence]];
+        [newSound play];
+        [newSound stop];
+        [currentSequenceNSSounds addObject:newSound];
     }
 }
 
