@@ -99,7 +99,7 @@
     // Draw the controlBox tracks
     for(int i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i forSequence:[data currentSequence]]]];
+        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]];
         [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
         [self drawControlBoxCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount controlBoxIndex:i];
         [self drawChannelGuidlinesForControlBoxFilePathIndex:i atTrackIndex:trackItemsCount channelsTall:thisTrackItemsCount];
@@ -108,7 +108,7 @@
     // Draw the channelGroup tracks
     for(int i = 0; i < [data channelGroupFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i forSequence:[data currentSequence]]]];
+        thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]];
         [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
         channelGroupIndex = (audioClipsCount > 0 ? trackItemsCount - audioClipsCount : trackItemsCount);
         channelGroupIndex = (controlBoxCount > 0 ? channelGroupIndex - controlBoxCount : channelGroupIndex);
@@ -163,12 +163,12 @@
             [attributes setObject:[NSColor redColor] forKey:NSForegroundColorAttributeName];
             
             uint8_t commandCharacters[128] = {0};
-            NSString *controlBoxID = [data controlBoxIDForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:[data currentSequence]]]];
+            NSString *controlBoxID = [data controlBoxIDForControlBox:[data controlBoxForCurrentSequenceAtIndex:controlBoxFilePathIndex]];
             NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
             
             // Loop through each channel to build the command
             int i2;
-            for(i2 = 0; i2 < [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:[data currentSequence]]]]; i2 ++)
+            for(i2 = 0; i2 < [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:controlBoxFilePathIndex]]; i2 ++)
             {
                 if(i2 == i)
                 {
@@ -203,12 +203,12 @@
             [attributes setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
             
             uint8_t commandCharacters[128] = {0};
-            NSString *controlBoxID = [data controlBoxIDForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:[data currentSequence]]]];
+            NSString *controlBoxID = [data controlBoxIDForControlBox:[data controlBoxForCurrentSequenceAtIndex:controlBoxFilePathIndex]];
             NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
             
             // Loop through each channel to build the command
             int i2;
-            for(i2 = 0; i2 < [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:[data currentSequence]]]]; i2 ++)
+            for(i2 = 0; i2 < [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:controlBoxFilePathIndex]]; i2 ++)
             {
                 clearBit(commandCharacters[i2 / 8], i2 % 8);
                 
@@ -236,7 +236,7 @@
             [attributes setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
         }
         
-        [[NSString stringWithFormat:@"%d", [[data numberForChannel:[data channelAtIndex:i forControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:controlBoxFilePathIndex forSequence:[data currentSequence]]]]] intValue]] drawInRect:textFrame withAttributes:attributes];
+        [[NSString stringWithFormat:@"%d", [[data numberForChannel:[data channelAtIndex:i forControlBox:[data controlBoxForCurrentSequenceAtIndex:controlBoxFilePathIndex]]] intValue]] drawInRect:textFrame withAttributes:attributes];
     }
 }
 
@@ -267,7 +267,7 @@
     
     for(int i = 0; i < [data audioClipFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        NSMutableDictionary *currentAudioClip = [data audioClipFromFilePath:[data audioClipFilePathAtIndex:i forSequence:[data currentSequence]]];
+        NSMutableDictionary *currentAudioClip = [data audioClipForCurrentSequenceAtIndex:i];
         
         // Check to see if this audioClip is in the visible range
         if(([data startTimeForAudioClip:currentAudioClip] > timeAtLeftEdge && [data startTimeForAudioClip:currentAudioClip] < timeAtRightEdge) || ([data endTimeForAudioClip:currentAudioClip] > timeAtLeftEdge && [data endTimeForAudioClip:currentAudioClip] < timeAtRightEdge) || ([data startTimeForAudioClip:currentAudioClip] <= timeAtLeftEdge && [data endTimeForAudioClip:currentAudioClip] >= timeAtRightEdge))
@@ -316,7 +316,6 @@
     for(int i = 0; i < [data commandClusterFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
         NSMutableDictionary *currentCommandCluster = [data commandClusterForCurrentSequenceAtIndex:i];
-        //NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:[data currentSequence]]];
         
         // Command Cluster is for this controlBox
         if([[data controlBoxFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data controlBoxFilePathAtIndex:controlBoxIndex forSequence:[data currentSequence]]])
@@ -405,7 +404,6 @@
     for(int i = 0; i < [data commandClusterFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
         NSMutableDictionary *currentCommandCluster = [data commandClusterForCurrentSequenceAtIndex:i];
-        //NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:[data currentSequence]]];
         
         // Command Cluster is for this channelGroup
         if([[data channelGroupFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data channelGroupFilePathAtIndex:channelGroupIndex forSequence:[data currentSequence]]])

@@ -36,7 +36,10 @@ enum
     NSString *libraryFolder;
     NSMutableDictionary *currentSequence;
     NSMutableArray *currentSequenceNSSounds;
+    NSMutableArray *currentSequenceControlBoxes;
     NSMutableArray *currentSequenceCommandClusters;
+    NSMutableArray *currentSequenceAudioClips;
+    NSMutableArray *currentSequenceChannelGroups;
     float currentTime;
     float timeAtLeftEdgeOfTimelineView;
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
@@ -68,7 +71,11 @@ enum
 - (int)trackItemsCount;
 - (void)convertRBCFile;
 - (void)loadOpenPanel;
+// Quick access to data
+- (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;
+- (NSMutableDictionary *)audioClipForCurrentSequenceAtIndex:(int)i;
+- (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i;
 
 #pragma mark - SerialPort
 

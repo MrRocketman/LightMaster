@@ -86,18 +86,18 @@
     // Draw the controlBox tracks
     for(int i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i forSequence:[data currentSequence]]]];
+        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]];
         
-        [self drawTrackWithStyle:MNControlBoxStyle text:[data descriptionForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i forSequence:[data currentSequence]]]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
+        [self drawTrackWithStyle:MNControlBoxStyle text:[data descriptionForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
         
         trackItemsCount += thisTrackItemsCount;
     }
     // Draw the channelGroup tracks
     for(int i = 0; i < [data channelGroupFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i]]];
+        thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]];
         
-        [self drawTrackWithStyle:MNChannelGroupStyle text:[data descriptionForChannelGroup:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:i forSequence:[data currentSequence]]]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
+        [self drawTrackWithStyle:MNChannelGroupStyle text:[data descriptionForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
         
         trackItemsCount += thisTrackItemsCount;
     }
@@ -114,7 +114,7 @@
         // Mouse checking
         if([[NSBezierPath bezierPathWithRect:trackFrame] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectControlBox" object:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:dataIndex forSequence:[data currentSequence]]]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectControlBox" object:[data controlBoxForCurrentSequenceAtIndex:dataIndex]];
             mouseEvent = nil;
         }
     }
@@ -126,7 +126,7 @@
         // Mouse checking
         if([[NSBezierPath bezierPathWithRect:trackFrame] containsPoint:mousePoint] && mouseAction == MNMouseUp && mouseEvent != nil)
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectChannelGroup" object:[data channelGroupFromFilePath:[data channelGroupFilePathAtIndex:dataIndex forSequence:[data currentSequence]]]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectChannelGroup" object:[data channelGroupForCurrentSequenceAtIndex:dataIndex]];
             mouseEvent = nil;
         }
     }

@@ -556,12 +556,20 @@
     // Load the sounds
     for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
     {
-        NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]]]];
+        NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]]];
         NSSound *newSound = [[NSSound alloc] initWithContentsOfFile:soundFilePath byReference:NO];
         [newSound setName:[self audioClipFilePathAtIndex:i forSequence:currentSequence]];
         [newSound play];
         [newSound stop];
         [currentSequenceNSSounds addObject:newSound];
+    }
+    
+    // Load the Control Boxes
+    currentSequenceControlBoxes = nil;
+    currentSequenceControlBoxes = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceControlBoxes addObject:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]];
     }
     
     // Load the Command Clusters
@@ -570,6 +578,22 @@
     for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
     {
         [currentSequenceCommandClusters addObject:[self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+    
+    // Load the Audio Clips
+    currentSequenceAudioClips = nil;
+    currentSequenceAudioClips = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceAudioClips addObject:[self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+    
+    // Load the Channel Groups
+    currentSequenceChannelGroups = nil;
+    currentSequenceChannelGroups = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceChannelGroups addObject:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]]];
     }
 }
 
@@ -597,13 +621,13 @@
         // Play/Pause the necessary NSSounds
         for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
         {
-            float startTime = [self startTimeForAudioClip:[self audioClipFromFilePath:[[currentSequenceNSSounds objectAtIndex:i] name]]];
-            float endTime = [self endTimeForAudioClip:[self audioClipFromFilePath:[[currentSequenceNSSounds objectAtIndex:i] name]]];
+            float startTime = [self startTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
+            float endTime = [self endTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
             
             // Play the sound
             if(currentTime >= startTime && currentTime < endTime && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == NO)
             {
-                float seekTime = [self seekTimeForAudioClip:[self audioClipFromFilePath:[[currentSequenceNSSounds objectAtIndex:i] name]]];
+                float seekTime = [self seekTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
                 
                 // Seek to the appropriate time
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] setCurrentTime:seekTime + currentTime - startTime];
@@ -632,7 +656,6 @@
         for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
         {
             currentCommandCluster = [self commandClusterForCurrentSequenceAtIndex:i];
-            //currentCommandCluster = [self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]];
             // See if this is a controlBox cluster
             if([[self controlBoxFilePathForCommandCluster:currentCommandCluster] length] > 0)
             {
@@ -672,12 +695,12 @@
         for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
         {
             uint8_t commandCharacters[128] = {0};
-            NSString *controlBoxID = [self controlBoxIDForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]];
+            NSString *controlBoxID = [self controlBoxIDForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
             NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
             
             // Loop through each channel to build the command
             int i2;
-            for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]]]; i2 ++)
+            for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]]; i2 ++)
             {
                 if(channelState[i][i2] == YES)
                 {
@@ -752,9 +775,26 @@
     return trackItemsCount;
 }
 
+// Quick Access To Data
+
+- (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i
+{
+    return [currentSequenceControlBoxes objectAtIndex:i];
+}
+
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i
 {
     return [currentSequenceCommandClusters objectAtIndex:i];
+}
+
+- (NSMutableDictionary *)audioClipForCurrentSequenceAtIndex:(int)i
+{
+    return [currentSequenceAudioClips objectAtIndex:i];
+}
+
+- (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i
+{
+    return [currentSequenceChannelGroups objectAtIndex:i];
 }
 
 #pragma mark - SerialPort
