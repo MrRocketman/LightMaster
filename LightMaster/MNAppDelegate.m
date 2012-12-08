@@ -15,11 +15,19 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    
+    NSLog(@"Launch");
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
+    NSLog(@"Terminate");
+    
+    for(int i = 0; i < 10; i ++)
+    {
+        // Send the command!
+        [data sendStringToSerialPort:[NSString stringWithFormat:@"%d0000`", i]];
+    }
+    
 	NSArray *ports = [[data serialPortManager] availablePorts];
     
 	for (ORSSerialPort *port in ports)

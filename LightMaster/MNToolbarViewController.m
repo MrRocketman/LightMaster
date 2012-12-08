@@ -54,20 +54,23 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqual:@"availablePorts"] && [change objectForKey:NSKeyValueChangeNewKey] != nil)
+    if([keyPath isEqual:@"availablePorts"] && [change objectForKey:NSKeyValueChangeNewKey] != nil)
     {
-        if (![[change objectForKey:NSKeyValueChangeNewKey] containsObject:data.serialPort] && data.serialPort != nil)
+        if([change objectForKey:NSKeyValueChangeNewKey] != [NSNull null])
         {
-            // Remove the old port
-            data.serialPort.delegate = nil;
-            [data.serialPort close];
-            data.serialPort = nil;
-        }
-        else if([[change objectForKey:NSKeyValueChangeNewKey] count] > 0)
-        {
-            // Open the new port
-            [serialPortsPopUpButton performSelector:@selector(selectItemAtIndex:) withObject:0 afterDelay:2.0];
-            [self performSelector:@selector(serialPortSelection:) withObject:nil afterDelay:2.0];
+            if(![[change objectForKey:NSKeyValueChangeNewKey] containsObject:data.serialPort] && data.serialPort != nil)
+            {
+                // Remove the old port
+                data.serialPort.delegate = nil;
+                [data.serialPort close];
+                data.serialPort = nil;
+            }
+            else if([[change objectForKey:NSKeyValueChangeNewKey] count] > 0)
+            {
+                // Open the new port
+                [serialPortsPopUpButton performSelector:@selector(selectItemAtIndex:) withObject:0 afterDelay:2.0];
+                [self performSelector:@selector(serialPortSelection:) withObject:nil afterDelay:2.0];
+            }
         }
     }
 }
