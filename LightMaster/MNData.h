@@ -36,6 +36,7 @@ enum
     NSString *libraryFolder;
     NSMutableDictionary *currentSequence;
     NSMutableArray *currentSequenceNSSounds;
+    NSMutableArray *currentSequenceCommandClusters;
     float currentTime;
     float timeAtLeftEdgeOfTimelineView;
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
@@ -67,6 +68,7 @@ enum
 - (int)trackItemsCount;
 - (void)convertRBCFile;
 - (void)loadOpenPanel;
+- (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;
 
 #pragma mark - SerialPort
 

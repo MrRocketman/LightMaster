@@ -563,6 +563,14 @@
         [newSound stop];
         [currentSequenceNSSounds addObject:newSound];
     }
+    
+    // Load the Command Clusters
+    currentSequenceCommandClusters = nil;
+    currentSequenceCommandClusters = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceCommandClusters addObject:[self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]]];
+    }
 }
 
 - (NSMutableDictionary *)currentSequence
@@ -623,7 +631,8 @@
         // Go through each commandCluster
         for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
         {
-            currentCommandCluster = [self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]];
+            currentCommandCluster = [self commandClusterForCurrentSequenceAtIndex:i];
+            //currentCommandCluster = [self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]];
             // See if this is a controlBox cluster
             if([[self controlBoxFilePathForCommandCluster:currentCommandCluster] length] > 0)
             {
@@ -741,6 +750,11 @@
     }
     
     return trackItemsCount;
+}
+
+- (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i
+{
+    return [currentSequenceCommandClusters objectAtIndex:i];
 }
 
 #pragma mark - SerialPort

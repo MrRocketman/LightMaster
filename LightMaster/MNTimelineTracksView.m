@@ -315,7 +315,8 @@
     
     for(int i = 0; i < [data commandClusterFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:[data currentSequence]]];
+        NSMutableDictionary *currentCommandCluster = [data commandClusterForCurrentSequenceAtIndex:i];
+        //NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:[data currentSequence]]];
         
         // Command Cluster is for this controlBox
         if([[data controlBoxFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data controlBoxFilePathAtIndex:controlBoxIndex forSequence:[data currentSequence]]])
@@ -403,7 +404,9 @@
     
     for(int i = 0; i < [data commandClusterFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:[data currentSequence]]];
+        NSMutableDictionary *currentCommandCluster = [data commandClusterForCurrentSequenceAtIndex:i];
+        //NSMutableDictionary *currentCommandCluster = [data commandClusterFromFilePath:[data commandClusterFilePathAtIndex:i forSequence:[data currentSequence]]];
+        
         // Command Cluster is for this channelGroup
         if([[data channelGroupFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data channelGroupFilePathAtIndex:channelGroupIndex forSequence:[data currentSequence]]])
         {
