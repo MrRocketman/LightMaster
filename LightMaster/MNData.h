@@ -48,7 +48,8 @@ enum
     
     ORSSerialPort *serialPort;
     ORSSerialPortManager *serialPortManager;
-    BOOL channelState[256][1024]; // This represents all of the channels. They are accessed as follows: [controlBoxIndex][channelIndex]
+    BOOL previousChannelState[256][256]; // This represents all of the channels. They are accessed as follows: [controlBoxIndex][channelIndex]
+    BOOL channelState[256][256]; // This represents all of the channels. They are accessed as follows: [controlBoxIndex][channelIndex]
     
     NSOpenPanel *openPanel;
     NSString *previousOpenPanelDirectory;

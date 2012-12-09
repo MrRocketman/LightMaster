@@ -675,11 +675,6 @@
         int currentControlBoxIndex = -1;
         BOOL isChannelGroupCommand = YES;
         int currentChannelIndex = -1;
-        // Initialize all values to 0 to start off with
-        for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
-        {
-            memset(channelState[i], 0, 1024);
-        }
         
         // Go through each commandCluster
         for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
@@ -726,18 +721,25 @@
             uint8_t commandCharacters[128] = {0};
             NSString *controlBoxID = [self controlBoxIDForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
             NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
+            BOOL shouldSendCommand = NO;
             
             // Loop through each channel to build the command
             int i2;
             for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]]; i2 ++)
             {
-                if(channelState[i][i2] == YES)
+                if(channelState[i][i2] == YES && previousChannelState[i][i2] == NO)
                 {
+                    //NSLog(@"on i:%d i2:%d", i, i2);
                     setBit(commandCharacters[i2 / 8], i2 % 8);
+                    
+                    shouldSendCommand = YES;
                 }
-                else
+                else if(channelState[i][i2] == NO && previousChannelState[i][i2] == YES)
                 {
+                    //NSLog(@"off i:%d i2:%d", i, i2);
                     clearBit(commandCharacters[i2 / 8], i2 % 8);
+                    
+                    shouldSendCommand = YES;
                 }
                 
                 // Add each command character to the command string as it is completed
@@ -756,7 +758,31 @@
             }
             
             // Send the command!
-            [self sendStringToSerialPort:[NSString stringWithFormat:@"%@`", command]];
+            if(shouldSendCommand)
+            {
+                [self sendStringToSerialPort:[NSString stringWithFormat:@"%@`", command]];
+            }
+        }
+        
+        // Set all values to 0 for the previous state (this also turns off the channels)
+        for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
+        {
+            memset(previousChannelState[i], 0, 256);
+        }
+        
+        // Copy the current state to the previous state for the next iteration to work
+        for(int i = 0; i < 256; i ++)
+        {
+            for(int i2 = 0; i2 < 256; i2 ++)
+            {
+                previousChannelState[i][i2] = channelState[i][i2];
+            }
+        }
+        
+        // Set all values to 0 for the current state (this also turns off the channels)
+        for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
+        {
+            memset(channelState[i], 0, 256);
         }
     }
 }
