@@ -257,7 +257,8 @@
     [self displayLibrary:kCommandClusterLibrary];
     
     int commandIndex = [[[aNotification object] objectAtIndex:0] intValue];
-    int commandClusterIndex = [[[aNotification object] objectAtIndex:1] intValue];
+    NSString *commandClusterFilePath = [[aNotification object] objectAtIndex:1];
+    int commandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:commandClusterFilePath];
     
     // Select the command cluster
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
