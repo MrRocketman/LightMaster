@@ -67,7 +67,7 @@
     // Set the Frame
     if(trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT > [[self superview] frame].size.height)
     {
-        [self setFrame:NSMakeRect(0.0, 0.0, self.bounds.size.width, trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT)];
+        [self setFrame:NSMakeRect(0.0, 0.0, self.bounds.size.width, trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT - 25)];
     }
     else
     {

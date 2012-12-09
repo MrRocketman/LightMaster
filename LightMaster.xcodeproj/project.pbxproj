@@ -59,6 +59,8 @@
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
 		1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */; };
 		1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */; };
+		1ACEE382167452F200223109 /* Loop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1ACEE380167452F200223109 /* Loop.tiff */; };
+		1ACEE383167452F200223109 /* LoopAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1ACEE381167452F200223109 /* LoopAlternate.tiff */; };
 		1ADB081516236E85002EA46E /* TimelineTrackBackgroundImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */; };
 		1ADB081C1623827B002EA46E /* LibraryBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB081B1623827B002EA46E /* LibraryBackground.png */; };
 		1ADB08231623899B002EA46E /* TabButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 1ADB08211623899B002EA46E /* TabButton.png */; };
@@ -159,6 +161,8 @@
 		1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelGroupSelectorViewController.m; sourceTree = "<group>"; };
 		1AAA04A0162547B70052A779 /* MNCommandChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandChannelSelectorViewController.h; sourceTree = "<group>"; };
 		1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandChannelSelectorViewController.m; sourceTree = "<group>"; };
+		1ACEE380167452F200223109 /* Loop.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Loop.tiff; sourceTree = "<group>"; };
+		1ACEE381167452F200223109 /* LoopAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = LoopAlternate.tiff; sourceTree = "<group>"; };
 		1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimelineTrackBackgroundImage.png; sourceTree = "<group>"; };
 		1ADB081B1623827B002EA46E /* LibraryBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LibraryBackground.png; sourceTree = "<group>"; };
 		1ADB08211623899B002EA46E /* TabButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TabButton.png; sourceTree = "<group>"; };
@@ -315,6 +319,8 @@
 				1ADB081B1623827B002EA46E /* LibraryBackground.png */,
 				1ADB081416236E85002EA46E /* TimelineTrackBackgroundImage.png */,
 				1A028A66161CD36E00B97A5B /* Toolbar.tiff */,
+				1ACEE380167452F200223109 /* Loop.tiff */,
+				1ACEE381167452F200223109 /* LoopAlternate.tiff */,
 				1A028A67161CD36E00B97A5B /* FastForwardAlternate.tiff */,
 				1A028A68161CD36E00B97A5B /* PlayAlternate.tiff */,
 				1A028A69161CD36E00B97A5B /* RecordAlternate.tiff */,
@@ -551,6 +557,8 @@
 				1A68DC7D163F2F4000A0D6FD /* Stars.icns in Resources */,
 				1A68DC80163F2F6700A0D6FD /* Stars.png in Resources */,
 				1A68DC81163F2F6700A0D6FD /* Stars.artx in Resources */,
+				1ACEE382167452F200223109 /* Loop.tiff in Resources */,
+				1ACEE383167452F200223109 /* LoopAlternate.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
