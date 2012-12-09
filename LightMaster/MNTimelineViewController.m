@@ -78,7 +78,7 @@
 - (void)skipBackButtonPress:(NSNotification *)aNotification
 {
     [data setCurrentTime:0.0];
-    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:0.0], 0)];
+    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:0.0], timelineTracksScrollView.documentVisibleRect.origin.y)];
     [timelineTracksView setNeedsDisplay:YES];
 }
 
@@ -117,7 +117,7 @@
     float timeDifference = [[NSDate date] timeIntervalSinceDate:playButtonStartDate];
     newTimeForPlayTimer = playButtonStartTime + timeDifference;
     [data setCurrentTime:newTimeForPlayTimer];
-    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:newTimeForPlayTimer] - timelineTracksView.superview.frame.size.width / 2, 0)];
+    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:newTimeForPlayTimer] - timelineTracksView.superview.frame.size.width / 2, timelineTracksScrollView.documentVisibleRect.origin.y)];
     [timelineTracksView setNeedsDisplay:YES];
 }
 
