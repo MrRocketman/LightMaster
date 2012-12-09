@@ -53,6 +53,10 @@ enum
     
     NSOpenPanel *openPanel;
     NSString *previousOpenPanelDirectory;
+    
+    int playlistIndexes[999];
+    int numberOfPlaylistSongs;
+    int currentPlaylistIndex;
 }
 
 @property() NSString *libraryFolder;
@@ -72,6 +76,9 @@ enum
 - (int)trackItemsCount;
 - (void)convertRBCFile;
 - (void)loadOpenPanel;
+- (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count;
+- (void)playNextPlaylistItem;
+- (void)stopPlaylist;
 // Quick access to data
 - (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;

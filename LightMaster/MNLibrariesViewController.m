@@ -105,6 +105,15 @@
         }
     }
     
+    if(library == kSequenceLibrary)
+    {
+        [playPlaylistButton setHidden:NO];
+    }
+    else
+    {
+        [playPlaylistButton setHidden:YES];
+    }
+    
     [libraryDataSelectionTableView deselectAll:nil];
 }
 
@@ -218,6 +227,31 @@
     
     [libraryDataSelectionTableView reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (IBAction)playPlaylistButtonPress:(id)sender
+{
+    if(playingPlaylist == NO)
+    {
+        playingPlaylist = YES;
+        
+        NSUInteger selectedRows[999];
+        NSRange range;
+        range.length = 999;
+        range.location = 0;
+        int count = (int)[[libraryDataSelectionTableView selectedRowIndexes] getIndexes:selectedRows maxCount:999 inIndexRange:&range];
+        [data playPlaylistOfSequenceIndexes:selectedRows indexCount:count];
+        
+        [playPlaylistButton setTitle:@"Stop Playlist"];
+    }
+    else
+    {
+        playingPlaylist = NO;
+        
+        [data stopPlaylist];
+        
+        [playPlaylistButton setTitle:@"Play Playlist"];
+    }
 }
 
 #pragma mark - External Notifications

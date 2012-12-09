@@ -61,6 +61,7 @@
         [self setCurrentTime:1.0];
         self.serialPortManager = [ORSSerialPortManager sharedSerialPortManager];
         loop = YES;
+        currentPlaylistIndex = -1;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
     }
@@ -643,7 +644,14 @@
         {
             if(currentTime >= [self endTimeForSequence:currentSequence])
             {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SkipBackButtonPress" object:nil];
+                if(numberOfPlaylistSongs > 0)
+                {
+                    [self playNextPlaylistItem];
+                }
+                else
+                {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"SkipBackButtonPress" object:nil];
+                }
             }
         }
         
@@ -850,6 +858,52 @@
 - (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i
 {
     return [currentSequenceChannelGroups objectAtIndex:i];
+}
+
+- (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count
+{
+    numberOfPlaylistSongs = count;
+    currentPlaylistIndex = -1;
+    memset(playlistIndexes, 0, 999);
+    for(int i = 0; i < numberOfPlaylistSongs; i ++)
+    {
+        playlistIndexes[i] = (int)indexes[i];
+    }
+    
+    [self playNextPlaylistItem];
+}
+
+- (void)playNextPlaylistItem
+{
+    currentPlaylistIndex ++;
+    
+    if(currentPlaylistIndex >= numberOfPlaylistSongs)
+    {
+        currentPlaylistIndex = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+    }
+    
+    // Pause the current sequence
+    if(currentPlaylistIndex > 0)
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+    }
+    // Load the new sequence and play it
+    [self setCurrentSequence:[self sequenceFromFilePath:[self sequenceFilePathAtIndex:(int)playlistIndexes[currentPlaylistIndex]]]];
+    [self setCurrentTime:0.0];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SetSequence" object:currentSequence];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ResetScrollPoint" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+}
+
+- (void)stopPlaylist
+{
+    memset(playlistIndexes, 0, 999);
+    numberOfPlaylistSongs = -1;
+    currentPlaylistIndex = -1;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
 }
 
 #pragma mark - SerialPort

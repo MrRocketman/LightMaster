@@ -21,6 +21,8 @@
 - (void)addCommandClusterFilePathToSequence:(NSNotification *)aNotification;
 - (void)addAudioClipFilePathToSequence:(NSNotification *)aNotification;
 
+- (void)setSequenceNotification:(NSNotification *)aNotification;
+
 - (void)textDidEndEditing:(NSNotification *)aNotification;
 
 @end
@@ -40,6 +42,8 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addChannelGroupFilePathToSequence:) name:@"AddChannelGroupFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterFilePathToSequence:) name:@"AddCommandClusterFilePathToSequence" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAudioClipFilePathToSequence:) name:@"AddAudioClipFilePathToSequence" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSequenceNotification:) name:@"SetSequence" object:nil];
         
         // Text Editing Notifications
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidBeginEditing:) name:@"NSControlTextDidBeginEditingNotification" object:nil];
@@ -129,6 +133,11 @@
     [audioClipsTableView reloadData];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (void)setSequenceNotification:(NSNotification *)aNotification
+{
+    [self setSequence:[aNotification object]];
 }
 
 #pragma mark - Button Actions
