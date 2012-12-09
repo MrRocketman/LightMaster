@@ -37,6 +37,10 @@
 - (void)removeBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary;
 - (NSMutableDictionary *)dictionaryFromFilePath:(NSString *)filePath;
 - (void)loopButtonPress:(NSNotification *)aNotification;
+- (void)loadControlBoxesForCurrentSequence;
+- (void)loadCommandClustersForCurrentSequence;
+- (void)loadAudioClipsForCurrentSequence;
+- (void)loadChannelGroupsForCurrentSequence;
 
 @end
 
@@ -433,6 +437,50 @@
     loop = !loop;
 }
 
+- (void)loadControlBoxesForCurrentSequence
+{
+    // Load the Control Boxes
+    currentSequenceControlBoxes = nil;
+    currentSequenceControlBoxes = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceControlBoxes addObject:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+}
+
+- (void)loadCommandClustersForCurrentSequence
+{
+    // Load the Command Clusters
+    currentSequenceCommandClusters = nil;
+    currentSequenceCommandClusters = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceCommandClusters addObject:[self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+}
+
+- (void)loadAudioClipsForCurrentSequence
+{
+    // Load the Audio Clips
+    currentSequenceAudioClips = nil;
+    currentSequenceAudioClips = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceAudioClips addObject:[self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+}
+
+- (void)loadChannelGroupsForCurrentSequence
+{
+    // Load the Channel Groups
+    currentSequenceChannelGroups = nil;
+    currentSequenceChannelGroups = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
+    {
+        [currentSequenceChannelGroups addObject:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+}
+
 #pragma mark - Other Methods
 
 - (int)timeToX:(float)time
@@ -550,37 +598,10 @@
 {
     currentSequence = newSequence;
     
-    // Load the Control Boxes
-    currentSequenceControlBoxes = nil;
-    currentSequenceControlBoxes = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
-    {
-        [currentSequenceControlBoxes addObject:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]];
-    }
-    
-    // Load the Command Clusters
-    currentSequenceCommandClusters = nil;
-    currentSequenceCommandClusters = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
-    {
-        [currentSequenceCommandClusters addObject:[self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]]];
-    }
-    
-    // Load the Audio Clips
-    currentSequenceAudioClips = nil;
-    currentSequenceAudioClips = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
-    {
-        [currentSequenceAudioClips addObject:[self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]]];
-    }
-    
-    // Load the Channel Groups
-    currentSequenceChannelGroups = nil;
-    currentSequenceChannelGroups = [[NSMutableArray alloc] init];
-    for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
-    {
-        [currentSequenceChannelGroups addObject:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]]];
-    }
+    [self loadControlBoxesForCurrentSequence];
+    [self loadCommandClustersForCurrentSequence];
+    [self loadAudioClipsForCurrentSequence];
+    [self loadChannelGroupsForCurrentSequence];
     
     // Load the sounds
     currentSequenceNSSounds = nil;
@@ -1098,6 +1119,8 @@
     // Load the NSSound
     if(sequence == currentSequence)
     {
+        [self loadAudioClipsForCurrentSequence];
+        
         NSString *soundFilePath = [NSString stringWithFormat:@"%@/%@", self.libraryFolder, [self filePathToAudioFileForAudioClip:[self audioClipFromFilePath:filePath]]];
         NSSound *newSound = [[NSSound alloc] initWithContentsOfFile:soundFilePath byReference:NO];
         [newSound setName:filePath];
@@ -1119,6 +1142,8 @@
     // Unload the NSSound
     if(sequence == currentSequence)
     {
+        [self loadAudioClipsForCurrentSequence];
+        
         for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
         {
             if([[[currentSequenceNSSounds objectAtIndex:i] name] isEqualToString:filePath])
@@ -1137,6 +1162,11 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    if(sequence == currentSequence)
+    {
+        [self loadControlBoxesForCurrentSequence];
+    }
 }
 
 - (void)removeControlBoxFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -1147,6 +1177,11 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    if(sequence == currentSequence)
+    {
+        [self loadControlBoxesForCurrentSequence];
+    }
 }
 
 - (void)addChannelGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -1157,6 +1192,11 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    if(sequence == currentSequence)
+    {
+        [self loadChannelGroupsForCurrentSequence];
+    }
 }
 
 - (void)removeChannelGroupFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -1167,6 +1207,11 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    if(sequence == currentSequence)
+    {
+        [self loadChannelGroupsForCurrentSequence];
+    }
 }
 
 - (void)addCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -1177,6 +1222,11 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    if(sequence == currentSequence)
+    {
+        [self loadCommandClustersForCurrentSequence];
+    }
 }
 
 - (void)removeCommandClusterFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -1187,6 +1237,11 @@
     [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    if(sequence == currentSequence)
+    {
+        [self loadCommandClustersForCurrentSequence];
+    }
 }
 
 #pragma mark - ControlBox Library Methods
