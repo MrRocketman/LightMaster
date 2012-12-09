@@ -38,6 +38,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(skipBackButtonPress:) name:@"SkipBackButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playButtonPress:) name:@"PlayButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentTimeChange:) name:@"CurrentTimeChange" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetScrollPoint:) name:@"ResetScrollPoint" object:nil];
         
         // Update the zoom level
         [data setZoomLevel:self.zoomLevel];
@@ -110,6 +111,16 @@
         [data setCurrentSequenceIsPlaying:NO];
         [data setCurrentSequenceIsPlaying:YES];
     }
+}
+
+- (void)resetScrollPoint:(NSNotification *)aNotification
+{
+    [self performSelector:@selector(scrollToZero) withObject:nil afterDelay:0.25];
+}
+
+- (void)scrollToZero
+{
+    [timelineTracksView scrollPoint:NSMakePoint(0, 9999)];
 }
 
 - (void)playTimerFire:(NSTimer *)theTimer

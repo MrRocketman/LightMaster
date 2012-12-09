@@ -407,6 +407,7 @@
                 [data setCurrentSequence:[data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
                 [sequenceLibraryManagerViewController setSequence:[data currentSequence]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"ResetScrollPoint" object:nil];
                 break;
             case kControlBoxLibrary:
                 [controlBoxLibraryManagerViewController setControlBoxIndex:(int)[libraryDataSelectionTableView selectedRow]];
