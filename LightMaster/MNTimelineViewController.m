@@ -54,7 +54,7 @@
     [data setZoomLevel:self.zoomLevel];
     
     // Scroll to the new left edge point by x (the left edge time has not change, the x has because of zoon)
-    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:[data timeAtLeftEdgeOfTimelineView]], 0)];
+    [timelineTracksView scrollPoint:NSMakePoint([data timeToX:[data timeAtLeftEdgeOfTimelineView]], timelineTracksScrollView.documentVisibleRect.origin.y)];
     [timelineTracksView setNeedsDisplay:YES];
 }
 
