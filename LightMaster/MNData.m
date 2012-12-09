@@ -596,6 +596,15 @@
 
 - (void)setCurrentSequence:(NSMutableDictionary *)newSequence
 {
+    // Stop all of the previous Sounds
+    for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
+    {
+        if([(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == YES)
+        {
+            [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] stop];
+        }
+    }
+    
     currentSequence = newSequence;
     
     [self loadControlBoxesForCurrentSequence];
