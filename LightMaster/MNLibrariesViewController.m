@@ -40,6 +40,7 @@
 - (IBAction)libraryButtonPress:(id)sender;
 
 - (void)exportDataToFilePath:(NSString *)filePath;
+- (void)importDataFromFilePath:(NSString *)filePath;
 
 @end
 
@@ -258,7 +259,34 @@
 
 - (IBAction)importButtonPress:(id)sender
 {
+    // Load the open panel if neccessary
+    if(openPanel == nil)
+    {
+        openPanel = [NSOpenPanel openPanel];
+        [openPanel setCanChooseDirectories:NO];
+        [openPanel setCanChooseFiles:YES];
+        [openPanel setResolvesAliases:YES];
+        [openPanel setAllowsMultipleSelection:NO];
+    }
     
+    if(previousOpenPanelDirectory == nil)
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:@"~"]];
+    }
+    else
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:previousOpenPanelDirectory]];
+    }
+    
+    [openPanel beginWithCompletionHandler:^(NSInteger result)
+     {
+         if(result == NSFileHandlingPanelOKButton)
+         {
+             NSString *filePath = [[openPanel URL] path];
+             [self importDataFromFilePath:filePath];
+         }
+     }
+     ];
 }
 
 - (IBAction)exportButtonPress:(id)sender
@@ -291,6 +319,73 @@
          }
      }
      ];
+}
+
+- (void)importDataFromFilePath:(NSString *)filePath
+{
+    if([[filePath pathExtension] isEqualToString:@"lmsd"])
+    {
+        // Move to the library folder
+        NSString *audioClipFileName = [data nextAvailableAudioClipFileName];
+        NSString *audioClipFilePath = [NSString stringWithFormat:@"audioClipLibrary/%@.lmsd", audioClipFileName];
+        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], audioClipFilePath] error:NULL];
+        // Add it to the library
+        [data addAudioClipFilePathToAudioClipLibrary:audioClipFilePath];
+        // Change it's stored filePath to it's new filePath
+        [data setFilePath:audioClipFilePath forDictionary:[data audioClipFromFilePath:audioClipFilePath]];
+        
+        // Move the audio file
+        NSString *audioFileFilePath = [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:audioClipFilePath]];
+        [[NSFileManager defaultManager] moveItemAtPath:[NSString stringWithFormat:@"%@/%@", [filePath stringByDeletingLastPathComponent], [audioFileFilePath lastPathComponent]] toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], audioFileFilePath] error:NULL];
+    }
+    else if([[filePath pathExtension] isEqualToString:@"lmgp"])
+    {
+        // Move to the libary folder
+        NSString *channelGroupFileName = [data nextAvailableChannelGroupFileName];
+        NSString *channelGroupFilePath = [NSString stringWithFormat:@"channelGroupLibrary/%@.lmgp", channelGroupFileName];
+        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], channelGroupFilePath] error:NULL];
+        // Add it to the library
+        [data addChannelGroupFilePathToChannelGroupLibrary:channelGroupFilePath];
+        // Change it's stored filePath to it's new filePath
+        [data setFilePath:channelGroupFilePath forDictionary:[data channelGroupFromFilePath:channelGroupFilePath]];
+    }
+    else if([[filePath pathExtension] isEqualToString:@"lmcc"])
+    {
+        // Move to the libary folder
+        NSString *commandClusterFileName = [data nextAvailableCommandClusterFileName];
+        NSString *commandClusterFilePath = [NSString stringWithFormat:@"commandClusterLibrary/%@.lmgp", commandClusterFileName];
+        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], commandClusterFilePath] error:NULL];
+        // Add it to the library
+        [data addCommandClusterFilePathToCommandClusterLibrary:commandClusterFilePath];
+        // Change it's stored filePath to it's new filePath
+        [data setFilePath:commandClusterFilePath forDictionary:[data commandClusterFromFilePath:commandClusterFilePath]];
+        
+        // Erase any associations with controlBoxes or channelGroups since we have no information about them anymore really
+        [data setControlBoxFilePath:@"" forCommandCluster:[data commandClusterFromFilePath:commandClusterFilePath]];
+        [data setChannelGroupFilePath:@"" forCommandCluster:[data commandClusterFromFilePath:commandClusterFilePath]];
+    }
+    else if([[filePath pathExtension] isEqualToString:@"lmcb"])
+    {
+        // Move to the libary folder
+        NSString *controlBoxFileName = [data nextAvailableControlBoxFileName];
+        NSString *controlBoxFilePath = [NSString stringWithFormat:@"controlBoxLibrary/%@.lmgp", controlBoxFileName];
+        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], controlBoxFilePath] error:NULL];
+        // Add it to the library
+        [data addControlBoxFilePathToControlBoxLibrary:controlBoxFilePath];
+        // Change it's stored filePath to it's new filePath
+        [data setFilePath:controlBoxFilePath forDictionary:[data controlBoxFromFilePath:controlBoxFilePath]];
+    }
+    else if([[filePath pathExtension] isEqualToString:@"lmef"])
+    {
+        // Move to the libary folder
+        NSString *effectFileName = [data nextAvailableEffectFileName];
+        NSString *effectFilePath = [NSString stringWithFormat:@"effectLibrary/%@.lmgp", effectFileName];
+        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], effectFilePath] error:NULL];
+        // Add it to the library
+        [data addEffectFilePathToEffectLibrary:effectFilePath];
+        // Change it's stored filePath to it's new filePath
+        [data setFilePath:effectFilePath forDictionary:[data effectFromFilePath:effectFilePath]];
+    }
 }
 
 - (void)exportDataToFilePath:(NSString *)filePath

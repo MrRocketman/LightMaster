@@ -29,7 +29,6 @@
 - (float)versionNumberForDictionary:(NSMutableDictionary *)dictionary;
 - (void)setVersionNumber:(float)someVersionNumber forDictionary:(NSMutableDictionary *)dictionary;
 - (NSString *)filePathForDictionary:(NSMutableDictionary *)dictionary;
-- (void)setFilePath:(NSString *)filePath forDictionary:(NSMutableDictionary *)dictionary;
 - (NSMutableArray *)dictionaryBeingUsedInSequenceFilePaths:(NSMutableDictionary *)dictionary;
 - (int)dictionaryBeingUsedInSequenceFilePathsCount:(NSMutableDictionary *)dictionary;
 - (NSString *)dictionary:(NSMutableDictionary *)dictionary beingUsedInSequenceFilePathAtIndex:(int)index;
@@ -151,7 +150,7 @@
     }
     
     // Import Folder
-    filePath = [NSString stringWithFormat:@"%@/import", libraryFolder];
+    /*filePath = [NSString stringWithFormat:@"%@/import", libraryFolder];
     if(![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory])
     {
         // Create the folder
@@ -160,7 +159,7 @@
         {
             [NSException raise:@"Failed creating directory" format:@"[%@], %@", filePath, error];
         }
-    }
+    }*/
     
     // ControlBox Library
     filePath = [NSString stringWithFormat:@"%@/controlBoxLibrary.lmlib", libraryFolder];

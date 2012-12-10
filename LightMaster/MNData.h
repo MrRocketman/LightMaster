@@ -91,6 +91,7 @@ enum
 - (NSString *)nextAvailableAudioClipFileName;
 - (NSString *)nextAvailableChannelGroupFileName;
 - (NSString *)nextAvailableEffectFileName;
+- (void)setFilePath:(NSString *)filePath forDictionary:(NSMutableDictionary *)dictionary;
 
 #pragma mark - SerialPort
 
