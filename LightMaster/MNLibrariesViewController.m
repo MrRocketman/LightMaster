@@ -659,11 +659,11 @@
             }
             
             // Zip it all up
-            NSURL *destURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.lmd", exportFolderFilePath]];
+            NSString *destinationPath = [NSString stringWithFormat:@"%@.lmd", exportFolderFilePath];
             NSTask *task = [[NSTask alloc] init];
             [task setCurrentDirectoryPath:exportFolderFilePath];
             [task setLaunchPath:@"/usr/bin/zip"];
-            NSArray *argsArray = @[@"-r", @"-q", [destURL path], @".", @"-i", @"*"];
+            NSArray *argsArray = @[@"-r", @"-q", destinationPath, @".", @"-i", @"*"];
             [task setArguments:argsArray];
             [task launch];
             [task waitUntilExit];
