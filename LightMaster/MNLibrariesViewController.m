@@ -40,7 +40,7 @@
 - (IBAction)libraryButtonPress:(id)sender;
 
 - (void)exportDataToFilePath:(NSString *)filePath;
-- (void)importDataFromFilePath:(NSString *)filePath;
+- (NSString *)importDataFromFilePath:(NSString *)filePath;
 
 @end
 
@@ -321,14 +321,14 @@
      ];
 }
 
-- (void)importDataFromFilePath:(NSString *)filePath
+- (NSString *)importDataFromFilePath:(NSString *)filePath
 {
     if([[filePath pathExtension] isEqualToString:@"lmsd"])
     {
         // Move to the library folder
         NSString *audioClipFileName = [data nextAvailableAudioClipFileName];
         NSString *audioClipFilePath = [NSString stringWithFormat:@"audioClipLibrary/%@.lmsd", audioClipFileName];
-        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], audioClipFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], audioClipFilePath] error:NULL];
         // Add it to the library
         [data addAudioClipFilePathToAudioClipLibrary:audioClipFilePath];
         // Change it's stored filePath to it's new filePath
@@ -336,25 +336,29 @@
         
         // Move the audio file
         NSString *audioFileFilePath = [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:audioClipFilePath]];
-        [[NSFileManager defaultManager] moveItemAtPath:[NSString stringWithFormat:@"%@/%@", [filePath stringByDeletingLastPathComponent], [audioFileFilePath lastPathComponent]] toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], audioFileFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [filePath stringByDeletingLastPathComponent], [audioFileFilePath lastPathComponent]] toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], audioFileFilePath] error:NULL];
+        
+        return audioClipFilePath;
     }
     else if([[filePath pathExtension] isEqualToString:@"lmgp"])
     {
         // Move to the libary folder
         NSString *channelGroupFileName = [data nextAvailableChannelGroupFileName];
         NSString *channelGroupFilePath = [NSString stringWithFormat:@"channelGroupLibrary/%@.lmgp", channelGroupFileName];
-        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], channelGroupFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], channelGroupFilePath] error:NULL];
         // Add it to the library
         [data addChannelGroupFilePathToChannelGroupLibrary:channelGroupFilePath];
         // Change it's stored filePath to it's new filePath
         [data setFilePath:channelGroupFilePath forDictionary:[data channelGroupFromFilePath:channelGroupFilePath]];
+        
+        return channelGroupFilePath;
     }
     else if([[filePath pathExtension] isEqualToString:@"lmcc"])
     {
         // Move to the libary folder
         NSString *commandClusterFileName = [data nextAvailableCommandClusterFileName];
         NSString *commandClusterFilePath = [NSString stringWithFormat:@"commandClusterLibrary/%@.lmgp", commandClusterFileName];
-        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], commandClusterFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], commandClusterFilePath] error:NULL];
         // Add it to the library
         [data addCommandClusterFilePathToCommandClusterLibrary:commandClusterFilePath];
         // Change it's stored filePath to it's new filePath
@@ -363,29 +367,62 @@
         // Erase any associations with controlBoxes or channelGroups since we have no information about them anymore really
         [data setControlBoxFilePath:@"" forCommandCluster:[data commandClusterFromFilePath:commandClusterFilePath]];
         [data setChannelGroupFilePath:@"" forCommandCluster:[data commandClusterFromFilePath:commandClusterFilePath]];
+        
+        return commandClusterFilePath;
     }
     else if([[filePath pathExtension] isEqualToString:@"lmcb"])
     {
         // Move to the libary folder
         NSString *controlBoxFileName = [data nextAvailableControlBoxFileName];
         NSString *controlBoxFilePath = [NSString stringWithFormat:@"controlBoxLibrary/%@.lmgp", controlBoxFileName];
-        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], controlBoxFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], controlBoxFilePath] error:NULL];
         // Add it to the library
         [data addControlBoxFilePathToControlBoxLibrary:controlBoxFilePath];
         // Change it's stored filePath to it's new filePath
         [data setFilePath:controlBoxFilePath forDictionary:[data controlBoxFromFilePath:controlBoxFilePath]];
+        
+        return controlBoxFilePath;
     }
     else if([[filePath pathExtension] isEqualToString:@"lmef"])
     {
         // Move to the libary folder
         NSString *effectFileName = [data nextAvailableEffectFileName];
         NSString *effectFilePath = [NSString stringWithFormat:@"effectLibrary/%@.lmgp", effectFileName];
-        [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], effectFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], effectFilePath] error:NULL];
         // Add it to the library
         [data addEffectFilePathToEffectLibrary:effectFilePath];
         // Change it's stored filePath to it's new filePath
         [data setFilePath:effectFilePath forDictionary:[data effectFromFilePath:effectFilePath]];
+        
+        return effectFilePath;
     }
+    else if([[filePath pathExtension] isEqualToString:@"lmd"])
+    {
+        // Create a directory to unzip it to
+        BOOL isDirectory = NO;
+        NSString *importFolderFilePath = [NSString stringWithFormat:@"%@/LMData%@", [filePath stringByDeletingLastPathComponent], [NSDate date]];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:importFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:importFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", importFolderFilePath, error];
+            }
+        }
+        
+        // Unzip the sequence
+        NSTask *task = [[NSTask alloc] init];
+        [task setCurrentDirectoryPath:[filePath stringByDeletingLastPathComponent]];
+        [task setLaunchPath:@"/usr/bin/unzip"];
+        NSArray *argsArray = @[@"-q", filePath, @"-d", importFolderFilePath];
+        [task setArguments:argsArray];
+        [task launch];
+        [task waitUntilExit];
+        
+        
+    }
+    
+    return nil;
 }
 
 - (void)exportDataToFilePath:(NSString *)filePath
@@ -432,76 +469,76 @@
     // Copy entire sequences
     else
     {
-        // Create the folders
-        BOOL isDirectory = NO;
-        NSString *exportFolderFilePath = [NSString stringWithFormat:@"%@/LMData", filePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:exportFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:exportFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", exportFolderFilePath, error];
-            }
-        }
-        NSString *libraryFolderFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary", exportFolderFilePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
-            }
-        }
-        libraryFolderFilePath = [NSString stringWithFormat:@"%@/channelGroupLibrary", exportFolderFilePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
-            }
-        }
-        libraryFolderFilePath = [NSString stringWithFormat:@"%@/commandClusterLibrary", exportFolderFilePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
-            }
-        }
-        libraryFolderFilePath = [NSString stringWithFormat:@"%@/controlBoxLibrary", exportFolderFilePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
-            }
-        }
-        libraryFolderFilePath = [NSString stringWithFormat:@"%@/effectLibrary", exportFolderFilePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
-            }
-        }
-        libraryFolderFilePath = [NSString stringWithFormat:@"%@/sequenceLibrary", exportFolderFilePath];
-        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
-        {
-            NSError *error = nil;
-            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
-            {
-                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
-            }
-        }
-        
         // Loop through each selected sequence
         for(int i = 0; i < count; i ++)
         {
             NSMutableDictionary *sequence = [data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)selectedRows[i]]];
+            
+            // Create the folders
+            BOOL isDirectory = NO;
+            NSString *exportFolderFilePath = [NSString stringWithFormat:@"%@/%@", filePath, [data descriptionForSequence:sequence]];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:exportFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:exportFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", exportFolderFilePath, error];
+                }
+            }
+            NSString *libraryFolderFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary", exportFolderFilePath];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+                }
+            }
+            libraryFolderFilePath = [NSString stringWithFormat:@"%@/channelGroupLibrary", exportFolderFilePath];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+                }
+            }
+            libraryFolderFilePath = [NSString stringWithFormat:@"%@/commandClusterLibrary", exportFolderFilePath];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+                }
+            }
+            libraryFolderFilePath = [NSString stringWithFormat:@"%@/controlBoxLibrary", exportFolderFilePath];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+                }
+            }
+            libraryFolderFilePath = [NSString stringWithFormat:@"%@/effectLibrary", exportFolderFilePath];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+                }
+            }
+            libraryFolderFilePath = [NSString stringWithFormat:@"%@/sequenceLibrary", exportFolderFilePath];
+            if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+            {
+                NSError *error = nil;
+                if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+                {
+                    [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+                }
+            }
             
             // Copy the sequence file to the export folder
             [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data sequenceFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data sequenceFilePathAtIndex:(int)selectedRows[i]]] error:NULL];
@@ -531,17 +568,20 @@
                 
                 [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:i2 forSequence:sequence]]]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:i2 forSequence:sequence]]]] error:NULL];
             }
+            
+            // Zip it all up
+            NSURL *destURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.lmd", exportFolderFilePath]];
+            NSTask *task = [[NSTask alloc] init];
+            [task setCurrentDirectoryPath:exportFolderFilePath];
+            [task setLaunchPath:@"/usr/bin/zip"];
+            NSArray *argsArray = @[@"-r", @"-q", [destURL path], @".", @"-i", @"*"];
+            [task setArguments:argsArray];
+            [task launch];
+            [task waitUntilExit];
+            
+            // Remove the folder
+            [[NSFileManager defaultManager] removeItemAtPath:exportFolderFilePath error:NULL];
         }
-        
-        //zip it all up
-        NSURL *destURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.lmd", exportFolderFilePath]];
-        NSTask *task = [[NSTask alloc] init];
-        [task setCurrentDirectoryPath:exportFolderFilePath];
-        [task setLaunchPath:@"/usr/bin/zip"];
-        NSArray *argsArray = [NSArray arrayWithObjects:@"-r", @"-q", [destURL path], @".", @"-i", @"*", nil];
-        [task setArguments:argsArray];
-        [task launch];
-        [task waitUntilExit];
     }
 }
 
