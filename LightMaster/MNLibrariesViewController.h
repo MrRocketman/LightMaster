@@ -39,10 +39,14 @@ enum
     // Library Data Selection
     IBOutlet NSTableView *libraryDataSelectionTableView;
     IBOutlet NSButton *addLibraryDataButton;
+    IBOutlet NSButton *importButton;
     IBOutlet NSButton *deleteLibraryDataButton;
+    IBOutlet NSButton *exportButton;
     IBOutlet NSButton *playPlaylistButton;
     BOOL playingPlaylist;
     int previouslySelectedRowsInLibraryDataSelectionTableView[NUMBER_OF_LIBRARIES];
+    NSOpenPanel *openPanel;
+    NSString *previousOpenPanelDirectory;
     
     // Library Content
     IBOutlet NSScrollView *libraryContentScrollView;
@@ -59,5 +63,7 @@ enum
 - (IBAction)addLibraryDataButtonPress:(id)sender;
 - (IBAction)deleteLibraryDataButtonPress:(id)sender;
 - (IBAction)playPlaylistButtonPress:(id)sender;
+- (IBAction)importButtonPress:(id)sender;
+- (IBAction)exportButtonPress:(id)sender;
 
 @end

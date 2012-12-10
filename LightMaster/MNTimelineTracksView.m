@@ -86,7 +86,7 @@
     trackItemsCount = 0;
     int thisTrackItemsCount = 0;
     int audioClipsCount = 0, controlBoxCount = 0, channelGroupCount = 0;
-    int channelGroupIndex, controlBoxIndex;
+    int channelGroupIndex;
     // Draw the audio track
     if([data audioClipFilePathsCountForSequence:[data currentSequence]] > 0)
     {

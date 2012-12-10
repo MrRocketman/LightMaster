@@ -39,6 +39,8 @@
 - (void)selectLibraryInTabList:(int)library;
 - (IBAction)libraryButtonPress:(id)sender;
 
+- (void)exportDataToFilePath:(NSString *)filePath;
+
 @end
 
 @implementation MNLibrariesViewController
@@ -254,6 +256,190 @@
     }
 }
 
+- (IBAction)importButtonPress:(id)sender
+{
+    
+}
+
+- (IBAction)exportButtonPress:(id)sender
+{
+    // Load the open panel if neccessary
+    if(openPanel == nil)
+    {
+        openPanel = [NSOpenPanel openPanel];
+        [openPanel setCanChooseDirectories:YES];
+        [openPanel setCanChooseFiles:NO];
+        [openPanel setResolvesAliases:YES];
+        [openPanel setAllowsMultipleSelection:NO];
+    }
+    
+    if(previousOpenPanelDirectory == nil)
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:@"~"]];
+    }
+    else
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:previousOpenPanelDirectory]];
+    }
+    
+    [openPanel beginWithCompletionHandler:^(NSInteger result)
+     {
+         if(result == NSFileHandlingPanelOKButton)
+         {
+             NSString *filePath = [[openPanel URL] path];
+             [self exportDataToFilePath:filePath];
+         }
+     }
+     ];
+}
+
+- (void)exportDataToFilePath:(NSString *)filePath
+{
+    // Get the selected rows from the tableView
+    NSUInteger selectedRows[999];
+    memset(selectedRows, -1, 999);
+    NSRange range;
+    range.length = 999;
+    range.location = 0;
+    int count = (int)[[libraryDataSelectionTableView selectedRowIndexes] getIndexes:selectedRows maxCount:999 inIndexRange:&range];
+    
+    // Copy individual data items
+    if(selectedLibrary != kSequenceLibrary)
+    {
+        // Loop through each selected item
+        for(int i = 0; i < count; i ++)
+        {
+            // Copy the file to the export folder
+            switch(selectedLibrary)
+            {
+                case kCommandClusterLibrary:
+                    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data commandClusterFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", filePath, [[data commandClusterFilePathAtIndex:(int)selectedRows[i]] lastPathComponent]] error:NULL];
+                    break;
+                case kControlBoxLibrary:
+                    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data controlBoxFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", filePath, [[data controlBoxFilePathAtIndex:(int)selectedRows[i]] lastPathComponent]] error:NULL];
+                    break;
+                case kChannelGroupLibrary:
+                    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data channelGroupFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", filePath, [[data channelGroupFilePathAtIndex:(int)selectedRows[i]] lastPathComponent]] error:NULL];
+                    break;
+                case kEffectLibrary:
+                    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data effectFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", filePath, [[data effectFilePathAtIndex:(int)selectedRows[i]] lastPathComponent]] error:NULL];
+                    break;
+                case kAudioClipLibrary:
+                    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data audioClipFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", filePath, [[data audioClipFilePathAtIndex:(int)selectedRows[i]] lastPathComponent]] error:NULL];
+                    
+                    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)selectedRows[i]]]]] toPath:[NSString stringWithFormat:@"%@/%@", filePath, [[data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)selectedRows[i]]]] lastPathComponent]] error:NULL];
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    // Copy entire sequences
+    else
+    {
+        // Create the folders
+        BOOL isDirectory = NO;
+        NSString *exportFolderFilePath = [NSString stringWithFormat:@"%@/LMData", filePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:exportFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:exportFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", exportFolderFilePath, error];
+            }
+        }
+        NSString *libraryFolderFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary", exportFolderFilePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+            }
+        }
+        libraryFolderFilePath = [NSString stringWithFormat:@"%@/channelGroupLibrary", exportFolderFilePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+            }
+        }
+        libraryFolderFilePath = [NSString stringWithFormat:@"%@/commandClusterLibrary", exportFolderFilePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+            }
+        }
+        libraryFolderFilePath = [NSString stringWithFormat:@"%@/controlBoxLibrary", exportFolderFilePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+            }
+        }
+        libraryFolderFilePath = [NSString stringWithFormat:@"%@/effectLibrary", exportFolderFilePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+            }
+        }
+        libraryFolderFilePath = [NSString stringWithFormat:@"%@/sequenceLibrary", exportFolderFilePath];
+        if(![[NSFileManager defaultManager] fileExistsAtPath:libraryFolderFilePath isDirectory:&isDirectory])
+        {
+            NSError *error = nil;
+            if(![[NSFileManager defaultManager] createDirectoryAtPath:libraryFolderFilePath withIntermediateDirectories:YES attributes:nil error:&error])
+            {
+                [NSException raise:@"Failed creating directory" format:@"[%@], %@", libraryFolderFilePath, error];
+            }
+        }
+        
+        // Loop through each selected sequence
+        for(int i = 0; i < count; i ++)
+        {
+            NSMutableDictionary *sequence = [data sequenceFromFilePath:[data sequenceFilePathAtIndex:(int)selectedRows[i]]];
+            
+            // Copy the sequence file to the export folder
+            [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data sequenceFilePathAtIndex:(int)selectedRows[i]]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data sequenceFilePathAtIndex:(int)selectedRows[i]]] error:NULL];
+            
+            // Copy the commandClusters for this sequence
+            for(int i2 = 0; i2 < [data commandClusterFilePathsCountForSequence:sequence]; i2 ++)
+            {
+                [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data commandClusterFilePathAtIndex:i2 forSequence:sequence]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data commandClusterFilePathAtIndex:i2 forSequence:sequence]] error:NULL];
+            }
+            
+            // Copy the controlBoxes for this sequence
+            for(int i2 = 0; i2 < [data controlBoxFilePathsCountForSequence:sequence]; i2 ++)
+            {
+                [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data controlBoxFilePathAtIndex:i2 forSequence:sequence]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data controlBoxFilePathAtIndex:i2 forSequence:sequence]] error:NULL];
+            }
+            
+            // Copy the channelGroups for this sequence
+            for(int i2 = 0; i2 < [data channelGroupFilePathsCountForSequence:sequence]; i2 ++)
+            {
+                [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data channelGroupFilePathAtIndex:i2 forSequence:sequence]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data channelGroupFilePathAtIndex:i2 forSequence:sequence]] error:NULL];
+            }
+            
+            // Copy the audioClips for this sequence
+            for(int i2 = 0; i2 < [data audioClipFilePathsCountForSequence:sequence]; i2 ++)
+            {
+                [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data audioClipFilePathAtIndex:i2 forSequence:sequence]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data audioClipFilePathAtIndex:i2 forSequence:sequence]] error:NULL];
+                
+                [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:i2 forSequence:sequence]]]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:i2 forSequence:sequence]]]] error:NULL];
+            }
+        }
+    }
+}
+
 #pragma mark - External Notifications
 
 - (void)selectControlBox:(NSNotification *)aNotification
@@ -463,6 +649,7 @@
         }
         
         [deleteLibraryDataButton setEnabled:YES];
+        [exportButton setEnabled:YES];
     }
     else
     {
@@ -493,6 +680,7 @@
         }
         
         [deleteLibraryDataButton setEnabled:NO];
+        [exportButton setEnabled:NO];
     }
     
     [self updateLibraryContent:nil];
