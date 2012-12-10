@@ -1064,13 +1064,15 @@
     NSMutableArray *commandClusterFilePaths = [self commandClusterFilePathsForSequence:sequence];
     for(int i = 0; i < [commandClusterFilePaths count]; i ++)
     {
-        [self removeCommandClusterFilePath:[commandClusterFilePaths objectAtIndex:i] forSequence:sequence];
+        [self removeCommandClusterFromLibrary:[self commandClusterFromFilePath:[commandClusterFilePaths objectAtIndex:i]]];
+        //[self removeCommandClusterFilePath:[commandClusterFilePaths objectAtIndex:i] forSequence:sequence];
     }
     // Remove any audioClips from this sequence
     NSMutableArray *audioClipFilePaths = [self audioClipFilePathsForSequence:sequence];
     for(int i = 0; i < [audioClipFilePaths count]; i ++)
     {
-        [self removeAudioClipFilePath:[audioClipFilePaths objectAtIndex:i] forSequence:sequence];
+        [self removeAudioClipFromLibrary:[self audioClipFromFilePath:[audioClipFilePaths objectAtIndex:i]]];
+        //[self removeAudioClipFilePath:[audioClipFilePaths objectAtIndex:i] forSequence:sequence];
     }
     
     // Remove the sequence
