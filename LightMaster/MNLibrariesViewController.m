@@ -258,7 +258,34 @@
 
 - (IBAction)importButtonPress:(id)sender
 {
+    // Load the open panel if neccessary
+    if(openPanel == nil)
+    {
+        openPanel = [NSOpenPanel openPanel];
+        [openPanel setCanChooseDirectories:YES];
+        [openPanel setCanChooseFiles:YES];
+        [openPanel setResolvesAliases:YES];
+        [openPanel setAllowsMultipleSelection:NO];
+    }
     
+    if(previousOpenPanelDirectory == nil)
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:@"~"]];
+    }
+    else
+    {
+        [openPanel setDirectoryURL:[NSURL URLWithString:previousOpenPanelDirectory]];
+    }
+    
+    [openPanel beginWithCompletionHandler:^(NSInteger result)
+     {
+         if(result == NSFileHandlingPanelOKButton)
+         {
+             NSString *filePath = [[openPanel URL] path];
+             [self exportDataToFilePath:filePath];
+         }
+     }
+     ];
 }
 
 - (IBAction)exportButtonPress:(id)sender
@@ -437,6 +464,16 @@
                 [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:i2 forSequence:sequence]]]] toPath:[NSString stringWithFormat:@"%@/%@", exportFolderFilePath, [data filePathToAudioFileForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:i2 forSequence:sequence]]]] error:NULL];
             }
         }
+        
+        //zip it all up
+        NSURL *destURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@.lmd", exportFolderFilePath]];
+        NSTask *task = [[NSTask alloc] init];
+        [task setCurrentDirectoryPath:exportFolderFilePath];
+        [task setLaunchPath:@"/usr/bin/zip"];
+        NSArray *argsArray = [NSArray arrayWithObjects:@"-r", @"-q", [destURL path], @".", @"-i", @"*", nil];
+        [task setArguments:argsArray];
+        [task launch];
+        [task waitUntilExit];
     }
 }
 
