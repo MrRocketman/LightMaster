@@ -918,6 +918,37 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
 }
 
+// File Name Methods
+- (NSString *)nextAvailableSequenceFileName
+{
+    return [self nextAvailableNumberForFilePaths:[self sequenceFilePaths]];
+}
+
+- (NSString *)nextAvailableControlBoxFileName
+{
+    return [self nextAvailableNumberForFilePaths:[self controlBoxFilePaths]];
+}
+
+- (NSString *)nextAvailableCommandClusterFileName
+{
+    return [self nextAvailableNumberForFilePaths:[self commandClusterFilePaths]];
+}
+
+- (NSString *)nextAvailableAudioClipFileName
+{
+    return [self nextAvailableNumberForFilePaths:[self audioClipFilePaths]];
+}
+
+- (NSString *)nextAvailableChannelGroupFileName
+{
+    return [self nextAvailableNumberForFilePaths:[self channelGroupFilePaths]];
+}
+
+- (NSString *)nextAvailableEffectFileName
+{
+    return [self nextAvailableNumberForFilePaths:[self effectFilePaths]];
+}
+
 #pragma mark - SerialPort
 
 - (void)sendStringToSerialPort:(NSString *)text
@@ -989,7 +1020,7 @@
     [newSequence setObject:commandClusterFilePathsForSequence forKey:@"commandClusterFilePaths"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"sequenceLibrary/%@.lmsq", [self nextAvailableNumberForFilePaths:[self sequenceFilePaths]]];
+    NSString *filePath = [NSString stringWithFormat:@"sequenceLibrary/%@.lmsq", [self nextAvailableSequenceFileName]];
     [self addSequenceFilePathToSequenceLibrary:filePath];
     [self setFilePath:filePath forDictionary:newSequence];
     
@@ -1357,7 +1388,7 @@
     [newControlBox setObject:channelsForControlBox forKey:@"channels"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"controlBoxLibrary/%@.lmcb", [self nextAvailableNumberForFilePaths:[self controlBoxFilePaths]]];
+    NSString *filePath = [NSString stringWithFormat:@"controlBoxLibrary/%@.lmcb", [self nextAvailableControlBoxFileName]];
     [self addControlBoxFilePathToControlBoxLibrary:filePath];
     [self setFilePath:filePath forDictionary:newControlBox];
     
@@ -1595,7 +1626,7 @@
     [newChannelGroup setObject:items forKey:@"items"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"channelGroupLibrary/%@.lmgp", [self nextAvailableNumberForFilePaths:[self channelGroupFilePaths]]];
+    NSString *filePath = [NSString stringWithFormat:@"channelGroupLibrary/%@.lmgp", [self nextAvailableChannelGroupFileName]];
     [self addChannelGroupFilePathToChannelGroupLibrary:filePath];
     [self setFilePath:filePath forDictionary:newChannelGroup];
     
@@ -1805,7 +1836,7 @@
     [newCommandCluster setObject:@"" forKey:@"channelGroupFilePath"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"commandClusterLibrary/%@.lmcc", [self nextAvailableNumberForFilePaths:[self commandClusterFilePaths]]];
+    NSString *filePath = [NSString stringWithFormat:@"commandClusterLibrary/%@.lmcc", [self nextAvailableCommandClusterFileName]];
     [self addCommandClusterFilePathToCommandClusterLibrary:filePath];
     [self setFilePath:filePath forDictionary:newCommandCluster];
     
@@ -2166,7 +2197,7 @@
     NSMutableDictionary *newEffect = [[NSMutableDictionary alloc] init];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"effectLibrary/%@.lmef", [self nextAvailableNumberForFilePaths:[self effectFilePaths]]];
+    NSString *filePath = [NSString stringWithFormat:@"effectLibrary/%@.lmef", [self nextAvailableEffectFileName]];
     [self addEffectFilePathToEffectLibrary:filePath];
     [self setFilePath:filePath forDictionary:newEffect];
     
@@ -2303,7 +2334,7 @@
     [newAudioClip setObject:beingUsedInSequenceFilePaths forKey:@"beingUsedInSequenceFilePaths"];
     
     // New files get a file name chosen by availble numbers (detemined by @selector(nextAvailableNumberForFilePaths))
-    NSString *filePath = [NSString stringWithFormat:@"audioClipLibrary/%@.lmsd", [self nextAvailableNumberForFilePaths:[self audioClipFilePaths]]];
+    NSString *filePath = [NSString stringWithFormat:@"audioClipLibrary/%@.lmsd", [self nextAvailableAudioClipFileName]];
     [self addAudioClipFilePathToAudioClipLibrary:filePath];
     [self setFilePath:filePath forDictionary:newAudioClip];
     

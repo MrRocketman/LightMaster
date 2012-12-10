@@ -84,6 +84,13 @@ enum
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)audioClipForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i;
+// File Name Methods
+- (NSString *)nextAvailableSequenceFileName;
+- (NSString *)nextAvailableControlBoxFileName;
+- (NSString *)nextAvailableCommandClusterFileName;
+- (NSString *)nextAvailableAudioClipFileName;
+- (NSString *)nextAvailableChannelGroupFileName;
+- (NSString *)nextAvailableEffectFileName;
 
 #pragma mark - SerialPort
 
