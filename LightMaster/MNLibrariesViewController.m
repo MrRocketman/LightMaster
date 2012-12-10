@@ -357,7 +357,7 @@
     {
         // Move to the libary folder
         NSString *commandClusterFileName = [data nextAvailableCommandClusterFileName];
-        NSString *commandClusterFilePath = [NSString stringWithFormat:@"commandClusterLibrary/%@.lmgp", commandClusterFileName];
+        NSString *commandClusterFilePath = [NSString stringWithFormat:@"commandClusterLibrary/%@.lmcc", commandClusterFileName];
         [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], commandClusterFilePath] error:NULL];
         // Add it to the library
         [data addCommandClusterFilePathToCommandClusterLibrary:commandClusterFilePath];
@@ -374,7 +374,7 @@
     {
         // Move to the libary folder
         NSString *controlBoxFileName = [data nextAvailableControlBoxFileName];
-        NSString *controlBoxFilePath = [NSString stringWithFormat:@"controlBoxLibrary/%@.lmgp", controlBoxFileName];
+        NSString *controlBoxFilePath = [NSString stringWithFormat:@"controlBoxLibrary/%@.lmcb", controlBoxFileName];
         [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], controlBoxFilePath] error:NULL];
         // Add it to the library
         [data addControlBoxFilePathToControlBoxLibrary:controlBoxFilePath];
@@ -387,7 +387,7 @@
     {
         // Move to the libary folder
         NSString *effectFileName = [data nextAvailableEffectFileName];
-        NSString *effectFilePath = [NSString stringWithFormat:@"effectLibrary/%@.lmgp", effectFileName];
+        NSString *effectFilePath = [NSString stringWithFormat:@"effectLibrary/%@.lmef", effectFileName];
         [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], effectFilePath] error:NULL];
         // Add it to the library
         [data addEffectFilePathToEffectLibrary:effectFilePath];
@@ -419,8 +419,34 @@
         [task launch];
         [task waitUntilExit];
         
+        // Move the sequence to the library
+        NSString *sequenceFileName = [data nextAvailableSequenceFileName];
+        NSString *sequenceFilePath = [NSString stringWithFormat:@"sequenceLibrary/%@.lmsq", sequenceFileName];
+        NSArray *sequences = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/sequenceLibrary", importFolderFilePath] error:NULL];
+        [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/sequenceLibrary/%@", importFolderFilePath, [sequences objectAtIndex:0]] toPath:[NSString stringWithFormat:@"%@/%@", [data libraryFolder], sequenceFilePath] error:NULL];
+        // Add it to the library
+        [data addSequenceFilePathToSequenceLibrary:sequenceFilePath];
+        // Change it's stored filePath to it's new filePath
+        [data setFilePath:sequenceFilePath forDictionary:[data sequenceFromFilePath:sequenceFilePath]];
         
+        NSMutableDictionary *sequence = [data sequenceFromFilePath:sequenceFilePath];
+        
+        // Audio Clips
+        for(int i = 0; i < [data audioClipFilePathsCountForSequence:sequence]; i ++)
+        {
+            NSString *oldFilePath = [data audioClipFilePathAtIndex:i forSequence:sequence];
+            NSString *newFilePath = [self importDataFromFilePath:[NSString stringWithFormat:@"%@/%@", importFolderFilePath, oldFilePath]];
+            [data removeAudioClipFilePath:oldFilePath forSequence:sequence];
+            [data addAudioClipFilePath:newFilePath forSequence:sequence];
+        }
+        // Channel Groups
+        /*for(int i = 0; i < [data channelGroupFilePathsCountForSequence:sequence]; i ++)
+        {
+            [self importDataFromFilePath:[NSString stringWithFormat:@"%@/%@", importFolderFilePath, [data channelGroupFilePathAtIndex:i forSequence:sequence]]];
+        }*/
     }
+    
+    [self updateTableView:nil];
     
     return nil;
 }
