@@ -430,6 +430,8 @@
         [data setFilePath:sequenceFilePath forDictionary:[data sequenceFromFilePath:sequenceFilePath]];
         
         NSMutableDictionary *sequence = [data sequenceFromFilePath:sequenceFilePath];
+        // Format will be old paths in even indexes, new paths in odd indexes
+        NSMutableArray *changedControlBoxFilePaths = [[NSMutableArray alloc] init];
         
         // Audio Clips
         for(int i = 0; i < [data audioClipFilePathsCountForSequence:sequence]; i ++)
@@ -440,10 +442,71 @@
             [data addAudioClipFilePath:newFilePath forSequence:sequence];
         }
         // Channel Groups
-        /*for(int i = 0; i < [data channelGroupFilePathsCountForSequence:sequence]; i ++)
+        for(int i = 0; i < [data channelGroupFilePathsCountForSequence:sequence]; i ++)
         {
-            [self importDataFromFilePath:[NSString stringWithFormat:@"%@/%@", importFolderFilePath, [data channelGroupFilePathAtIndex:i forSequence:sequence]]];
-        }*/
+            NSString *oldFilePath = [data channelGroupFilePathAtIndex:i forSequence:sequence];
+            NSString *newFilePath = [self importDataFromFilePath:[NSString stringWithFormat:@"%@/%@", importFolderFilePath, oldFilePath]];
+            [data removeChannelGroupFilePath:oldFilePath forSequence:sequence];
+            [data addChannelGroupFilePath:newFilePath forSequence:sequence];
+        }
+        // Control Boxes
+        for(int i = 0; i < [data controlBoxFilePathsCountForSequence:sequence]; i ++)
+        {
+            NSString *oldFilePath = [data controlBoxFilePathAtIndex:i forSequence:sequence];
+            // Load the controlBox ourselves since it's not in the library and the library wouldn't know where to open it from
+            NSString *oldFileAbsolutePath = [NSString stringWithFormat:@"%@/%@", importFolderFilePath, oldFilePath];
+            BOOL isDirectory = NO;
+            NSMutableDictionary *sequenceControlBox;
+            if([[NSFileManager defaultManager] fileExistsAtPath:oldFileAbsolutePath isDirectory:&isDirectory])
+            {
+                sequenceControlBox = [[NSMutableDictionary alloc] initWithContentsOfFile:oldFileAbsolutePath];
+            }
+            
+            // Check to see if a controlBox with the same ID as this box already exists in the library
+            BOOL foundInLibrary = NO;
+            for(int i = 0; (i < [data controlBoxFilePathsCount] && foundInLibrary == NO); i ++)
+            {
+                if([[data controlBoxIDForControlBox:[data controlBoxFromFilePath:[data controlBoxFilePathAtIndex:i]]] isEqualToString:[data controlBoxIDForControlBox:sequenceControlBox]])
+                {
+                    foundInLibrary = YES;
+                    
+                    // Just change the pointer to the controlBox in the sequence
+                    [data removeControlBoxFilePath:oldFilePath forSequence:sequence];
+                    [data addControlBoxFilePath:[data controlBoxFilePathAtIndex:i] forSequence:sequence];
+                    // Keep track of what we changed so we can change the commandCluster controlBox pointers
+                    [changedControlBoxFilePaths addObject:oldFilePath];
+                    [changedControlBoxFilePaths addObject:[data controlBoxFilePathAtIndex:i]];
+                }
+            }
+            
+            // If we couldn't find a similar box in the library, import this one.
+            if(!foundInLibrary)
+            {
+                NSString *newFilePath = [self importDataFromFilePath:[NSString stringWithFormat:@"%@/%@", importFolderFilePath, oldFilePath]];
+                [data removeControlBoxFilePath:oldFilePath forSequence:sequence];
+                [data addControlBoxFilePath:newFilePath forSequence:sequence];
+                // Keep track of what we changed so we can change the commandCluster controlBox pointers
+                [changedControlBoxFilePaths addObject:oldFilePath];
+                [changedControlBoxFilePaths addObject:newFilePath];
+            }
+        }
+        // CommandClusters
+        for(int i = 0; i < [data commandClusterFilePathsCountForSequence:sequence]; i ++)
+        {
+            // Import the commandCluster
+            NSString *oldFilePath = [data commandClusterFilePathAtIndex:i forSequence:sequence];
+            NSString *newFilePath = [self importDataFromFilePath:[NSString stringWithFormat:@"%@/%@", importFolderFilePath, oldFilePath]];
+            [data removeCommandClusterFilePath:oldFilePath forSequence:sequence];
+            [data addCommandClusterFilePath:newFilePath forSequence:sequence];
+            
+            NSMutableDictionary *commandCluster = [data commandClusterFromFilePath:newFilePath];
+            // Change it's controlBoxFilePath to the new path from above
+            NSUInteger oldControlBoxFilePathIndex = [changedControlBoxFilePaths indexOfObject:[data controlBoxFilePathForCommandCluster:commandCluster]];
+            if(oldControlBoxFilePathIndex != NSNotFound)
+            {
+                [data setControlBoxFilePath:[changedControlBoxFilePaths objectAtIndex:oldControlBoxFilePathIndex + 1] forCommandCluster:commandCluster];
+            }
+        }
     }
     
     [self updateTableView:nil];
