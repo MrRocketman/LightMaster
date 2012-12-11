@@ -499,27 +499,29 @@
     {
         NSMutableDictionary *currentCommand = [data commandAtIndex:i fromCommandCluster:commandCluster];
         trackIndex = [data channelIndexForCommand:currentCommand] + startingTrackIndex;
+        float startTime = [data startTimeForCommand:currentCommand];
+        float endTime = [data endTimeForCommand:currentCommand];
         
         // Check to see if this commandCluster is in the visible range
-        if(([data startTimeForCommand:currentCommand] > timeAtLeftEdge && [data startTimeForCommand:currentCommand] < timeAtRightEdge) || ([data endTimeForCommand:currentCommand] > timeAtLeftEdge && [data endTimeForCommand:currentCommand] < timeAtRightEdge) || ([data startTimeForCommand:currentCommand] <= timeAtLeftEdge && [data endTimeForCommand:currentCommand] >= timeAtRightEdge))
+        if((startTime > timeAtLeftEdge && startTime < timeAtRightEdge) || (endTime > timeAtLeftEdge && endTime < timeAtRightEdge) || (startTime <= timeAtLeftEdge && endTime >= timeAtRightEdge))
         {
             NSRect commandRect;
             float x, y, width , height;
-            x  = [data timeToX:[data startTimeForCommand:currentCommand]];
+            x  = [data timeToX:startTime];
             y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
-            width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
+            width = [data widthForTimeInterval:endTime - startTime];
             height = TRACK_ITEM_HEIGHT - 2;
             
             // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
-            if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
+            if(endTime > [data endTimeForCommandCluster:commandCluster])
             {
-                width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommand:currentCommand]];
+                width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - startTime];
             }
             // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
-            else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
+            else if(startTime < [data startTimeForCommandCluster:commandCluster])
             {
                 x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
-                width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data xToTime:x]];
+                width = [data widthForTimeInterval:endTime - [data xToTime:x]];
             }
             commandRect = NSMakeRect(x, y, width, height);
             
@@ -545,21 +547,23 @@
     {
         NSMutableDictionary *currentCommand = [data commandAtIndex:i fromCommandCluster:commandCluster];
         trackIndex = [data channelIndexForCommand:currentCommand] + startingTrackIndex;
+        float startTime = [data startTimeForCommand:currentCommand];
+        float endTime = [data endTimeForCommand:currentCommand];
         
         NSRect commandRect;
         float x, y, width , height;
-        x  = [data timeToX:[data startTimeForCommand:currentCommand]];
+        x  = [data timeToX:startTime];
         y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
-        width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
+        width = [data widthForTimeInterval:endTime - startTime];
         height = TRACK_ITEM_HEIGHT - 2;
         
         // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
-        if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
+        if(endTime > [data endTimeForCommandCluster:commandCluster])
         {
-            width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommand:currentCommand]];
+            width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - startTime];
         }
         // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
-        else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
+        else if(startTime < [data startTimeForCommandCluster:commandCluster])
         {
             x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
         }
@@ -578,8 +582,8 @@
             else if(mouseEvent.modifierFlags & NSAlternateKeyMask)
             {
                 int newCommandIndex = [data createCommandAndReturnNewCommandIndexForCommandCluster:commandCluster];
-                [data setStartTime:[data startTimeForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
-                [data setEndTime:[data endTimeForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+                [data setStartTime:startTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+                [data setEndTime:endTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
                 [data setChannelIndex:[data channelIndexForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
                 [data setBrightness:[data brightnessForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
                 
@@ -598,18 +602,18 @@
                 if(mousePoint.x <= x + TIME_ADJUST_PIXEL_BUFFER)
                 {
                     mouseDraggingEvent = MNCommandMouseDragStartTime;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
+                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
                 }
                 // Adjust the end time
                 else if(mousePoint.x >= x + width - TIME_ADJUST_PIXEL_BUFFER)
                 {
                     mouseDraggingEvent = MNCommandMouseDragEndTime;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
+                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:endTime];
                 }
                 else
                 {
                     mouseDraggingEvent = MNCommandMouseDrag;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:i fromCommandCluster:commandCluster]]];
+                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
                 }
                 
                 selectedCommandIndex = i;
