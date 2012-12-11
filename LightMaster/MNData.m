@@ -924,14 +924,14 @@
 - (int)trackItemsCount
 {
     // Determine the number of trackItems
-    int trackItemsCount = [self audioClipFilePathsCountForSequence:currentSequence];
-    for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
+    int trackItemsCount = (int)[currentSequenceAudioClips count];
+    for(int i = 0; i < [currentSequenceControlBoxes count]; i ++)
     {
-        trackItemsCount += [self channelsCountForControlBox:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]]];
+        trackItemsCount += [self channelsCountForControlBox:[currentSequenceControlBoxes objectAtIndex:i]];
     }
     for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
     {
-        trackItemsCount += [self itemsCountForChannelGroup:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i]]];
+        trackItemsCount += [self itemsCountForChannelGroup:[currentSequenceChannelGroups objectAtIndex:i]];
     }
     
     return trackItemsCount;
