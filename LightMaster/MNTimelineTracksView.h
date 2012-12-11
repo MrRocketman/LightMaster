@@ -30,7 +30,10 @@ enum
     MNCommandMouseDrag,
     MNCommandMouseDragEndTime,
     MNCommandMouseDragStartTime,
-    MNTimeMarkerMouseDrag
+    MNTimeMarkerMouseDrag,
+    MNNewClusterMouseDrag,
+    MNControlBoxCommandClusterMouseDragStartTime,
+    MNControlBoxCommandClusterMouseDragEndTime,
 };
 
 @interface MNTimelineTracksView : NSView
@@ -53,7 +56,7 @@ enum
     BOOL autoscrollTimerIsRunning;
     BOOL currentTimeMarkerIsSelected;
     
-    NSMutableDictionary *selectedCommandCluster;
+    int selectedCommandClusterIndex;
     int selectedCommandIndex;
     int commandClusterIndexForSelectedCommand;
     NSMutableDictionary *selectedAudioClip;

@@ -40,6 +40,14 @@
 - (void)loadCommandClustersForCurrentSequence;
 - (void)loadAudioClipsForCurrentSequence;
 - (void)loadChannelGroupsForCurrentSequence;
+- (void)updateCurrentSequenceControlBoxesWithControlBox:(NSMutableDictionary *)controlBox;
+- (void)updateCurrentSequenceCommandClustersWithCommandCluster:(NSMutableDictionary *)commandCluster;
+- (void)updateCurrentSequenceAudioClipsWithAudioClip:(NSMutableDictionary *)audioClip;
+- (void)updateCurrentSequenceChannelGroupsWithChannelGroup:(NSMutableDictionary *)channelGroup;
+- (void)removeControlBoxFromCurrentSequenceControlBoxes:(NSMutableDictionary *)controlBox;
+- (void)removeCommandClusterFromCurrentSequenceCommandClusters:(NSMutableDictionary *)commandCluster;
+- (void)removeAudioClipFromCurrentSequenceAudioClips:(NSMutableDictionary *)audioClip;
+- (void)removeChannelGroupFromCurrentSequenceChannelGroups:(NSMutableDictionary *)channelGroup;
 
 @end
 
@@ -490,6 +498,86 @@
     for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
     {
         [currentSequenceChannelGroups addObject:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]]];
+    }
+}
+
+- (void)updateCurrentSequenceControlBoxesWithControlBox:(NSMutableDictionary *)controlBox
+{
+    // Reload this controlBox if neccessary
+    NSUInteger filePathsIndex = [[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self filePathForControlBox:controlBox]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceControlBoxes replaceObjectAtIndex:filePathsIndex withObject:controlBox];
+    }
+}
+
+- (void)updateCurrentSequenceCommandClustersWithCommandCluster:(NSMutableDictionary *)commandCluster
+{
+    // Reload this cluster if neccessary
+    NSUInteger filePathsIndex = [[self commandClusterFilePathsForSequence:currentSequence] indexOfObject:[self filePathForCommandCluster:commandCluster]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceCommandClusters replaceObjectAtIndex:filePathsIndex withObject:commandCluster];
+    }
+}
+
+- (void)updateCurrentSequenceAudioClipsWithAudioClip:(NSMutableDictionary *)audioClip
+{
+    // Reload this audioClip if neccessary
+    NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceAudioClips replaceObjectAtIndex:filePathsIndex withObject:audioClip];
+    }
+}
+
+- (void)updateCurrentSequenceChannelGroupsWithChannelGroup:(NSMutableDictionary *)channelGroup
+{
+    // Reload this channelGroup if neccessary
+    NSUInteger filePathsIndex = [[self channelGroupFilePathsForSequence:currentSequence] indexOfObject:[self filePathForChannelGroup:channelGroup]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceChannelGroups replaceObjectAtIndex:filePathsIndex withObject:channelGroup];
+    }
+}
+
+- (void)removeControlBoxFromCurrentSequenceControlBoxes:(NSMutableDictionary *)controlBox
+{
+    // Reload this controlBox if neccessary
+    NSUInteger filePathsIndex = [[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self filePathForControlBox:controlBox]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceControlBoxes removeObjectAtIndex:filePathsIndex];
+    }
+}
+
+- (void)removeCommandClusterFromCurrentSequenceCommandClusters:(NSMutableDictionary *)commandCluster
+{
+    // Reload this cluster if neccessary
+    NSUInteger filePathsIndex = [[self commandClusterFilePathsForSequence:currentSequence] indexOfObject:[self filePathForCommandCluster:commandCluster]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceCommandClusters removeObjectAtIndex:filePathsIndex];
+    }
+}
+
+- (void)removeAudioClipFromCurrentSequenceAudioClips:(NSMutableDictionary *)audioClip
+{
+    // Reload this audioClip if neccessary
+    NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceAudioClips removeObjectAtIndex:filePathsIndex];
+    }
+}
+
+- (void)removeChannelGroupFromCurrentSequenceChannelGroups:(NSMutableDictionary *)channelGroup
+{
+    // Reload this channelGroup if neccessary
+    NSUInteger filePathsIndex = [[self channelGroupFilePathsForSequence:currentSequence] indexOfObject:[self filePathForChannelGroup:channelGroup]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceChannelGroups removeObjectAtIndex:filePathsIndex];
     }
 }
 
@@ -1430,6 +1518,7 @@
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForControlBox:controlBox]] error:NULL];
     [controlBoxLibrary setObject:filePaths forKey:@"controlBoxFilePaths"];
     [self saveControlBoxLibrary];
+    [self removeControlBoxFromCurrentSequenceControlBoxes:controlBox];
 }
 
 // Getter Methods
@@ -1548,18 +1637,21 @@
 {
     [self setVersionNumber:newVersionNumber forDictionary:controlBox];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setControlBoxID:(NSString *)ID forControlBox:(NSMutableDictionary *)controlBox
 {
     [controlBox setObject:ID forKey:@"controlBoxID"];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setDescription:(NSString *)description forControlBox:(NSMutableDictionary *)controlBox
 {
     [controlBox setObject:description forKey:@"description"];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (int)addChannelAndReturnNewChannelIndexForControlBox:(NSMutableDictionary *)controlBox
@@ -1576,6 +1668,7 @@
     int index = (int)[channels count] - 1;
     
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
     
     return index;
 }
@@ -1586,6 +1679,7 @@
     [channels removeObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setNumber:(int)number forChannelAtIndex:(int)index whichIsPartOfControlBox:(NSMutableDictionary *)controlBox
@@ -1596,6 +1690,7 @@
     [channels replaceObjectAtIndex:index withObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setColor:(NSString *)color forChannelAtIndex:(int)index whichIsPartOfControlBox:(NSMutableDictionary *)controlBox
@@ -1606,6 +1701,7 @@
     [channels replaceObjectAtIndex:index withObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setDescription:(NSString *)description forChannelAtIndex:(int)index whichIsPartOfControlBox:(NSMutableDictionary *)controlBox
@@ -1616,6 +1712,7 @@
     [channels replaceObjectAtIndex:index withObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
     [self saveDictionaryToItsFilePath:controlBox];
+    [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 #pragma mark - ChannelGroupLibrary Methods
@@ -1665,6 +1762,7 @@
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForChannelGroup:channelGroup]] error:NULL];
     [channelGroupLibrary setObject:filePaths forKey:@"channelGroupFilePaths"];
     [self saveChannelGroupLibrary];
+    [self removeChannelGroupFromCurrentSequenceChannelGroups:channelGroup];
 }
 
 // Getter Methods
@@ -1773,12 +1871,14 @@
 {
     [self setVersionNumber:newVersionNumber forDictionary:channelGroup];
     [self saveDictionaryToItsFilePath:channelGroup];
+    [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
 - (void)setDescription:(NSString *)description forChannelGroup:(NSMutableDictionary *)channelGroup
 {
     [channelGroup setObject:description forKey:@"description"];
     [self saveDictionaryToItsFilePath:channelGroup];
+    [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
 - (int)createItemDataAndReturnNewItemIndexForChannelGroup:(NSMutableDictionary *)channelGroup
@@ -1793,6 +1893,7 @@
     
     [self saveDictionaryToItsFilePath:channelGroup];
     [self setChannelIndex:0 forItemDataAtIndex:index whichIsPartOfChannelGroup:channelGroup];
+    [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
     
     return index;
 }
@@ -1803,6 +1904,7 @@
     [items removeObject:itemData];
     [channelGroup setObject:items forKey:@"items"];
     [self saveDictionaryToItsFilePath:channelGroup];
+    [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
 - (void)setControlBoxFilePath:(NSString *)filePath forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup
@@ -1813,6 +1915,7 @@
     [items replaceObjectAtIndex:index withObject:itemData];
     [channelGroup setObject:items forKey:@"items"];
     [self saveDictionaryToItsFilePath:channelGroup];
+    [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
 - (void)setChannelIndex:(int)channelIndex forItemDataAtIndex:(int)index whichIsPartOfChannelGroup:(NSMutableDictionary *)channelGroup
@@ -1823,6 +1926,7 @@
     [items replaceObjectAtIndex:index withObject:itemData];
     [channelGroup setObject:items forKey:@"items"];
     [self saveDictionaryToItsFilePath:channelGroup];
+    [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
 #pragma mark - CommandClusterLibrary Methods
@@ -1880,6 +1984,7 @@
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForCommandCluster:commandCluster]] error:NULL];
     [commandClusterLibrary setObject:filePaths forKey:@"commandClusterFilePaths"];
     [self saveCommandClusterLibrary];
+    [self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
 }
 
 // Getter Methods
@@ -2033,30 +2138,35 @@
 {
     [self setVersionNumber:newVersionNumber forDictionary:commandCluster];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setDescription:(NSString *)description forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:description forKey:@"description"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setControlBoxFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:filePath forKey:@"controlBoxFilePath"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setChannelGroupFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:filePath forKey:@"channelGroupFilePath"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setStartTime:(float)time forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:[NSNumber numberWithFloat:time] forKey:@"startTime"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setEndTime:(float)time forCommandcluster:(NSMutableDictionary *)commandCluster
@@ -2064,6 +2174,7 @@
     
     [commandCluster setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)moveCommandCluster:(NSMutableDictionary *)commandCluster byTime:(float)time
@@ -2078,6 +2189,7 @@
     [self setStartTime:[self startTimeForCommandCluster:commandCluster] + time forCommandCluster:commandCluster];
     [self setEndTime:[self endTimeForCommandCluster:commandCluster] + time forCommandcluster:commandCluster];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)moveCommandCluster:(NSMutableDictionary *)commandCluster toStartTime:(float)startTime
@@ -2085,12 +2197,14 @@
     float startTimeOffset = startTime - [self startTimeForCommandCluster:commandCluster];
     
     [self moveCommandCluster:commandCluster byTime:startTimeOffset];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setAudioClipFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:filePath forKey:@"audioClipFilePath"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (int)createCommandAndReturnNewCommandIndexForCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2107,6 +2221,7 @@
     [self setChannelIndex:0 forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
     [self setEndTime:1.0 forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
     [self setBrightness:100 forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
     
     return index;
 }
@@ -2117,6 +2232,7 @@
     [commands removeObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setStartTime:(float)time forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2127,6 +2243,7 @@
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setEndTime:(float)time forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2137,6 +2254,7 @@
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)moveCommandAtIndex:(int)index byTime:(float)time whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2160,6 +2278,7 @@
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setBrightness:(int)brightness forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2170,6 +2289,7 @@
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setFadeInDuration:(int)fadeInDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2180,6 +2300,7 @@
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setFadeOutDuration:(int)fadeOutDuration forCommandAtIndex:(int)index whichIsPartOfCommandCluster:(NSMutableDictionary *)commandCluster
@@ -2190,6 +2311,7 @@
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
     [self saveDictionaryToItsFilePath:commandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 #pragma mark - EffectLibrary Methods
@@ -2377,6 +2499,7 @@
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
     [audioClipLibrary setObject:filePaths forKey:@"audioClipFilePaths"];
     [self saveAudioClipLibrary];
+    [self removeAudioClipFromCurrentSequenceAudioClips:audioClip];
 }
 
 // Getter Methods
