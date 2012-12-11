@@ -22,6 +22,7 @@
 
 - (void)drawTimelineBar;
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height;
+- (void)timelineBarMouseChecking;
 
 - (void)updateTimeAtLeftEdgeOfTimelineView:(NSTimer*)theTimer;
 - (float)roundUpNumber:(float)numberToRound toNearestMultipleOfNumber:(float)multiple;
@@ -82,6 +83,9 @@
     {
         [self setFrame:NSMakeRect(0.0, 0.0, 999999, [[self superview] frame].size.height)];
     }
+    
+    // Check for timelineBar mouse clicks
+    [self timelineBarMouseChecking];
     
     trackItemsCount = 0;
     int thisTrackItemsCount = 0;
@@ -486,39 +490,48 @@
     int startingTrackIndex = trackIndex;
     int commandClusterIndex = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:commandCluster]];
     
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
     for(int i = 0; i < [data commandsCountForCommandCluster:commandCluster]; i ++)
     {
         NSMutableDictionary *currentCommand = [data commandAtIndex:i fromCommandCluster:commandCluster];
         trackIndex = [data channelIndexForCommand:currentCommand] + startingTrackIndex;
         
-        NSRect commandRect;
-        float x, y, width , height;
-        x  = [data timeToX:[data startTimeForCommand:currentCommand]];
-        y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
-        width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
-        height = TRACK_ITEM_HEIGHT - 2;
-        
-        // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
-        if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
+        // Check to see if this commandCluster is in the visible range
+        if(([data startTimeForCommand:currentCommand] > timeAtLeftEdge && [data startTimeForCommand:currentCommand] < timeAtRightEdge) || ([data endTimeForCommand:currentCommand] > timeAtLeftEdge && [data endTimeForCommand:currentCommand] < timeAtRightEdge) || ([data startTimeForCommand:currentCommand] <= timeAtLeftEdge && [data endTimeForCommand:currentCommand] >= timeAtRightEdge))
         {
-            width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommand:currentCommand]];
-        }
-        // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
-        else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
-        {
-            x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
-            width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data xToTime:x]];
-        }
-        commandRect = NSMakeRect(x, y, width, height);
-        
-        // Draw the command
-        if(selectedCommandIndex == i && commandClusterIndexForSelectedCommand == commandClusterIndex)
-        {
-            [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-        }
-        else
-        {
-            [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.3 green:1.0 blue:0.3 alpha:0.7] andStroke:YES];
+            NSRect commandRect;
+            float x, y, width , height;
+            x  = [data timeToX:[data startTimeForCommand:currentCommand]];
+            y = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
+            width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data startTimeForCommand:currentCommand]];
+            height = TRACK_ITEM_HEIGHT - 2;
+            
+            // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
+            if([data endTimeForCommand:currentCommand] > [data endTimeForCommandCluster:commandCluster])
+            {
+                width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommand:currentCommand]];
+            }
+            // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
+            else if([data startTimeForCommand:currentCommand] < [data startTimeForCommandCluster:commandCluster])
+            {
+                x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
+                width = [data widthForTimeInterval:[data endTimeForCommand:currentCommand] - [data xToTime:x]];
+            }
+            commandRect = NSMakeRect(x, y, width, height);
+            
+            // Draw the command
+            if(selectedCommandIndex == i && commandClusterIndexForSelectedCommand == commandClusterIndex)
+            {
+                [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+            }
+            else
+            {
+                [self drawRect:commandRect withCornerRadius:COMMAND_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.3 green:1.0 blue:0.3 alpha:0.7] andStroke:YES];
+            }
         }
     }
 }
@@ -647,6 +660,60 @@
     }
 }
 
+- (void)timelineBarMouseChecking
+{
+    // Draw the Top Bar
+    NSRect superViewFrame = [[self superview] frame];
+    NSRect topBarFrame = NSMakeRect(0, scrollViewOrigin.y + superViewFrame.size.height - TOP_BAR_HEIGHT, self.frame.size.width, TOP_BAR_HEIGHT);
+    
+    NSPoint trianglePoint = NSMakePoint((float)[data timeToX:[data currentTime]], topBarFrame.origin.y);
+    float width = 20;
+    float height = 20;
+    
+    NSBezierPath *triangle = [NSBezierPath bezierPath];
+	
+    [triangle moveToPoint:trianglePoint];
+    [triangle lineToPoint:NSMakePoint(trianglePoint.x - width / 2,  trianglePoint.y + height)];
+    [triangle lineToPoint:NSMakePoint(trianglePoint.x + width / 2, trianglePoint.y + height)];
+    [triangle closePath];
+    
+    // CurrentTime Marker Mouse checking
+    if([triangle containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil)
+    {
+        currentTimeMarkerIsSelected = YES;
+        mouseEvent = nil;
+    }
+    else if(currentTimeMarkerIsSelected && mouseAction == MNMouseUp && mouseEvent != nil)
+    {
+        currentTimeMarkerIsSelected = NO;
+        mouseEvent = nil;
+    }
+    
+    // Mouse Checking
+    if(mouseAction == MNMouseDragged && (mouseDraggingEvent == MNMouseDragNotInUse || mouseDraggingEvent == MNTimeMarkerMouseDrag) && currentTimeMarkerIsSelected && mouseEvent != nil)
+    {
+        mouseDraggingEvent = MNTimeMarkerMouseDrag;
+        mouseDraggingEventObjectIndex = -1;
+        float newCurrentTime = [data xToTime:mousePoint.x];
+        
+        // Bind the minimum time to 0
+        if(newCurrentTime < 0.0)
+        {
+            newCurrentTime = 0.0;
+        }
+        
+        // Move the cursor to the new position
+        [data setCurrentTime:newCurrentTime];
+    }
+    
+    // TopBar Mouse Checking
+    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
+    {
+        [data setCurrentTime:[data xToTime:mousePoint.x]];
+        mouseEvent = nil;
+    }
+}
+
 - (void)drawTimelineBar
 {
     // Draw the Top Bar
@@ -725,30 +792,6 @@
     // Draw the currentTime marker
     NSPoint trianglePoint = NSMakePoint((float)[data timeToX:[data currentTime]], topBarFrame.origin.y);
     [self drawInvertedTriangleAndLineWithTipPoint:trianglePoint width:20 andHeight:20];
-    
-    // Mouse Checking
-    if(mouseAction == MNMouseDragged && (mouseDraggingEvent == MNMouseDragNotInUse || mouseDraggingEvent == MNTimeMarkerMouseDrag) && currentTimeMarkerIsSelected && mouseEvent != nil)
-    {
-        mouseDraggingEvent = MNTimeMarkerMouseDrag;
-        mouseDraggingEventObjectIndex = -1;
-        float newCurrentTime = [data xToTime:mousePoint.x];
-        
-        // Bind the minimum time to 0
-        if(newCurrentTime < 0.0)
-        {
-            newCurrentTime = 0.0;
-        }
-        
-        // Move the cursor to the new position
-        [data setCurrentTime:newCurrentTime];
-    }
-    
-    // TopBar Mouse Checking
-    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
-    {
-        [data setCurrentTime:[data xToTime:mousePoint.x]];
-        mouseEvent = nil;
-    }
 }
 
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height
@@ -759,18 +802,6 @@
     [triangle lineToPoint:NSMakePoint(point.x - width / 2,  point.y + height)];
     [triangle lineToPoint:NSMakePoint(point.x + width / 2, point.y + height)];
     [triangle closePath];
-    
-    // CurrentTime Marker Mouse checking
-    if([triangle containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil)
-    {
-        currentTimeMarkerIsSelected = YES;
-        mouseEvent = nil;
-    }
-    else if(currentTimeMarkerIsSelected && mouseAction == MNMouseUp && mouseEvent != nil)
-    {
-        currentTimeMarkerIsSelected = NO;
-        mouseEvent = nil;
-    }
 	
     // Set the color according to whether it is clicked or not
 	if(!currentTimeMarkerIsSelected)
