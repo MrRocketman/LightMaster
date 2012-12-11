@@ -128,7 +128,7 @@
         [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
         newFilePath = filePath;
         
-        [data setDescription:[filePath lastPathComponent] forAudioClip:[self audioClip]];
+        [data setDescription:[[filePath lastPathComponent] stringByDeletingPathExtension] forAudioClip:[self audioClip]];
         [filePathLabel setStringValue:[filePath lastPathComponent]];
     }
     // External audioClip
@@ -141,7 +141,7 @@
         
         // Set the filePath
         [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
-        [data setDescription:[filePath lastPathComponent] forAudioClip:[self audioClip]];
+        [data setDescription:[[filePath lastPathComponent] stringByDeletingPathExtension] forAudioClip:[self audioClip]];
         [filePathLabel setStringValue:[filePath lastPathComponent]];
     }
     NSSound *sound = [[NSSound alloc] initWithContentsOfFile:newFilePath byReference:NO];
