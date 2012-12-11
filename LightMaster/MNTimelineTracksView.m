@@ -449,6 +449,12 @@
                             selectedCommandClusterIndex = -1;
                         }
                     }
+                    // Else just draw normally
+                    else
+                    {
+                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.4 blue:0.2 alpha:0.7] andStroke:YES];
+                        selectedCommandClusterIndex = -1;
+                    }
                 }
                 // No mouse events within the bounds of this cluster. Just draw everything normally
                 else
