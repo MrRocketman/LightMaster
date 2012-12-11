@@ -332,7 +332,8 @@
                 NSRect commandClusterRect = NSMakeRect([data timeToX:startTime], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:endTime - startTime], TRACK_ITEM_HEIGHT * trackItems - 2);
                 
                 // There is a mouse event within the bounds of the commandCluster
-                if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+                //if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+                if(mouseEvent != nil && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] || ((mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Check the commands for mouse down clicks
                     [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
@@ -358,27 +359,20 @@
                     if(mouseEvent != nil)
                     {
                         // Cluster Mouse Checking Here
-                        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint]))
+                        if(mouseAction == MNMouseDown)
                         {
-                            // Delete a cluster if it's 'command clicked'
-                            if(mouseEvent.modifierFlags & NSCommandKeyMask)
-                            {
-                                [data removeCommandClusterFilePath:[data filePathForCommandCluster:currentCommandCluster] forSequence:[data currentSequence]];
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
-                            }
                             // Duplicate a cluster if it's 'option clicked'
-                            else if(mouseEvent.modifierFlags & NSAlternateKeyMask)
+                            if(mouseEvent.modifierFlags & NSAlternateKeyMask)
                             {
                                 NSString *newCommandClusterFilePath = [data createCopyOfCommandClusterAndReturnFilePath:currentCommandCluster];
                                 [data addCommandClusterFilePath:newCommandClusterFilePath forSequence:[data currentSequence]];
                                 
                                 mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
                                 mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
-                                selectedCommandClusterIndex = i;
+                                selectedCommandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:newCommandClusterFilePath];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:currentCommandCluster];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:[data commandClusterFromFilePath:newCommandClusterFilePath]];
                             }
                             // Select a cluster
                             else
@@ -407,7 +401,7 @@
                             }
                         }
                         // Dragging of clusters
-                        else if(mouseEvent != nil && mouseAction == MNMouseDragged && i == selectedCommandClusterIndex)
+                        else if(mouseAction == MNMouseDragged && i == selectedCommandClusterIndex)
                         {
                             // Drag the start Time
                             if(mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime)
@@ -434,21 +428,26 @@
                             }
                             
                             mouseDraggingEventObjectIndex = i;
+                            selectedCommandClusterIndex = i;
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                         }
-                        else if(mouseEvent != nil && i == selectedCommandClusterIndex)
+                        else if(i == selectedCommandClusterIndex)
                         {
                             selectedCommandClusterIndex = -1;
                         }
                         mouseEvent = nil;
                         
-                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
-                    }
-                    // Else just draw normally
-                    else
-                    {
-                        [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.4 blue:0.2 alpha:0.7] andStroke:YES];
-                        selectedCommandClusterIndex = -1;
+                        // Draw this cluster as selected
+                        if(selectedCommandClusterIndex == i)
+                        {
+                            [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
+                        }
+                        // Else just draw normally
+                        else
+                        {
+                            [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.4 blue:0.2 alpha:0.7] andStroke:YES];
+                            selectedCommandClusterIndex = -1;
+                        }
                     }
                 }
                 // No mouse events within the bounds of this cluster. Just draw everything normally
@@ -459,7 +458,6 @@
                     
                     // Draw this cluster
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.4 blue:0.2 alpha:0.7] andStroke:YES];
-                    selectedCommandClusterIndex = -1;
                 }
                 
                 // Draw the commands for this cluster
@@ -536,7 +534,7 @@
                     else
                     {
                         [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.4 alpha:0.7] andStroke:YES];
-                        selectedCommandClusterIndex = -1;
+                        selectedCGCommandClusterIndex = -1;
                     }
                 }
                 else
@@ -545,7 +543,7 @@
                     [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.2 blue:0.4 alpha:0.7] andStroke:YES];
-                    selectedCommandClusterIndex = -1;
+                    selectedCGCommandClusterIndex = -1;
                 }
                 
                 // Draw the commands

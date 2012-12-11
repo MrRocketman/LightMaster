@@ -57,6 +57,7 @@ enum
     BOOL currentTimeMarkerIsSelected;
     
     int selectedCommandClusterIndex;
+    int selectedCGCommandClusterIndex;
     int selectedCommandIndex;
     int commandClusterIndexForSelectedCommand;
     NSMutableDictionary *selectedAudioClip;
