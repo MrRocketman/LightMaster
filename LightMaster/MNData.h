@@ -70,7 +70,7 @@ enum
 
 #pragma mark - Other Methods
 // Other Methods
-- (int)timeToX:(float)time;
+- (int)timeToX:(float)time; // Converts the time to a zoom factored x coordinate
 - (float)xToTime:(int)x;
 - (int)widthForTimeInterval:(float)timeInterval;
 - (int)trackItemsCount;

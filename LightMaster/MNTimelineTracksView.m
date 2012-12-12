@@ -81,11 +81,11 @@
     // Set the Frame
     if(trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT > [[self superview] frame].size.height)
     {
-        [self setFrame:NSMakeRect(0.0, 0.0, 999999, trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT)];
+        [self setFrame:NSMakeRect(0.0, 0.0, [data timeToX:[data endTimeForSequence:[data currentSequence]]], trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT)];
     }
     else
     {
-        [self setFrame:NSMakeRect(0.0, 0.0, 999999, [[self superview] frame].size.height)];
+        [self setFrame:NSMakeRect(0.0, 0.0, 700, [[self superview] frame].size.height)];
     }
     
     // Check for timelineBar mouse clicks
