@@ -56,8 +56,8 @@ enum
     BOOL autoscrollTimerIsRunning;
     BOOL currentTimeMarkerIsSelected;
     
+    BOOL highlightedACluster;
     int selectedCommandClusterIndex;
-    int selectedCGCommandClusterIndex;
     int selectedCommandIndex;
     int commandClusterIndexForSelectedCommand;
     NSMutableDictionary *selectedAudioClip;

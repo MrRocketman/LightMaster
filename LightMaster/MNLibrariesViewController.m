@@ -34,6 +34,10 @@
 - (void)newEffect:(NSNotification *)aNotification;
 - (void)newAudioClip:(NSNotification *)aNotification;
 
+// GUI Notifications
+- (void)addCommandClusterForChannelGroupNotification:(NSNotification *)aNotification;
+- (void)addCommandClusterForControlBoxNotification:(NSNotification *)aNotification;
+
 - (void)removeLibraryContentView:(int)library;
 - (void)addLibraryContentView:(int)library;
 - (void)selectLibraryInTabList:(int)library;
@@ -67,6 +71,10 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCommandCluster:) name:@"NewCommandCluster" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newEffect:) name:@"NewEffect" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioClip:) name:@"NewAudioClip" object:nil];
+        
+        // GUI notification
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterForChannelGroupNotification:) name:@"AddCommandClusterForChannelGroupFilePathAndStartTime" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addCommandClusterForControlBoxNotification:) name:@"AddCommandClusterForControlBoxFilePathAndStartTime" object:nil];
         
         for(int i = 0; i < NUMBER_OF_LIBRARIES; i ++)
         {
@@ -827,6 +835,56 @@
     [self displayLibrary:kAudioClipLibrary];
     
     [self addLibraryDataButtonPress:nil];
+}
+
+#pragma mark - GUI Notifications
+
+- (void)addCommandClusterForChannelGroupNotification:(NSNotification *)aNotification
+{
+    [self displayLibrary:kCommandClusterLibrary];
+    
+    // Create the new cluster
+    NSString *newCommandClusterFilePath = [data createCommandClusterAndReturnFilePath];
+    NSMutableDictionary *newCommandCluster = [data commandClusterFromFilePath:newCommandClusterFilePath];
+    [data setChannelGroupFilePath:[[aNotification userInfo] objectForKey:@"channelGroupFilePath"] forCommandCluster:newCommandCluster];
+    [data setStartTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] forCommandCluster:newCommandCluster];
+    [data setEndTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] + 0.1 forCommandcluster:newCommandCluster];
+    
+    // Add the cluster to the current sequence
+    [data addCommandClusterFilePath:newCommandClusterFilePath forSequence:[data currentSequence]];
+    
+    // Select the new cluster in the table view
+    [libraryDataSelectionTableView reloadData];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data commandClusterFilePathsCount] - 1] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:libraryDataSelectionTableView]];
+    [libraryDataSelectionTableView scrollRowToVisible:[data commandClusterFilePathsCount] - 1];
+    
+    // Update the GUI
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (void)addCommandClusterForControlBoxNotification:(NSNotification *)aNotification
+{
+    [self displayLibrary:kCommandClusterLibrary];
+    
+    // Create the new cluster
+    NSString *newCommandClusterFilePath = [data createCommandClusterAndReturnFilePath];
+    NSMutableDictionary *newCommandCluster = [data commandClusterFromFilePath:newCommandClusterFilePath];
+    [data setControlBoxFilePath:[[aNotification userInfo] objectForKey:@"controlBoxFilePath"] forCommandCluster:newCommandCluster];
+    [data setStartTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] forCommandCluster:newCommandCluster];
+    [data setEndTime:[[[aNotification userInfo] objectForKey:@"startTime"] floatValue] + 0.1 forCommandcluster:newCommandCluster];
+    
+    // Add the cluster to the current sequence
+    [data addCommandClusterFilePath:newCommandClusterFilePath forSequence:[data currentSequence]];
+    
+    // Select the new cluster in the table view
+    [libraryDataSelectionTableView reloadData];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data commandClusterFilePathsCount] - 1] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:libraryDataSelectionTableView]];
+    [libraryDataSelectionTableView scrollRowToVisible:[data commandClusterFilePathsCount] - 1];
+    
+    // Update the GUI
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 #pragma mark - NSTableViewDataSource Methods
