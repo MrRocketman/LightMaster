@@ -507,7 +507,14 @@
     NSUInteger filePathsIndex = [[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self filePathForControlBox:controlBox]];
     if(filePathsIndex != NSNotFound)
     {
-        [currentSequenceControlBoxes replaceObjectAtIndex:filePathsIndex withObject:controlBox];
+        if([currentSequenceControlBoxes count] == 0)
+        {
+            [currentSequenceControlBoxes addObject:controlBox];
+        }
+        else
+        {[currentSequenceControlBoxes replaceObjectAtIndex:filePathsIndex withObject:controlBox];
+            
+        }
     }
 }
 
@@ -517,7 +524,14 @@
     NSUInteger filePathsIndex = [[self commandClusterFilePathsForSequence:currentSequence] indexOfObject:[self filePathForCommandCluster:commandCluster]];
     if(filePathsIndex != NSNotFound)
     {
-        [currentSequenceCommandClusters replaceObjectAtIndex:filePathsIndex withObject:commandCluster];
+        if([currentSequenceCommandClusters count] == 0)
+        {
+            [currentSequenceCommandClusters addObject:commandCluster];
+        }
+        else
+        {
+            [currentSequenceCommandClusters replaceObjectAtIndex:filePathsIndex withObject:commandCluster];
+        }
     }
 }
 
@@ -527,7 +541,14 @@
     NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
     if(filePathsIndex != NSNotFound)
     {
-        [currentSequenceAudioClips replaceObjectAtIndex:filePathsIndex withObject:audioClip];
+        if([currentSequenceAudioClips count] == 0)
+        {
+            [currentSequenceAudioClips addObject:audioClip];
+        }
+        else
+        {
+            [currentSequenceAudioClips replaceObjectAtIndex:filePathsIndex withObject:audioClip];
+        }
     }
 }
 
@@ -537,7 +558,14 @@
     NSUInteger filePathsIndex = [[self channelGroupFilePathsForSequence:currentSequence] indexOfObject:[self filePathForChannelGroup:channelGroup]];
     if(filePathsIndex != NSNotFound)
     {
-        [currentSequenceChannelGroups replaceObjectAtIndex:filePathsIndex withObject:channelGroup];
+        if([currentSequenceChannelGroups count] == 0)
+        {
+            [currentSequenceChannelGroups addObject:channelGroup];
+        }
+        else
+        {
+            [currentSequenceChannelGroups replaceObjectAtIndex:filePathsIndex withObject:channelGroup];
+        }
     }
 }
 
