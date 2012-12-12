@@ -78,15 +78,22 @@
     NSRectFill(self.bounds);
     
     int trackItemsCount = [data trackItemsCount];
+    int frameHeight = 0;
+    int frameWidth = [data timeToX:[data endTimeForSequence:[data currentSequence]]];
     // Set the Frame
     if(trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT > [[self superview] frame].size.height)
     {
-        [self setFrame:NSMakeRect(0.0, 0.0, [data timeToX:[data endTimeForSequence:[data currentSequence]]], trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT)];
+        frameHeight = trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT;
     }
     else
     {
-        [self setFrame:NSMakeRect(0.0, 0.0, 700, [[self superview] frame].size.height)];
+        frameHeight = [[self superview] frame].size.height;
     }
+    if(frameWidth <= [[self superview] frame].size.width)
+    {
+        frameWidth = [[self superview] frame].size.width;
+    }
+    [self setFrame:NSMakeRect(0.0, 0.0, frameWidth, frameHeight)];
     
     // Check for timelineBar mouse clicks
     [self timelineBarMouseChecking];
