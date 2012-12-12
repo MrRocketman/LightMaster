@@ -46,8 +46,8 @@ enum
     NSPoint scrollViewOrigin;
     NSSize scrollViewVisibleSize;
     
-    NSPoint mouseDownPoint;
-    NSPoint mousePoint;
+    NSPoint mouseClickDownPoint;
+    NSPoint currentMousePoint;
     int mouseAction;
     NSEvent *mouseEvent;
     NSTimer *autoScrollTimer;

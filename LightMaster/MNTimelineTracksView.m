@@ -13,15 +13,15 @@
 
 // Helper Drawing methods
 - (void)drawRect:(NSRect)aRect withCornerRadius:(float)radius fillColor:(NSColor *)color andStroke:(BOOL)yesOrNo;
-- (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems;
+- (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems;
 - (void)drawTimelineBar;
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height;
-- (void)drawChannelGuidlinesForParentIndex:(int)parentFilePathIndex parentIsControlBox:(BOOL)parentIsControlBox atTrackIndex:(int)trackIndex channelsTall:(int)channelsTall;
+- (void)drawChannelGuidlinesForParentIndex:(int)parentFilePathIndex parentIsControlBox:(BOOL)parentIsControlBox atTrackIndex:(int)trackIndex tracksTall:(int)tracksTall;
 
 // Data Drawing Methods
-- (void)drawAudioClipsAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems;
-- (void)drawCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems parentIndex:(int)parentIndex parentIsControlBox:(BOOL)isControlBox;
-- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
+- (void)drawAudioClipsAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems;
+- (void)drawCommandClustersAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems parentIndex:(int)parentIndex parentIsControlBox:(BOOL)isControlBox;
+- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex tracksTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
 
 // Math Methods
 - (void)updateTimeAtLeftEdgeOfTimelineView:(NSTimer*)theTimer;
@@ -30,7 +30,7 @@
 // Mouse Checking Methods
 - (void)timelineBarMouseChecking;
 - (void)handleEmptySpaceMouseAction;
-- (void)checkCommandClusterForCommandMouseEvent:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
+- (void)checkCommandClusterForCommandMouseEvent:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex tracksTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup;
 
 @end
 
@@ -78,7 +78,6 @@
     NSRectFill(self.bounds);
     
     int trackItemsCount = [data trackItemsCount];
-    
     // Set the Frame
     if(trackItemsCount * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT > [[self superview] frame].size.height)
     {
@@ -92,44 +91,33 @@
     // Check for timelineBar mouse clicks
     [self timelineBarMouseChecking];
     
-    trackItemsCount = 0;
-    int thisTrackItemsCount = 0;
-    int audioClipsCount = 0, controlBoxCount = 0, channelGroupCount = 0;
-    int channelGroupIndex;
+    int trackIndex = 0;
+    int tracksTall = 0;
     // Draw the audio track
     if([data audioClipFilePathsCountForSequence:[data currentSequence]] > 0)
     {
-        thisTrackItemsCount = [data audioClipFilePathsCountForSequence:[data currentSequence]];
-        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
-        [self drawAudioClipsAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
-        trackItemsCount += thisTrackItemsCount;
-        audioClipsCount += thisTrackItemsCount;
+        tracksTall = [data audioClipFilePathsCountForSequence:[data currentSequence]];
+        [self drawBackgroundTrackAtTrackIndex:trackIndex tracksTall:tracksTall];
+        [self drawAudioClipsAtTrackIndex:trackIndex tracksTall:tracksTall];
+        trackIndex += tracksTall;
     }
     // Draw the controlBox tracks
     for(int i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]];
-        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
-        [self drawCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount parentIndex:i parentIsControlBox:YES];
-        [self drawChannelGuidlinesForParentIndex:i parentIsControlBox:YES atTrackIndex:trackItemsCount channelsTall:thisTrackItemsCount];
-        trackItemsCount += thisTrackItemsCount;
+        tracksTall = [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]];
+        [self drawBackgroundTrackAtTrackIndex:trackIndex tracksTall:tracksTall];
+        [self drawCommandClustersAtTrackIndex:trackIndex tracksTall:tracksTall parentIndex:i parentIsControlBox:YES];
+        [self drawChannelGuidlinesForParentIndex:i parentIsControlBox:YES atTrackIndex:trackIndex tracksTall:tracksTall];
+        trackIndex += tracksTall;
     }
     // Draw the channelGroup tracks
     for(int i = 0; i < [data channelGroupFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
-        thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]];
-        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
-        [self drawCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount parentIndex:i parentIsControlBox:NO];
-        [self drawChannelGuidlinesForParentIndex:i parentIsControlBox:NO atTrackIndex:trackItemsCount channelsTall:thisTrackItemsCount];
-        trackItemsCount += thisTrackItemsCount;
-        
-        /*thisTrackItemsCount = [data itemsCountForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]];
-        [self drawBackgroundTrackAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount];
-        channelGroupIndex = (audioClipsCount > 0 ? trackItemsCount - audioClipsCount : trackItemsCount);
-        channelGroupIndex = (controlBoxCount > 0 ? channelGroupIndex - controlBoxCount : channelGroupIndex);
-        [self drawCommandClustersAtTrackIndex:trackItemsCount trackItemsTall:thisTrackItemsCount parentIndex:channelGroupIndex parentIsControlBox:NO];
-        trackItemsCount += thisTrackItemsCount;
-        channelGroupCount += thisTrackItemsCount;*/
+        tracksTall = [data itemsCountForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]];
+        [self drawBackgroundTrackAtTrackIndex:trackIndex tracksTall:tracksTall];
+        [self drawCommandClustersAtTrackIndex:trackIndex tracksTall:tracksTall parentIndex:i parentIsControlBox:NO];
+        [self drawChannelGuidlinesForParentIndex:i parentIsControlBox:NO atTrackIndex:trackIndex tracksTall:tracksTall];
+        trackIndex += tracksTall;
     }
     
     // Draw the timeline on top of everything
@@ -151,8 +139,6 @@
 	[color setFill];
     [[NSColor whiteColor] setStroke];
 	
-    //NSLog(@"drawRect x:%f, y:%f, w:%f, h:%f", aRect.origin.x, aRect.origin.y, aRect.size.width, aRect.size.height);
-    //NSLog(@"Color: %@", color);
 	if(yesOrNo)
     {
         [thePath stroke];
@@ -160,7 +146,7 @@
 	[thePath fill];
 }
 
-- (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems
+- (void)drawBackgroundTrackAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems
 {
     // Draw the Track Background
     NSRect backgroundFrame = NSMakeRect(0, self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT, self.frame.size.width, TRACK_ITEM_HEIGHT * trackItems);
@@ -275,9 +261,9 @@
     NSRectFill(markerLineFrame);
 }
 
-- (void)drawChannelGuidlinesForParentIndex:(int)parentFilePathIndex parentIsControlBox:(BOOL)parentIsControlBox atTrackIndex:(int)trackIndex channelsTall:(int)channelsTall;
+- (void)drawChannelGuidlinesForParentIndex:(int)parentFilePathIndex parentIsControlBox:(BOOL)parentIsControlBox atTrackIndex:(int)trackIndex tracksTall:(int)tracksTall;
 {
-    for(int i = 0; i < channelsTall; i ++)
+    for(int i = 0; i < tracksTall; i ++)
     {
         NSRect bottomOfChannelLine = NSMakeRect(0, self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - i * TRACK_ITEM_HEIGHT - TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT, self.frame.size.width, 1);
         
@@ -305,7 +291,7 @@
 
 #pragma mark - Data Drawing Methods
 
-- (void)drawAudioClipsAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems
+- (void)drawAudioClipsAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems
 {
     trackItems = 1;
     
@@ -324,21 +310,21 @@
             NSRect audioClipRect = NSMakeRect([data timeToX:[data startTimeForAudioClip:currentAudioClip]], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:[data endTimeForAudioClip:currentAudioClip] - [data startTimeForAudioClip:currentAudioClip]], TRACK_ITEM_HEIGHT - 2);
             
             // AudioClip Mouse Checking here
-            if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:mousePoint]) || mouseDraggingEvent == MNAudioClipMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+            if(mouseEvent != nil && ((mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:currentMousePoint]) || (mouseAction == MNMouseDragged && ((mouseDraggingEvent == MNMouseDragNotInUse && [[NSBezierPath bezierPathWithRect:audioClipRect] containsPoint:currentMousePoint]) || mouseDraggingEvent == MNAudioClipMouseDrag) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
             {
                 [self drawRect:audioClipRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:0.7] andStroke:YES];
                 
                 if(mouseAction == MNMouseDown)
                 {
                     selectedAudioClip = currentAudioClip;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForAudioClip:currentAudioClip]];
+                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data startTimeForAudioClip:currentAudioClip]];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectAudioClip" object:selectedAudioClip];
                 }
                 else if(mouseAction == MNMouseDragged)
                 {
                     mouseDraggingEvent = MNAudioClipMouseDrag;
                     mouseDraggingEventObjectIndex = i;
-                    [data moveAudioClip:currentAudioClip toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x]];
+                    [data moveAudioClip:currentAudioClip toStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x]];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                 }
                 
@@ -355,7 +341,7 @@
     }
 }
 
-- (void)drawCommandClustersAtTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems parentIndex:(int)parentIndex parentIsControlBox:(BOOL)isControlBox
+- (void)drawCommandClustersAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems parentIndex:(int)parentIndex parentIsControlBox:(BOOL)isControlBox
 {
     NSRect superViewFrame = [[self superview] frame];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
@@ -377,21 +363,21 @@
                 NSRect commandClusterRect = NSMakeRect([data timeToX:startTime], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - trackItems * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:endTime - startTime], TRACK_ITEM_HEIGHT * trackItems - 2);
                 
                 // There is a mouse event within the bounds of the commandCluster
-                if(mouseEvent != nil && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:mousePoint] || ((mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+                if(mouseEvent != nil && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:currentMousePoint] || ((mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Check the commands for mouse down clicks
-                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex tracksTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // Check for new command clicks
                     if(mouseEvent != nil && mouseAction == MNMouseDown && mouseEvent.modifierFlags & NSCommandKeyMask)
                     {
-                        int channelIndex = (self.frame.size.height - mousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
-                        float time = [data xToTime:mousePoint.x];
+                        int channelIndex = (self.frame.size.height - currentMousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
+                        float time = [data xToTime:currentMousePoint.x];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], currentCommandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
                         int newCommandIndex = [data commandsCountForCommandCluster:currentCommandCluster] - 1;
                         
                         mouseDraggingEvent = MNCommandMouseDragEndTime;
-                        mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:currentCommandCluster]]];
+                        mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:currentCommandCluster]]];
                         
                         selectedCommandIndex = newCommandIndex;
                         commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:currentCommandCluster]];
@@ -412,7 +398,7 @@
                                 [data addCommandClusterFilePath:newCommandClusterFilePath forSequence:[data currentSequence]];
                                 
                                 mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
-                                mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
+                                mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                                 selectedCommandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:newCommandClusterFilePath];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
@@ -422,22 +408,22 @@
                             else
                             {
                                 // Adjust start time
-                                if(mousePoint.x <= commandClusterRect.origin.x + TIME_ADJUST_PIXEL_BUFFER)
+                                if(currentMousePoint.x <= commandClusterRect.origin.x + TIME_ADJUST_PIXEL_BUFFER)
                                 {
                                     mouseDraggingEvent = MNControlBoxCommandClusterMouseDragStartTime;
-                                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
+                                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                                 }
                                 // Adjust the end time
-                                else if(mousePoint.x >= commandClusterRect.origin.x + commandClusterRect.size.width - TIME_ADJUST_PIXEL_BUFFER)
+                                else if(currentMousePoint.x >= commandClusterRect.origin.x + commandClusterRect.size.width - TIME_ADJUST_PIXEL_BUFFER)
                                 {
                                     mouseDraggingEvent = MNControlBoxCommandClusterMouseDragEndTime;
-                                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:endTime];
+                                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:endTime];
                                 }
                                 // Just select the cluster
                                 else
                                 {
                                     mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
-                                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
+                                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                                 }
                                 
                                 selectedCommandClusterIndex = i;
@@ -450,23 +436,23 @@
                             // Drag the start Time
                             if(mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime)
                             {
-                                [data setStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] forCommandCluster:currentCommandCluster];
+                                [data setStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x] forCommandCluster:currentCommandCluster];
                             }
                             // Drag the end time
                             else if(mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime)
                             {
-                                [data setEndTime:[data xToTime:mousePoint.x - mouseDownPoint.x] forCommandcluster:currentCommandCluster];
+                                [data setEndTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x] forCommandcluster:currentCommandCluster];
                             }
                             // Drag the entire cluster
                             else if(mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag)
                             {
                                 // Drag the cluster
-                                [data moveCommandCluster:currentCommandCluster toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x]];
+                                [data moveCommandCluster:currentCommandCluster toStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x]];
                                 
                                 // Mouse drag is moving the cluster to a different controlBox
-                                if(mousePoint.y > commandClusterRect.origin.y + commandClusterRect.size.height || mousePoint.y < commandClusterRect.origin.y)
+                                if(currentMousePoint.y > commandClusterRect.origin.y + commandClusterRect.size.height || currentMousePoint.y < commandClusterRect.origin.y)
                                 {
-                                    int newIndex = (self.frame.size.height - mousePoint.y - TOP_BAR_HEIGHT) / (TRACK_ITEM_HEIGHT * trackItems) - trackIndex;
+                                    int newIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / (TRACK_ITEM_HEIGHT * trackItems) - trackIndex;
                                     [data setControlBoxFilePath:[data controlBoxFilePathAtIndex:newIndex] forCommandCluster:currentCommandCluster];
                                 }
                             }
@@ -504,20 +490,20 @@
                 else
                 {
                     // Check the commands for mouse down clicks
-                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
+                    [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex tracksTall:trackItems forControlBoxOrChannelGroup:MNChannelGroup];
                     
                     // Draw this cluster
                     [self drawRect:commandClusterRect withCornerRadius:CLUSTER_CORNER_RADIUS fillColor:[NSColor colorWithDeviceRed:0.2 green:0.4 blue:0.2 alpha:0.7] andStroke:YES];
                 }
                 
                 // Draw the commands for this cluster
-                [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex trackItemsTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
+                [self drawCommandsForCommandCluster:currentCommandCluster atTrackIndex:trackIndex tracksTall:trackItems forControlBoxOrChannelGroup:MNControlBox];
             }
         }
     }
 }
 
-- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
+- (void)drawCommandsForCommandCluster:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex tracksTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
 {
     trackItems = 1;
     int startingTrackIndex = trackIndex;
@@ -626,7 +612,7 @@
     [triangle closePath];
     
     // CurrentTime Marker Mouse checking
-    if([triangle containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil)
+    if([triangle containsPoint:currentMousePoint] && mouseAction == MNMouseDown && mouseEvent != nil)
     {
         currentTimeMarkerIsSelected = YES;
         mouseEvent = nil;
@@ -642,7 +628,7 @@
     {
         mouseDraggingEvent = MNTimeMarkerMouseDrag;
         mouseDraggingEventObjectIndex = -1;
-        float newCurrentTime = [data xToTime:mousePoint.x];
+        float newCurrentTime = [data xToTime:currentMousePoint.x];
         
         // Bind the minimum time to 0
         if(newCurrentTime < 0.0)
@@ -655,9 +641,9 @@
     }
     
     // TopBar Mouse Checking
-    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:mousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
+    if([[NSBezierPath bezierPathWithRect:topBarFrame] containsPoint:currentMousePoint] && mouseAction == MNMouseDown && mouseEvent != nil && !currentTimeMarkerIsSelected)
     {
-        [data setCurrentTime:[data xToTime:mousePoint.x]];
+        [data setCurrentTime:[data xToTime:currentMousePoint.x]];
         mouseEvent = nil;
     }
 }
@@ -667,13 +653,13 @@
     // Check for new command clicks
     /*if(mouseEvent != nil && mouseAction == MNMouseDown && mouseEvent.modifierFlags & NSCommandKeyMask)
      {
-     int channelIndex = (self.frame.size.height - mousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
-     float time = [data xToTime:mousePoint.x];
+     int channelIndex = (self.frame.size.height - currentMousePoint.y - (trackIndex * TRACK_ITEM_HEIGHT + TOP_BAR_HEIGHT + 1)) / TRACK_ITEM_HEIGHT;
+     float time = [data xToTime:currentMousePoint.x];
      [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], currentCommandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
      int newCommandIndex = [data commandsCountForCommandCluster:currentCommandCluster] - 1;
      
      mouseDraggingEvent = MNCommandMouseDragEndTime;
-     mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:currentCommandCluster]]];
+     mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:currentCommandCluster]]];
      
      selectedCommandIndex = newCommandIndex;
      commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:currentCommandCluster]];
@@ -682,7 +668,7 @@
      }*/
 }
 
-- (void)checkCommandClusterForCommandMouseEvent:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex trackItemsTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
+- (void)checkCommandClusterForCommandMouseEvent:(NSMutableDictionary *)commandCluster atTrackIndex:(int)trackIndex tracksTall:(int)trackItems forControlBoxOrChannelGroup:(int)boxOrChannelGroup
 {
     trackItems = 1;
     int startingTrackIndex = trackIndex;
@@ -714,7 +700,7 @@
         commandRect = NSMakeRect(x, y, width, height);
         
         // Command Mouse Checking Here
-        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:mousePoint]))
+        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:currentMousePoint]))
         {
             // Delete a command if it's 'command clicked'
             if(mouseEvent.modifierFlags & NSCommandKeyMask)
@@ -732,7 +718,7 @@
                 [data setBrightness:[data brightnessForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
                 
                 mouseDraggingEvent = MNCommandMouseDrag;
-                mouseDownPoint.x = mouseDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:commandCluster]]];
+                mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:commandCluster]]];
                 
                 selectedCommandIndex = newCommandIndex;
                 commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:commandCluster]];
@@ -743,21 +729,21 @@
             else
             {
                 // Adjust start time
-                if(mousePoint.x <= x + TIME_ADJUST_PIXEL_BUFFER)
+                if(currentMousePoint.x <= x + TIME_ADJUST_PIXEL_BUFFER)
                 {
                     mouseDraggingEvent = MNCommandMouseDragStartTime;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
+                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                 }
                 // Adjust the end time
-                else if(mousePoint.x >= x + width - TIME_ADJUST_PIXEL_BUFFER)
+                else if(currentMousePoint.x >= x + width - TIME_ADJUST_PIXEL_BUFFER)
                 {
                     mouseDraggingEvent = MNCommandMouseDragEndTime;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:endTime];
+                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:endTime];
                 }
                 else
                 {
                     mouseDraggingEvent = MNCommandMouseDrag;
-                    mouseDownPoint.x = mouseDownPoint.x - [data timeToX:startTime];
+                    mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                 }
                 
                 selectedCommandIndex = i;
@@ -772,22 +758,22 @@
         {
             if(mouseDraggingEvent == MNCommandMouseDragStartTime)
             {
-                [data setStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+                [data setStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x] forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
             }
             else if(mouseDraggingEvent == MNCommandMouseDragEndTime)
             {
-                [data setEndTime:[data xToTime:mousePoint.x - mouseDownPoint.x] forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+                [data setEndTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x] forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
             }
             else if(mouseDraggingEvent == MNCommandMouseDrag)
             {
                 mouseDraggingEvent = MNCommandMouseDrag;
                 // Drag the command
-                [data moveCommandAtIndex:i toStartTime:[data xToTime:mousePoint.x - mouseDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
+                [data moveCommandAtIndex:i toStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
                 
                 // Mouse drag is changing the channel index
-                if(mousePoint.y > y + height || mousePoint.y < y)
+                if(currentMousePoint.y > y + height || currentMousePoint.y < y)
                 {
-                    int newIndex = (self.frame.size.height - mousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
+                    int newIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
                     [data setChannelIndex:newIndex forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
                 }
             }
@@ -812,8 +798,8 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
 	NSPoint eventLocation = [theEvent locationInWindow];
-	mousePoint = [self convertPoint:eventLocation fromView:nil];
-    mouseDownPoint = mousePoint;
+	currentMousePoint = [self convertPoint:eventLocation fromView:nil];
+    mouseClickDownPoint = currentMousePoint;
     mouseAction = MNMouseDown;
     mouseEvent = theEvent;
     
@@ -828,7 +814,7 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	NSPoint eventLocation = [theEvent locationInWindow];
-	mousePoint = [self convertPoint:eventLocation fromView:nil];
+	currentMousePoint = [self convertPoint:eventLocation fromView:nil];
     mouseAction = MNMouseDragged;
     mouseEvent = theEvent;
     [self setNeedsDisplay:YES];
@@ -837,7 +823,7 @@
 - (void)mouseUp:(NSEvent *)theEvent
 {
 	NSPoint eventLocation = [theEvent locationInWindow];
-	mousePoint = [self convertPoint:eventLocation fromView:nil];
+	currentMousePoint = [self convertPoint:eventLocation fromView:nil];
     mouseAction = MNMouseUp;
     mouseEvent = theEvent;
     mouseDraggingEvent = MNMouseDragNotInUse;
