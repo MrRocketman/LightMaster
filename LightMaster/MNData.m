@@ -811,9 +811,12 @@
         BOOL isChannelGroupCommand = YES;
         int currentChannelIndex = -1;
         
+        //NSLog(@"check");
+        
         // Go through each commandCluster
         for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
         {
+            //NSLog(@"cluster:%d", i);
             currentCommandCluster = [self commandClusterForCurrentSequenceAtIndex:i];
             // See if this is a controlBox cluster
             if([[self controlBoxFilePathForCommandCluster:currentCommandCluster] length] > 0)
@@ -842,6 +845,7 @@
                     {
                         channelState[currentControlBoxIndex][currentChannelIndex] = YES;
                     }
+                    //NSLog(@"[%d][%d]", currentChannelIndex, channelState[currentControlBoxIndex][currentChannelIndex]);
                 }
             }
             
@@ -862,19 +866,22 @@
             int i2;
             for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]]; i2 ++)
             {
-                if(channelState[i][i2] == YES && previousChannelState[i][i2] == NO)
+                // If there was a change, we need to send out a command
+                if(!shouldSendCommand && ((channelState[i][i2] == YES && previousChannelState[i][i2] == NO) || (channelState[i][i2] == NO && previousChannelState[i][i2] == YES)))
+                {
+                    shouldSendCommand = YES;
+                }
+                
+                // Create the command
+                if(channelState[i][i2] == YES)
                 {
                     //NSLog(@"on i:%d i2:%d", i, i2);
                     setBit(commandCharacters[i2 / 8], i2 % 8);
-                    
-                    shouldSendCommand = YES;
                 }
-                else if(channelState[i][i2] == NO && previousChannelState[i][i2] == YES)
+                else if(channelState[i][i2] == NO)
                 {
                     //NSLog(@"off i:%d i2:%d", i, i2);
                     clearBit(commandCharacters[i2 / 8], i2 % 8);
-                    
-                    shouldSendCommand = YES;
                 }
                 
                 // Add each command character to the command string as it is completed
