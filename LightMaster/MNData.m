@@ -2251,8 +2251,22 @@
     // Adjust all of the times for the commands
     for(int i = 0; i < [self commandsCountForCommandCluster:commandCluster]; i ++)
     {
-        [self setStartTime:([self startTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time) forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
-        [self setEndTime:([self endTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time) forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+        //[self setStartTime:([self startTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time) forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+        //[self setEndTime:([self endTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time) forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+        
+        // Set the time ourselves since the regular method saves everything and this move gets called a ton when the user is dragging a cluster
+        // Start Time
+        NSMutableArray *commands = [self commandsFromCommandCluster:commandCluster];
+        NSMutableDictionary *command = [commands objectAtIndex:i];
+        [command setObject:[NSNumber numberWithFloat:[self startTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time] forKey:@"startTime"];
+        [commands replaceObjectAtIndex:i withObject:command];
+        [commandCluster setObject:commands forKey:@"commands"];
+        // Start Time
+        commands = [self commandsFromCommandCluster:commandCluster];
+        command = [commands objectAtIndex:i];
+        [command setObject:[NSNumber numberWithFloat:[self endTimeForCommand:[self commandAtIndex:i fromCommandCluster:commandCluster]] + time] forKey:@"endTime"];
+        [commands replaceObjectAtIndex:i withObject:command];
+        [commandCluster setObject:commands forKey:@"commands"];
     }
     
     [self setStartTime:[self startTimeForCommandCluster:commandCluster] + time forCommandCluster:commandCluster];
