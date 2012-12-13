@@ -412,7 +412,8 @@
                                 
                                 mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
                                 mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
-                                selectedCommandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:newCommandClusterFilePath];
+                                selectedCommandClusterIndex = (int)[data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
+                                highlightedACluster = YES; // Trick the system
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:[data commandClusterFromFilePath:newCommandClusterFilePath]];
