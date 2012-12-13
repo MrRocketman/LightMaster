@@ -733,6 +733,7 @@
     // Select the control box
     int controlBoxIndex = (int)[[data controlBoxFilePaths] indexOfObject:[data filePathForControlBox:[aNotification object]]];
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:controlBoxIndex] byExtendingSelection:NO];
+    [libraryDataSelectionTableView scrollRowToVisible:controlBoxIndex];
 }
 
 - (void)selectChannelGroup:(NSNotification *)aNotification
@@ -742,6 +743,7 @@
     // Select the channel group
     int channelGroupIndex = (int)[[data channelGroupFilePaths] indexOfObject:[data filePathForChannelGroup:[aNotification object]]];
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:channelGroupIndex] byExtendingSelection:NO];
+    [libraryDataSelectionTableView scrollRowToVisible:channelGroupIndex];
 }
 
 - (void)selectCommandCluster:(NSNotification *)aNotification
@@ -751,6 +753,7 @@
     // Select the commmand cluster
     int commandClusterIndex = (int)[[data commandClusterFilePaths] indexOfObject:[data filePathForCommandCluster:[aNotification object]]];
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
+    [libraryDataSelectionTableView scrollRowToVisible:commandClusterIndex];
     
     NSViewController *theLibrary = (NSViewController *)[libraries objectAtIndex:selectedLibrary];
     [theLibrary.view scrollPoint:NSMakePoint(0, theLibrary.view.frame.size.height)];
@@ -766,6 +769,7 @@
     
     // Select the command cluster
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:commandClusterIndex] byExtendingSelection:NO];
+    [libraryDataSelectionTableView scrollRowToVisible:commandClusterIndex];
     NSViewController *theLibrary = (NSViewController *)[libraries objectAtIndex:selectedLibrary];
     [theLibrary.view scrollPoint:NSMakePoint(0, 25)];
     
@@ -780,6 +784,7 @@
     // Select the audio clip
     int audioClipIndex = (int)[[data audioClipFilePaths] indexOfObject:[data filePathForAudioClip:[aNotification object]]];
     [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:audioClipIndex] byExtendingSelection:NO];
+    [libraryDataSelectionTableView scrollRowToVisible:audioClipIndex];
 }
 
 - (void)updateTableView:(NSNotification *)aNotification
