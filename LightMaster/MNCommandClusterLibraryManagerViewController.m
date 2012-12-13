@@ -246,10 +246,12 @@
 
 - (IBAction)deleteCommandButtonPress:(id)sender
 {
-    [data removeCommand:[data commandAtIndex:(int)[commandsTableView selectedRow] fromCommandCluster:[self commandCluster]] fromCommandCluster:[self commandCluster]];
+    int tableViewIndex = (int)[commandsTableView selectedRow];
+    [data removeCommand:[data commandAtIndex:tableViewIndex fromCommandCluster:[self commandCluster]] fromCommandCluster:[self commandCluster]];
     [commandsTableView deselectAll:nil];
     [commandsTableView reloadData];
-    
+    [commandsTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:tableViewIndex - 1] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:commandsTableView]];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 

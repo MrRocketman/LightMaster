@@ -45,6 +45,7 @@ enum
     float zoomLevel; // 1.0 = no zoom, 10 = 10x zoom
     BOOL currentSequenceIsPlaying;
     BOOL loop;
+    int mostRecentlySelectedCommandClusterIndex;
     
     ORSSerialPort *serialPort;
     ORSSerialPortManager *serialPortManager;
@@ -65,6 +66,7 @@ enum
 @property() float timeAtLeftEdgeOfTimelineView;
 @property() float zoomLevel;
 @property() BOOL currentSequenceIsPlaying;
+@property() int mostRecentlySelectedCommandClusterIndex;
 @property() ORSSerialPort *serialPort;
 @property() ORSSerialPortManager *serialPortManager;
 

@@ -39,6 +39,17 @@
 
 #pragma mark - System methods
 
+- (void)setSelectedCommandClusterIndex:(int)newSelectedCommandClusterIndex
+{
+    selectedCommandClusterIndex = newSelectedCommandClusterIndex;
+    data.mostRecentlySelectedCommandClusterIndex = selectedCommandClusterIndex;
+}
+
+- (int)selectedCommandClusterIndex
+{
+    return selectedCommandClusterIndex;
+}
+
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if(self = [super initWithCoder:aDecoder])
@@ -59,8 +70,6 @@
     
     return self;
 }
-
-#pragma mark - System Methods
 
 - (void)synchronizedViewContentBoundsDidChange:(NSNotification *)notification
 {
@@ -412,7 +421,7 @@
                                 
                                 mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
                                 mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
-                                selectedCommandClusterIndex = (int)[data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
+                                self.selectedCommandClusterIndex = (int)[data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
                                 highlightedACluster = YES; // Trick the system
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
@@ -440,7 +449,7 @@
                                     mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                                 }
                                 
-                                selectedCommandClusterIndex = i;
+                                self.selectedCommandClusterIndex = i;
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:currentCommandCluster];
                             }
                             
@@ -474,7 +483,7 @@
                             }
                             
                             mouseDraggingEventObjectIndex = i;
-                            selectedCommandClusterIndex = i;
+                            self.selectedCommandClusterIndex = i;
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                             
                             mouseEvent = nil;
@@ -701,7 +710,7 @@
                 // Select it for end time dragging
                 mouseDraggingEvent = MNControlBoxCommandClusterMouseDragEndTime;
                 mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:time];
-                selectedCommandClusterIndex = [data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
+                self.selectedCommandClusterIndex = [data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
 
                 mouseEvent = nil;
             }
@@ -728,7 +737,7 @@
                 // Select it for end time dragging
                 mouseDraggingEvent = MNControlBoxCommandClusterMouseDragEndTime;
                 mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:time];
-                selectedCommandClusterIndex = [data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
+                self.selectedCommandClusterIndex = [data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
                 mouseEvent = nil;
             }
             
@@ -907,14 +916,61 @@
 
 #pragma mark - Keyboard Methods
 
-- (void)keyDown:(NSEvent *)theEvent
-{
-    
+- (BOOL)acceptsFirstResponder {
+    return YES;
 }
 
-- (void)keyUp:(NSEvent *)theEvent
+- (void)keyDown:(NSEvent *)keyboardEvent
 {
-    
+    NSLog(@"keyDown");
+    // Check for new command clicks
+    if(keyboardEvent.keyCode == 40 && ![keyboardEvent isARepeat])
+    {
+        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(){
+            int channelIndex = 0;
+            NSMutableDictionary *commandCluster = [data commandClusterForCurrentSequenceAtIndex:data.mostRecentlySelectedCommandClusterIndex];
+            float time = [data currentTime];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"AddCommandAtChannelIndexAndTimeForCommandCluster" object:nil userInfo:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:channelIndex], [NSNumber numberWithFloat:time], commandCluster, nil] forKeys:[NSArray arrayWithObjects:@"channelIndex", @"startTime", @"commandCluster", nil]]];
+        //});
+            
+        /*int newCommandIndex = [data commandsCountForCommandCluster:commandCluster] - 1;
+        
+        mouseDraggingEvent = MNCommandMouseDragEndTime;
+        mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:commandCluster]]];
+        
+        selectedCommandIndex = newCommandIndex;
+        commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:commandCluster]];
+        
+        mouseEvent = nil;*/
+    }
+    else if(keyboardEvent.keyCode != 40)
+    {
+        [super keyDown:keyboardEvent];
+    }
+}
+
+- (void)keyUp:(NSEvent *)keyboardEvent
+{
+    // Check for new command clicks
+    if(keyboardEvent.keyCode == 40 && ![keyboardEvent isARepeat])
+    {
+        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(){
+            NSMutableDictionary *commandCluster = [data commandClusterForCurrentSequenceAtIndex:data.mostRecentlySelectedCommandClusterIndex];
+            float time = [data currentTime];
+            int newCommandIndex = [data commandsCountForCommandCluster:commandCluster] - 1;
+            [data setEndTime:time forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
+        //});
+        
+        /*
+         
+         mouseDraggingEvent = MNCommandMouseDragEndTime;
+         mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data endTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:commandCluster]]];
+         
+         selectedCommandIndex = newCommandIndex;
+         commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:commandCluster]];
+         
+         mouseEvent = nil;*/
+    }
 }
 
 @end

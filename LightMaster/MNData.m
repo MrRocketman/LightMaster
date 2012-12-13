@@ -54,7 +54,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, serialPort, serialPortManager;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager;
 
 #pragma mark - System
 

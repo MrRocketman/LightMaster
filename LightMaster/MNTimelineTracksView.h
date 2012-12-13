@@ -65,4 +65,6 @@ enum
     NSMutableArray *audioClipNSSounds;
 }
 
+@property(readwrite, assign) int selectedCommandClusterIndex;
+
 @end
