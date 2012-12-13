@@ -67,6 +67,7 @@
         [startTimeTextField setEnabled:YES];
         [endTimeTextField setEnabled:YES];
         [moveClusterByTimeTextField setEnabled:YES];
+        [moveClusterToTimeTextField setEnabled:YES];
         
         [chooseControlBoxForCommandClusterButton setEnabled:YES];
         [chooseChannelGroupForCommandClusterButton setEnabled:YES];
@@ -97,6 +98,7 @@
         [startTimeTextField setEnabled:NO];
         [endTimeTextField setEnabled:NO];
         [moveClusterByTimeTextField setEnabled:NO];
+        [moveClusterToTimeTextField setEnabled:NO];
         
         [chooseControlBoxForCommandClusterButton setEnabled:NO];
         [chooseChannelGroupForCommandClusterButton setEnabled:NO];
@@ -319,12 +321,14 @@
         [deleteCommandButton setEnabled:YES];
         [chooseChannelForCommandButton setEnabled:YES];
         [moveCommandByTimeTextField setEnabled:YES];
+        [moveCommandToTimeTextField setEnabled:YES];
     }
     else
     {
         [deleteCommandButton setEnabled:NO];
         [chooseChannelForCommandButton setEnabled:NO];
         [moveCommandByTimeTextField setEnabled:NO];
+        [moveCommandToTimeTextField setEnabled:NO];
     }
 }
 
@@ -358,12 +362,22 @@
     else if([aNotification object] == moveClusterByTimeTextField)
     {
         [data moveCommandCluster:[self commandCluster] byTime:[moveClusterByTimeTextField floatValue]];
-        [moveClusterByTimeTextField setFloatValue:0.0];
+        //[moveClusterByTimeTextField setStringValue:@""];
+    }
+    else if([aNotification object] == moveClusterToTimeTextField)
+    {
+        [data moveCommandCluster:[self commandCluster] toStartTime:[moveClusterToTimeTextField floatValue]];
+        //[moveClusterToTimeTextField setStringValue:@""];
     }
     else if([aNotification object] == moveCommandByTimeTextField)
     {
         [data moveCommandAtIndex:(int)[commandsTableView selectedRow] byTime:[moveCommandByTimeTextField floatValue] whichIsPartOfCommandCluster:[self commandCluster]];
-        [moveCommandByTimeTextField setFloatValue:0.0];
+        //[moveCommandByTimeTextField setStringValue:@""];
+    }
+    else if([aNotification object] == moveCommandToTimeTextField)
+    {
+        [data moveCommandAtIndex:(int)[commandsTableView selectedRow] toStartTime:[moveCommandToTimeTextField floatValue] whichIsPartOfCommandCluster:[self commandCluster]];
+        //[moveCommandToTimeTextField setStringValue:@""];
     }
     else if([[aNotification userInfo] objectForKey:@"NSFieldEditor"])
     {
