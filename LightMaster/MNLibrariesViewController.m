@@ -176,42 +176,47 @@
 
 - (IBAction)addLibraryDataButtonPress:(id)sender
 {
+    int indexToSelect = -1;
     switch (selectedLibrary)
     {
         case kSequenceLibrary:
             [data createSequenceAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data sequenceFilePathsCount] - 1] byExtendingSelection:NO];
+            indexToSelect = [data sequenceFilePathsCount] - 1;
             break;
         case kControlBoxLibrary:
             [data createControlBoxAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data controlBoxFilePathsCount] - 1] byExtendingSelection:NO];
+            indexToSelect = [data controlBoxFilePathsCount] - 1;
             break;
         case kChannelGroupLibrary:
             [data createChannelGroupAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data channelGroupFilePathsCount] - 1] byExtendingSelection:NO];
+            indexToSelect = [data channelGroupFilePathsCount] - 1;
             break;
         case kCommandClusterLibrary:
             [data createCommandClusterAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data commandClusterFilePathsCount] - 1] byExtendingSelection:NO];
+            indexToSelect = [data commandClusterFilePathsCount] - 1;
             break;
         case kEffectLibrary:
             [data createEffectAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data effectFilePathsCount] - 1] byExtendingSelection:NO];
+            indexToSelect = [data effectFilePathsCount] - 1;
             break;
         case kAudioClipLibrary:
             [data createAudioClipAndReturnFilePath];
-            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[data audioClipFilePathsCount] - 1] byExtendingSelection:NO];
+            indexToSelect = [data audioClipFilePathsCount] - 1;
             break;
         default:
             break;
     }
     
     [libraryDataSelectionTableView reloadData];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:indexToSelect] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:libraryDataSelectionTableView]];
+    [libraryDataSelectionTableView scrollRowToVisible:indexToSelect];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
 - (IBAction)deleteLibraryDataButtonPress:(id)sender
 {
+    int indexOfObjectToRemove = (int)[libraryDataSelectionTableView selectedRow];
     switch(selectedLibrary)
     {
         case kSequenceLibrary:
@@ -237,6 +242,8 @@
     }
     
     [libraryDataSelectionTableView reloadData];
+    [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:indexOfObjectToRemove - 1] byExtendingSelection:NO];
+    [self tableViewSelectionDidChange:[NSNotification notificationWithName:@"NSTableViewSelectionDidChange" object:libraryDataSelectionTableView]];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
