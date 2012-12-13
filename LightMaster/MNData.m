@@ -464,7 +464,15 @@
     currentSequenceControlBoxes = [[NSMutableArray alloc] init];
     for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
     {
-        [currentSequenceControlBoxes addObject:[self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]]];
+        NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence]];
+        if(controlBox != nil)
+        {
+            [currentSequenceControlBoxes addObject:controlBox];
+        }
+        else
+        {
+            [self removeControlBoxFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence] forSequence:currentSequence];
+        }
     }
 }
 
@@ -475,7 +483,15 @@
     currentSequenceCommandClusters = [[NSMutableArray alloc] init];
     for(int i = 0; i < [self commandClusterFilePathsCountForSequence:currentSequence]; i ++)
     {
-        [currentSequenceCommandClusters addObject:[self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]]];
+        NSMutableDictionary *commandCluster = [self commandClusterFromFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence]];
+        if(commandCluster != nil)
+        {
+            [currentSequenceCommandClusters addObject:commandCluster];
+        }
+        else
+        {
+            [self removeCommandClusterFilePath:[self commandClusterFilePathAtIndex:i forSequence:currentSequence] forSequence:currentSequence];
+        }
     }
 }
 
@@ -486,7 +502,15 @@
     currentSequenceAudioClips = [[NSMutableArray alloc] init];
     for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
     {
-        [currentSequenceAudioClips addObject:[self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]]];
+        NSMutableDictionary *audioClip = [self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]];
+        if(audioClip != nil)
+        {
+            [currentSequenceAudioClips addObject:audioClip];
+        }
+        else
+        {
+            [self removeAudioClipFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence] forSequence:currentSequence];
+        }
     }
 }
 
@@ -497,7 +521,15 @@
     currentSequenceChannelGroups = [[NSMutableArray alloc] init];
     for(int i = 0; i < [self channelGroupFilePathsCountForSequence:currentSequence]; i ++)
     {
-        [currentSequenceChannelGroups addObject:[self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]]];
+        NSMutableDictionary *channelGroup = [self channelGroupFromFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence]];
+        if(channelGroup != nil)
+        {
+            [currentSequenceChannelGroups addObject:channelGroup];
+        }
+        else
+        {
+            [self removeChannelGroupFilePath:[self channelGroupFilePathAtIndex:i forSequence:currentSequence] forSequence:currentSequence];
+        }
     }
 }
 
@@ -1375,7 +1407,7 @@
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
     // Load the NSSound
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadAudioClipsForCurrentSequence];
         
@@ -1398,7 +1430,7 @@
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
     // Unload the NSSound
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadAudioClipsForCurrentSequence];
         
@@ -1421,7 +1453,7 @@
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadControlBoxesForCurrentSequence];
     }
@@ -1436,7 +1468,7 @@
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadControlBoxesForCurrentSequence];
     }
@@ -1451,7 +1483,7 @@
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadChannelGroupsForCurrentSequence];
     }
@@ -1466,7 +1498,7 @@
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadChannelGroupsForCurrentSequence];
     }
@@ -1481,7 +1513,7 @@
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadCommandClustersForCurrentSequence];
     }
@@ -1496,7 +1528,7 @@
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
-    if(sequence == currentSequence)
+    if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
         [self loadCommandClustersForCurrentSequence];
     }
@@ -2019,7 +2051,9 @@
     [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForCommandCluster:commandCluster]] error:NULL];
     [commandClusterLibrary setObject:filePaths forKey:@"commandClusterFilePaths"];
     [self saveCommandClusterLibrary];
-    [self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
+    
+    [self loadCommandClustersForCurrentSequence];
+    //[self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
 }
 
 // Getter Methods
