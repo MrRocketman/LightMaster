@@ -840,7 +840,6 @@
         NSMutableDictionary *currentCommandCluster;
         NSMutableDictionary *currentCommand;
         int currentControlBoxIndex = -1;
-        BOOL isChannelGroupCommand = YES;
         int currentChannelIndex = -1;
         
         //NSLog(@"check");
@@ -853,7 +852,6 @@
             // See if this is a controlBox cluster
             if([[self controlBoxFilePathForCommandCluster:currentCommandCluster] length] > 0)
             {
-                isChannelGroupCommand = NO;
                 currentControlBoxIndex = (int)[[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self controlBoxFilePathForCommandCluster:currentCommandCluster]];
             }
             
@@ -882,8 +880,6 @@
             }
             
             currentControlBoxIndex = -1;
-            isChannelGroupCommand = YES;
-            currentChannelIndex = -1;
         }
         
         // Send out the necessary commands over the serial port
