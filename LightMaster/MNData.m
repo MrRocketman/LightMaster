@@ -7,6 +7,8 @@
 //
 
 #import "MNData.h"
+#import "ENAPI.h"
+#import "NSData+MD5.h"
 
 #define LARGEST_NUMBER 999999
 #define LIBRARY_VERSION_NUMBER 1.0
@@ -48,6 +50,7 @@
 - (void)removeCommandClusterFromCurrentSequenceCommandClusters:(NSMutableDictionary *)commandCluster;
 - (void)removeAudioClipFromCurrentSequenceAudioClips:(NSMutableDictionary *)audioClip;
 - (void)removeChannelGroupFromCurrentSequenceChannelGroups:(NSMutableDictionary *)channelGroup;
+- (void)pollENForTrackStatus:(ENAPIPostRequest *)request;
 
 @end
 
@@ -67,8 +70,10 @@
         zoomLevel = 3.0;
         [self setCurrentTime:1.0];
         self.serialPortManager = [ORSSerialPortManager sharedSerialPortManager];
+        enRequests = [[NSMutableArray alloc] init];
         loop = YES;
         currentPlaylistIndex = -1;
+        [ENAPI initWithApiKey:@"9F52RBALOQTUGKOT5" ConsumerKey:@"470771f3b2787696050f2f4143cb5c33" AndSharedSecret:@"QMa4TZ+PRL+Nq0e3SAR/RQ"];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
     }
@@ -604,40 +609,53 @@
 - (void)removeControlBoxFromCurrentSequenceControlBoxes:(NSMutableDictionary *)controlBox
 {
     // Reload this controlBox if neccessary
-    NSUInteger filePathsIndex = [[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self filePathForControlBox:controlBox]];
-    if(filePathsIndex != NSNotFound)
+    if(currentSequence != nil)
     {
-        [currentSequenceControlBoxes removeObjectAtIndex:filePathsIndex];
+        NSUInteger filePathsIndex = [[self controlBoxFilePathsForSequence:currentSequence] indexOfObject:[self filePathForControlBox:controlBox]];
+        if(filePathsIndex != NSNotFound)
+        {
+            [currentSequenceControlBoxes removeObjectAtIndex:filePathsIndex];
+        }
     }
 }
 
 - (void)removeCommandClusterFromCurrentSequenceCommandClusters:(NSMutableDictionary *)commandCluster
 {
     // Reload this cluster if neccessary
-    NSUInteger filePathsIndex = [[self commandClusterFilePathsForSequence:currentSequence] indexOfObject:[self filePathForCommandCluster:commandCluster]];
-    if(filePathsIndex != NSNotFound)
+    if(currentSequence != nil)
     {
-        [currentSequenceCommandClusters removeObjectAtIndex:filePathsIndex];
+        NSUInteger filePathsIndex = [[self commandClusterFilePathsForSequence:currentSequence] indexOfObject:[self filePathForCommandCluster:commandCluster]];
+        if(filePathsIndex != NSNotFound)
+        {
+            [currentSequenceCommandClusters removeObjectAtIndex:filePathsIndex];
+        }
     }
 }
 
 - (void)removeAudioClipFromCurrentSequenceAudioClips:(NSMutableDictionary *)audioClip
 {
     // Reload this audioClip if neccessary
-    NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
-    if(filePathsIndex != NSNotFound)
+    if(currentSequence != nil)
     {
-        [currentSequenceAudioClips removeObjectAtIndex:filePathsIndex];
+        NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
+        NSLog(@"filePathsIndex:%lu", filePathsIndex);
+        if(filePathsIndex != NSNotFound)
+        {
+            [currentSequenceAudioClips removeObjectAtIndex:filePathsIndex];
+        }
     }
 }
 
 - (void)removeChannelGroupFromCurrentSequenceChannelGroups:(NSMutableDictionary *)channelGroup
 {
     // Reload this channelGroup if neccessary
-    NSUInteger filePathsIndex = [[self channelGroupFilePathsForSequence:currentSequence] indexOfObject:[self filePathForChannelGroup:channelGroup]];
-    if(filePathsIndex != NSNotFound)
+    if(currentSequence != nil)
     {
-        [currentSequenceChannelGroups removeObjectAtIndex:filePathsIndex];
+        NSUInteger filePathsIndex = [[self channelGroupFilePathsForSequence:currentSequence] indexOfObject:[self filePathForChannelGroup:channelGroup]];
+        if(filePathsIndex != NSNotFound)
+        {
+            [currentSequenceChannelGroups removeObjectAtIndex:filePathsIndex];
+        }
     }
 }
 
@@ -2675,6 +2693,16 @@
     return [[audioClip objectForKey:@"seekTime"] floatValue];
 }
 
+- (NSDictionary *)audioSummaryForAudioClip:(NSMutableDictionary *)audioClip
+{
+    return [audioClip objectForKey:@"audioSummary"];
+}
+
+- (NSDictionary *)audioAnalysisForAudioClip:(NSMutableDictionary *)audioClip
+{
+    return [audioClip objectForKey:@"audioAnalysis"];
+}
+
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forAudioClip:(NSMutableDictionary *)audioClip
 {
@@ -2690,8 +2718,24 @@
 
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip
 {
+    NSString *previousFilePath = [self filePathToAudioFileForAudioClip:audioClip];
     [audioClip setObject:filePath forKey:@"filePathToAudioFile"];
     [self saveDictionaryToItsFilePath:audioClip];
+    
+    NSLog(@"setFilePath");
+    // Upload to EchoNest for analysis
+    if(![previousFilePath isEqualToString:filePath] && [filePath length] > 1)
+    {
+        ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
+        NSData *fileData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], filePath]];
+        NSString *md5 = [fileData enapi_MD5];
+        [enRequest setValue:md5 forParameter:@"md5"];
+        [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
+        [enRequest setUserInfo:@{@"filePath" : filePath, @"audioClip" : audioClip}];
+        [enRequest setDelegate:self];
+        [enRequests addObject:enRequest];
+        [enRequest startAsynchronous];
+    }
 }
 
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
@@ -2724,6 +2768,148 @@
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"seekTime"];
     [self saveDictionaryToItsFilePath:audioClip];
+}
+
+- (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip
+{
+    [audioClip setObject:audioSummary forKey:@"audioSummary"];
+    [self saveDictionaryToItsFilePath:audioClip];
+}
+
+- (void)setAudioAnalysis:(NSDictionary *)audioAnalysis forAudioClip:(NSMutableDictionary *)audioClip
+{
+    [audioClip setObject:audioAnalysis forKey:@"audioAnalysis"];
+    [self saveDictionaryToItsFilePath:audioClip];
+}
+
+#pragma mark - ENAPIPostRequestDelegate Methods
+
+- (void)postRequestFinished:(ENAPIPostRequest *)request
+{
+    NSDictionary *response = [request response];
+    
+    NSLog(@"response:%@", response);
+    NSLog(@"responseStatusCode:%lu", request.responseStatusCode);
+    NSLog(@"echonestStatusCode:%lu", request.echonestStatusCode);
+    NSLog(@"echonestStatusMessage:%@", request.echonestStatusMessage);
+    NSLog(@"error:%@", request.error);
+    
+    [enRequests removeObject:request];
+    
+    if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"pending"])
+    {
+        NSLog(@"waiting for analyze");
+        [self performSelectorInBackground:@selector(pollENPostForTrackStatus:) withObject:request];
+    }
+    else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"error"])
+    {
+        NSLog(@"error");
+        //[self setAudioSummary:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+    }
+}
+
+- (void)postRequestFailed:(ENAPIPostRequest *)request
+{
+    NSDictionary *response = [request response];
+    
+    NSLog(@"response:%@", response);
+    NSLog(@"responseStatusCode:%lu", request.responseStatusCode);
+    NSLog(@"echonestStatusCode:%lu", request.echonestStatusCode);
+    NSLog(@"echonestStatusMessage:%@", request.echonestStatusMessage);
+    NSLog(@"error:%@", request.error);
+}
+
+- (void)postRequest:(ENAPIPostRequest *)request didSendBytes:(long long)nBytes
+{
+    NSLog(@"bytes:%llu", nBytes);
+}
+
+- (void)postRequest:(ENAPIPostRequest *)request uploadProgress:(float)progress
+{
+    NSLog(@"upload:%f", progress);
+}
+
+#pragma mark - ENAPIRequestDelegate Methods
+
+- (void)requestFinished:(ENAPIRequest *)request
+{
+    NSDictionary *response = [request response];
+    NSLog(@"response:%@", response);
+    NSLog(@"userInfo:%@", [request userInfo]);
+    
+    [enRequests removeObject:request];
+    
+    // This is for fetching the track/profile
+    if([[request userInfo] objectForKey:@"filePath"])
+    {
+        if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"unknown"])
+        {
+            NSLog(@"uploading");
+            ENAPIPostRequest *enPostRequest = [ENAPIPostRequest trackUploadRequestWithFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], [[request userInfo] objectForKey:@"filePath"]]];
+            [enPostRequest setDelegate:self];
+            [enPostRequest setUserInfo:[request userInfo]];
+            [enRequests addObject:enPostRequest];
+            [enPostRequest startAsynchronous];
+        }
+        else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"pending"])
+        {
+            NSLog(@"waiting for analyze");
+            [self performSelectorInBackground:@selector(pollENForTrackStatus:) withObject:request];
+        }
+        else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"complete"])
+        {
+            NSLog(@"complete");
+            [self setAudioSummary:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+            
+            // Now get the full analysis
+            ENAPIRequest *enRequest = [ENAPIRequest requestWithAnalysisURL:[[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"analysis_url"]];
+            [enRequest setUserInfo:@{@"audioClip" : [[request userInfo] objectForKey:@"audioClip"]}];
+            [enRequest setDelegate:self];
+            [enRequests addObject:enRequest];
+            [enRequest startAsynchronous];
+        }
+    }
+    // This is for the full analysis
+    else
+    {
+        NSLog(@"full analysis");
+        [self setAudioAnalysis:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+    }
+}
+
+- (void)requestFailed:(ENAPIRequest *)request
+{
+    NSDictionary *response = [request response];
+    
+    NSLog(@"response:%@", response);
+    NSLog(@"responseStatusCode:%lu", request.responseStatusCode);
+    NSLog(@"echonestStatusCode:%lu", request.echonestStatusCode);
+    NSLog(@"echonestStatusMessage:%@", request.echonestStatusMessage);
+    NSLog(@"error:%@", request.error);
+}
+
+#pragma mark - Private EN use Methods
+
+- (void)pollENPostForTrackStatus:(ENAPIPostRequest *)request
+{
+    ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
+    [enRequest setValue:[[[request response] objectForKey:@"track"] objectForKey:@"id"] forParameter:@"id"];
+    [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
+    [enRequest setUserInfo:[request userInfo]];
+    [enRequest setDelegate:self];
+    [enRequests addObject:enRequest];
+    [enRequest startAsynchronous];
+}
+
+- (void)pollENForTrackStatus:(ENAPIRequest *)request
+{
+    ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
+    [enRequest setValue:[[[request response] objectForKey:@"track"] objectForKey:@"id"] forParameter:@"id"];
+    [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
+    [enRequest setUserInfo:[request userInfo]];
+    [enRequest setDelegate:self];
+    [enRequests addObject:enRequest];
+    [enRequest startAsynchronous];
 }
 
 @end

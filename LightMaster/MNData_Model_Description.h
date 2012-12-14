@@ -109,6 +109,8 @@
         *startTime (NSNumber) float
         *endTime (NSNumber) float
         *seekTime (NSNumber) float // allows portions of an audio clip to be used by starting somewhere in the file
+        *audioSummary (NSDictionary)
+        *audioAnalysis (NSDictionary(
  
  
  *************** End Data Model *****************/

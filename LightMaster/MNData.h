@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "ORSSerialPort.h"
 #import "ORSSerialPortManager.h"
+#import "ENAPIPostRequest.h"
+#import "ENAPIRequest.h"
 
 // See 'MNData_Model_Description'
 
@@ -24,7 +26,7 @@ enum
     MNMouseUp
 };
 
-@interface MNData : NSObject <ORSSerialPortDelegate>
+@interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate>
 {
     NSMutableDictionary *sequenceLibrary;
     NSMutableDictionary *controlBoxLibrary;
@@ -58,6 +60,8 @@ enum
     int playlistIndexes[999];
     int numberOfPlaylistSongs;
     int currentPlaylistIndex;
+    
+    NSMutableArray *enRequests;
 }
 
 @property() NSString *libraryFolder;
@@ -351,6 +355,8 @@ enum
 - (float)startTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)endTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)seekTimeForAudioClip:(NSMutableDictionary *)audioClip;
+- (NSDictionary *)audioSummaryForAudioClip:(NSMutableDictionary *)audioClip;
+- (NSDictionary *)audioAnalysisForAudioClip:(NSMutableDictionary *)audioClip;
 
 // Setter Methods
 - (void)setVersionNumber:(float)newVersionNumber forAudioClip:(NSMutableDictionary *)audioClip;
@@ -361,5 +367,7 @@ enum
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time;
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip toStartTime:(float)startTime;
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
+- (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip;
+- (void)setAudioAnalysis:(NSDictionary *)audioAnalysis forAudioClip:(NSMutableDictionary *)audioClip;
 
 @end
