@@ -57,7 +57,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager, shouldDrawSections, shouldDrawBars, shouldDrawBeats, shouldDrawTatums, shouldDrawSegments;
 
 #pragma mark - System
 
@@ -2693,6 +2693,11 @@
     return [[audioClip objectForKey:@"seekTime"] floatValue];
 }
 
+- (float)uploadProgressForAudioClip:(NSMutableDictionary *)audioClip
+{
+    return [[audioClip objectForKey:@"uploadProgress"] floatValue];
+}
+
 - (NSDictionary *)audioSummaryForAudioClip:(NSMutableDictionary *)audioClip
 {
     return [audioClip objectForKey:@"audioSummary"];
@@ -2700,7 +2705,7 @@
 
 - (NSDictionary *)audioAnalysisForAudioClip:(NSMutableDictionary *)audioClip
 {
-    return [audioClip objectForKey:@"audioAnalysis"];
+    return [self dictionaryFromFilePath:[NSString stringWithFormat:@"%@.lmaa", [[self filePathForAudioClip:audioClip] stringByDeletingPathExtension]]];
 }
 
 // Setter Methods
@@ -2718,24 +2723,10 @@
 
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip
 {
-    NSString *previousFilePath = [self filePathToAudioFileForAudioClip:audioClip];
     [audioClip setObject:filePath forKey:@"filePathToAudioFile"];
     [self saveDictionaryToItsFilePath:audioClip];
     
-    NSLog(@"setFilePath");
-    // Upload to EchoNest for analysis
-    if(![previousFilePath isEqualToString:filePath] && [filePath length] > 1)
-    {
-        ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
-        NSData *fileData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], filePath]];
-        NSString *md5 = [fileData enapi_MD5];
-        [enRequest setValue:md5 forParameter:@"md5"];
-        [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
-        [enRequest setUserInfo:@{@"filePath" : filePath, @"audioClip" : audioClip}];
-        [enRequest setDelegate:self];
-        [enRequests addObject:enRequest];
-        [enRequest startAsynchronous];
-    }
+    [self updateAudioAnalysisForAudioClip:audioClip];
 }
 
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
@@ -2770,6 +2761,30 @@
     [self saveDictionaryToItsFilePath:audioClip];
 }
 
+- (void)updateAudioAnalysisForAudioClip:(NSMutableDictionary *)audioClip
+{
+    NSString *filePath = [self filePathToAudioFileForAudioClip:audioClip];
+    
+    // Search EchoNest for analysis
+    if([filePath length] > 1)
+    {
+        ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
+        NSData *fileData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], filePath]];
+        NSString *md5 = [fileData enapi_MD5];
+        [enRequest setValue:md5 forParameter:@"md5"];
+        [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
+        [enRequest setUserInfo:@{@"filePath" : filePath, @"audioClip" : audioClip}];
+        [enRequest setDelegate:self];
+        [enRequests addObject:enRequest];
+        [enRequest startAsynchronous];
+    }
+}
+
+- (void)setUploadProgress:(float)uploadProgress ForAudioClip:(NSMutableDictionary *)audioClip;
+{
+    [audioClip setObject:[NSNumber numberWithFloat:uploadProgress] forKey:@"uploadProgress"];
+}
+
 - (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:audioSummary forKey:@"audioSummary"];
@@ -2778,8 +2793,10 @@
 
 - (void)setAudioAnalysis:(NSDictionary *)audioAnalysis forAudioClip:(NSMutableDictionary *)audioClip
 {
-    [audioClip setObject:audioAnalysis forKey:@"audioAnalysis"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    [audioAnalysis writeToFile:[NSString stringWithFormat:@"%@/%@.lmaa", libraryFolder, [[self filePathForAudioClip:audioClip] stringByDeletingPathExtension]] atomically:YES];
+    
+    //[audioClip setObject:audioAnalysis forKey:@"audioAnalysis"];
+    //[self saveDictionaryToItsFilePath:audioClip];
 }
 
 #pragma mark - ENAPIPostRequestDelegate Methods
@@ -2788,23 +2805,18 @@
 {
     NSDictionary *response = [request response];
     
-    NSLog(@"response:%@", response);
-    NSLog(@"responseStatusCode:%lu", request.responseStatusCode);
-    NSLog(@"echonestStatusCode:%lu", request.echonestStatusCode);
-    NSLog(@"echonestStatusMessage:%@", request.echonestStatusMessage);
-    NSLog(@"error:%@", request.error);
-    
     [enRequests removeObject:request];
     
+    // Track is already uploaded, just waiting for the analysis to complete
     if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"pending"])
     {
         NSLog(@"waiting for analyze");
         [self performSelectorInBackground:@selector(pollENPostForTrackStatus:) withObject:request];
     }
+    // Bad news
     else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"error"])
     {
-        NSLog(@"error");
-        //[self setAudioSummary:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+        NSLog(@"EN error");
     }
 }
 
@@ -2812,6 +2824,7 @@
 {
     NSDictionary *response = [request response];
     
+    NSLog(@"EN postRequestFailed");
     NSLog(@"response:%@", response);
     NSLog(@"responseStatusCode:%lu", request.responseStatusCode);
     NSLog(@"echonestStatusCode:%lu", request.echonestStatusCode);
@@ -2834,14 +2847,13 @@
 - (void)requestFinished:(ENAPIRequest *)request
 {
     NSDictionary *response = [request response];
-    NSLog(@"response:%@", response);
-    NSLog(@"userInfo:%@", [request userInfo]);
     
     [enRequests removeObject:request];
     
-    // This is for fetching the track/profile
+    // This is for fetching/uploading the track profile
     if([[request userInfo] objectForKey:@"filePath"])
     {
+        // This audioClip needs to be uploaded
         if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"unknown"])
         {
             NSLog(@"uploading");
@@ -2851,25 +2863,36 @@
             [enRequests addObject:enPostRequest];
             [enPostRequest startAsynchronous];
         }
+        // Track is already uploaded, just waiting for the analysis to complete
         else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"pending"])
         {
             NSLog(@"waiting for analyze");
             [self performSelectorInBackground:@selector(pollENForTrackStatus:) withObject:request];
         }
+        // The audioSummary was fetched from EN
         else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"complete"])
         {
             NSLog(@"complete");
-            [self setAudioSummary:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+            // Only set the summary if we don't already have one
+            if(![self audioSummaryForAudioClip:[[request userInfo] objectForKey:@"audioClip"]])
+            {
+                // Store the audioSummary
+                [self setAudioSummary:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+            }
             
-            // Now get the full analysis
-            ENAPIRequest *enRequest = [ENAPIRequest requestWithAnalysisURL:[[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"analysis_url"]];
-            [enRequest setUserInfo:@{@"audioClip" : [[request userInfo] objectForKey:@"audioClip"]}];
-            [enRequest setDelegate:self];
-            [enRequests addObject:enRequest];
-            [enRequest startAsynchronous];
+            // Only fetch the analysis if we don't already have one
+            if(![self audioAnalysisForAudioClip:[[request userInfo] objectForKey:@"audioClip"]])
+            {
+                // Now get the full analysis
+                ENAPIRequest *enRequest = [ENAPIRequest requestWithAnalysisURL:[[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"analysis_url"]];
+                [enRequest setUserInfo:@{@"audioClip" : [[request userInfo] objectForKey:@"audioClip"]}];
+                [enRequest setDelegate:self];
+                [enRequests addObject:enRequest];
+                [enRequest startAsynchronous];
+            }
         }
     }
-    // This is for the full analysis
+    // This is for fetching the full analysis
     else
     {
         NSLog(@"full analysis");

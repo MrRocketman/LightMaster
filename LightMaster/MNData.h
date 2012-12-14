@@ -62,6 +62,11 @@ enum
     int currentPlaylistIndex;
     
     NSMutableArray *enRequests;
+    BOOL shouldDrawSections;
+    BOOL shouldDrawBars;
+    BOOL shouldDrawBeats;
+    BOOL shouldDrawTatums;
+    BOOL shouldDrawSegments;
 }
 
 @property() NSString *libraryFolder;
@@ -73,6 +78,11 @@ enum
 @property() int mostRecentlySelectedCommandClusterIndex;
 @property() ORSSerialPort *serialPort;
 @property() ORSSerialPortManager *serialPortManager;
+@property() BOOL shouldDrawSections;
+@property() BOOL shouldDrawBars;
+@property() BOOL shouldDrawBeats;
+@property() BOOL shouldDrawTatums;
+@property() BOOL shouldDrawSegments;
 
 #pragma mark - Other Methods
 // Other Methods
@@ -355,6 +365,7 @@ enum
 - (float)startTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)endTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)seekTimeForAudioClip:(NSMutableDictionary *)audioClip;
+- (float)uploadProgressForAudioClip:(NSMutableDictionary *)audioClip;
 - (NSDictionary *)audioSummaryForAudioClip:(NSMutableDictionary *)audioClip;
 - (NSDictionary *)audioAnalysisForAudioClip:(NSMutableDictionary *)audioClip;
 
@@ -367,6 +378,8 @@ enum
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time;
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip toStartTime:(float)startTime;
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
+- (void)updateAudioAnalysisForAudioClip:(NSMutableDictionary *)audioClip;
+- (void)setUploadProgress:(float)uploadProgress ForAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setAudioAnalysis:(NSDictionary *)audioAnalysis forAudioClip:(NSMutableDictionary *)audioClip;
 

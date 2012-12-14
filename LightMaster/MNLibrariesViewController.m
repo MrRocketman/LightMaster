@@ -166,10 +166,10 @@
         // Reload the library selection table view
         [libraryDataSelectionTableView reloadData];
         
-        // Display the new content
+        // Display the new library content
         [self addLibraryContentView:selectedLibrary];
         
-        // Tell the panel to update
+        // Tell the library panel to update
         [self updateLibraryContent:nil];
     }
 }
@@ -989,6 +989,7 @@
                 break;
             case kAudioClipLibrary:
                 [audioClipLibraryManagerViewController setAudioClipIndex:(int)[libraryDataSelectionTableView selectedRow]];
+                [data updateAudioAnalysisForAudioClip:[data audioClipFromFilePath:[data audioClipFilePathAtIndex:(int)[libraryDataSelectionTableView selectedRow]]]];
                 break;
             default:
                 break;

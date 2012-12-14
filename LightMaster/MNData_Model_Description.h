@@ -109,8 +109,9 @@
         *startTime (NSNumber) float
         *endTime (NSNumber) float
         *seekTime (NSNumber) float // allows portions of an audio clip to be used by starting somewhere in the file
+        *uploadProgress (NSNumber) float 0-.99 means it's uploading. 1.0 or greater means it's been uploaded. Less than 0 means it hasn't been uploaded.
         *audioSummary (NSDictionary)
-        *audioAnalysis (NSDictionary(
+            *audioAnalysis (NSDictionary) This is stored automatically with the filePath of the audioClip just with a different path extension
  
  
  *************** End Data Model *****************/
