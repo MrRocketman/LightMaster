@@ -50,6 +50,7 @@
 - (void)removeCommandClusterFromCurrentSequenceCommandClusters:(NSMutableDictionary *)commandCluster;
 - (void)removeAudioClipFromCurrentSequenceAudioClips:(NSMutableDictionary *)audioClip;
 - (void)removeChannelGroupFromCurrentSequenceChannelGroups:(NSMutableDictionary *)channelGroup;
+- (void)pollENPostForTrackStatus:(ENAPIPostRequest *)request;
 - (void)pollENForTrackStatus:(ENAPIPostRequest *)request;
 
 @end
@@ -73,6 +74,11 @@
         enRequests = [[NSMutableArray alloc] init];
         loop = YES;
         currentPlaylistIndex = -1;
+        self.shouldDrawSections = YES;
+        self.shouldDrawBars = YES;
+        self.shouldDrawBeats = YES;
+        self.shouldDrawTatums = YES;
+        self.shouldDrawSegments = YES;
         [ENAPI initWithApiKey:@"9F52RBALOQTUGKOT5" ConsumerKey:@"470771f3b2787696050f2f4143cb5c33" AndSharedSecret:@"QMa4TZ+PRL+Nq0e3SAR/RQ"];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
@@ -505,16 +511,30 @@
     // Load the Audio Clips
     currentSequenceAudioClips = nil;
     currentSequenceAudioClips = [[NSMutableArray alloc] init];
+    currentSequenceAudioAnalyses = nil;
+    currentSequenceAudioAnalyses = [[NSMutableArray alloc] init];
     for(int i = 0; i < [self audioClipFilePathsCountForSequence:currentSequence]; i ++)
     {
         NSMutableDictionary *audioClip = [self audioClipFromFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence]];
+        NSDictionary *audioAnalysis;
         if(audioClip != nil)
         {
             [currentSequenceAudioClips addObject:audioClip];
+            
+            audioAnalysis = [self audioAnalysisForAudioClip:audioClip];
         }
         else
         {
             [self removeAudioClipFilePath:[self audioClipFilePathAtIndex:i forSequence:currentSequence] forSequence:currentSequence];
+        }
+        
+        if(audioAnalysis != nil)
+        {
+            [currentSequenceAudioAnalyses addObject:audioAnalysis];
+        }
+        else
+        {
+            [currentSequenceAudioAnalyses addObject:[NSNull null]];
         }
     }
 }
@@ -578,13 +598,34 @@
     NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
     if(filePathsIndex != NSNotFound)
     {
+        NSDictionary *audioAnalysis = [self audioAnalysisForAudioClip:audioClip];
+        
         if([currentSequenceAudioClips count] == 0)
         {
             [currentSequenceAudioClips addObject:audioClip];
+            
+            if(!audioAnalysis)
+            {
+                [currentSequenceAudioAnalyses addObject:[NSNull null]];
+            }
+            else
+            {
+                [currentSequenceAudioAnalyses addObject:audioAnalysis];
+            }
+            
         }
         else
         {
             [currentSequenceAudioClips replaceObjectAtIndex:filePathsIndex withObject:audioClip];
+            
+            if(!audioAnalysis)
+            {
+                [currentSequenceAudioAnalyses replaceObjectAtIndex:filePathsIndex withObject:[NSNull null]];
+            }
+            else
+            {
+                [currentSequenceAudioAnalyses replaceObjectAtIndex:filePathsIndex withObject:audioAnalysis];
+            }
         }
     }
 }
@@ -642,6 +683,7 @@
         if(filePathsIndex != NSNotFound)
         {
             [currentSequenceAudioClips removeObjectAtIndex:filePathsIndex];
+            [currentSequenceAudioAnalyses removeObjectAtIndex:filePathsIndex];
         }
     }
 }
@@ -1033,6 +1075,11 @@
 - (NSMutableDictionary *)audioClipForCurrentSequenceAtIndex:(int)i
 {
     return [currentSequenceAudioClips objectAtIndex:i];
+}
+
+- (NSDictionary *)audioAnalysisForCurrentSequenceAtIndex:(int)i
+{
+    return [currentSequenceAudioAnalyses objectAtIndex:i];
 }
 
 - (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i
@@ -2592,8 +2639,12 @@
     
     NSMutableArray *filePaths = [self audioClipFilePaths];
     [filePaths removeObject:[self filePathForAudioClip:audioClip]];
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@", [self libraryFolder], [self filePathToAudioFileForAudioClip:audioClip]];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@", [self libraryFolder], [self filePathForAudioClip:audioClip]];
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
+    NSString *audioFileFilePath = [NSString stringWithFormat:@"%@/%@", [self libraryFolder], [self filePathToAudioFileForAudioClip:audioClip]];
+    [[NSFileManager defaultManager] removeItemAtPath:audioFileFilePath error:NULL];
+    NSString *audioAnalysisFilePath = [NSString stringWithFormat:@"%@/%@.lmaa", [self libraryFolder], [[self filePathForAudioClip:audioClip] stringByDeletingPathExtension]];
+    [[NSFileManager defaultManager] removeItemAtPath:audioAnalysisFilePath error:NULL];
     [audioClipLibrary setObject:filePaths forKey:@"audioClipFilePaths"];
     [self saveAudioClipLibrary];
     [self removeAudioClipFromCurrentSequenceAudioClips:audioClip];
@@ -2713,18 +2764,21 @@
 {
     [audioClip setObject:[NSNumber numberWithFloat:newVersionNumber] forKey:@"versionNumber"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setDescription:(NSString *)description forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:description forKey:@"description"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:filePath forKey:@"filePathToAudioFile"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
     
     [self updateAudioAnalysisForAudioClip:audioClip];
 }
@@ -2733,12 +2787,14 @@
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"startTime"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time
@@ -2746,6 +2802,7 @@
     [audioClip setObject:[NSNumber numberWithFloat:[self startTimeForAudioClip:audioClip] + time] forKey:@"startTime"];
     [audioClip setObject:[NSNumber numberWithFloat:[self endTimeForAudioClip:audioClip] + time] forKey:@"endTime"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip toStartTime:(float)startTime
@@ -2753,12 +2810,14 @@
     float startTimeOffset = startTime - [self startTimeForAudioClip:audioClip];
     
     [self moveAudioClip:audioClip byTime:startTimeOffset];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"seekTime"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)updateAudioAnalysisForAudioClip:(NSMutableDictionary *)audioClip
@@ -2783,20 +2842,27 @@
 - (void)setUploadProgress:(float)uploadProgress ForAudioClip:(NSMutableDictionary *)audioClip;
 {
     [audioClip setObject:[NSNumber numberWithFloat:uploadProgress] forKey:@"uploadProgress"];
+    [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:audioSummary forKey:@"audioSummary"];
     [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setAudioAnalysis:(NSDictionary *)audioAnalysis forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioAnalysis writeToFile:[NSString stringWithFormat:@"%@/%@.lmaa", libraryFolder, [[self filePathForAudioClip:audioClip] stringByDeletingPathExtension]] atomically:YES];
     
-    //[audioClip setObject:audioAnalysis forKey:@"audioAnalysis"];
-    //[self saveDictionaryToItsFilePath:audioClip];
+    // Reload this audioAnalysis into RAM
+    NSUInteger filePathsIndex = [[self audioClipFilePathsForSequence:currentSequence] indexOfObject:[self filePathForAudioClip:audioClip]];
+    if(filePathsIndex != NSNotFound)
+    {
+        [currentSequenceAudioAnalyses replaceObjectAtIndex:filePathsIndex withObject:audioAnalysis];
+    }
 }
 
 #pragma mark - ENAPIPostRequestDelegate Methods

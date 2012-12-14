@@ -41,6 +41,7 @@ enum
     NSMutableArray *currentSequenceControlBoxes;
     NSMutableArray *currentSequenceCommandClusters;
     NSMutableArray *currentSequenceAudioClips;
+    NSMutableArray *currentSequenceAudioAnalyses;
     NSMutableArray *currentSequenceChannelGroups;
     float currentTime;
     float timeAtLeftEdgeOfTimelineView;
@@ -99,6 +100,7 @@ enum
 - (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)audioClipForCurrentSequenceAtIndex:(int)i;
+- (NSDictionary *)audioAnalysisForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i;
 // File Name Methods
 - (NSString *)nextAvailableSequenceFileName;

@@ -18,6 +18,13 @@
 - (void)drawInvertedTriangleAndLineWithTipPoint:(NSPoint)point width:(int)width andHeight:(int)height;
 - (void)drawChannelGuidlinesForParentIndex:(int)parentFilePathIndex parentIsControlBox:(BOOL)parentIsControlBox atTrackIndex:(int)trackIndex tracksTall:(int)tracksTall;
 
+// Audio analysis drawing methods
+- (void)drawSectionsForAudioAnalysis:(NSDictionary *)audioAnalysis;
+- (void)drawBarsForAudioAnalysis:(NSDictionary *)audioAnalysis;
+- (void)drawBeatsForAudioAnalysis:(NSDictionary *)audioAnalysis;
+- (void)drawTatumsForAudioAnalysis:(NSDictionary *)audioAnalysis;
+- (void)drawSegmentsForAudioAnalysis:(NSDictionary *)audioAnalysis;
+
 // Data Drawing Methods
 - (void)drawAudioClipsAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems;
 - (void)drawCommandClustersAtTrackIndex:(int)trackIndex tracksTall:(int)trackItems parentIndex:(int)parentIndex parentIsControlBox:(BOOL)isControlBox;
@@ -144,6 +151,33 @@
     
     // Draw the timeline on top of everything
     [self drawTimelineBar];
+    
+    // Draw the audio analysis data
+    for(int i = 0; i < [data audioClipFilePathsCountForSequence:[data currentSequence]]; i ++)
+    {
+        NSDictionary *audioAnalysis = [data audioAnalysisForCurrentSequenceAtIndex:i];
+        
+        if(data.shouldDrawSegments)
+        {
+            [self drawSegmentsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawTatums)
+        {
+            [self drawTatumsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawBeats)
+        {
+            [self drawBeatsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawBars)
+        {
+            [self drawBarsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawSections)
+        {
+            [self drawSectionsForAudioAnalysis:audioAnalysis];
+        }
+    }
     
     // Check for manual channel controls and new commandCluster/audioClip/channelGroup clicks
     if(mouseEvent != nil)
@@ -308,6 +342,143 @@
         {
             [[NSString stringWithFormat:@"%d", [data channelIndexForItemData:[data itemDataAtIndex:i forChannelGroup:[data channelGroupForCurrentSequenceAtIndex:parentFilePathIndex]]]] drawInRect:textFrame withAttributes:attributes];
         }
+    }
+}
+
+#pragma mark - Audio analysis drawing methods
+
+- (void)drawSectionsForAudioAnalysis:(NSDictionary *)audioAnalysis
+{
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
+    int visibleSectionIndex = 0;
+    NSArray *sections = [audioAnalysis objectForKey:@"sections"];
+    // Find the first visible section (since the data is sorted)
+    while(visibleSectionIndex < [sections count] && (timeAtLeftEdge - 1 >= [[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] || timeAtRightEdge + 1 <= [[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        visibleSectionIndex ++;
+    }
+    
+    // Now draw the visible sections (since the data is sorted)
+    while(visibleSectionIndex < [sections count] && (timeAtLeftEdge - 1 < [[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        // Draw grid lines
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        [[NSColor yellowColor] set];
+        NSRectFill(markerLineFrame);
+        
+        visibleSectionIndex ++;
+    }
+}
+
+- (void)drawBarsForAudioAnalysis:(NSDictionary *)audioAnalysis
+{
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
+    int visibleSectionIndex = 0;
+    NSArray *bars = [audioAnalysis objectForKey:@"bars"];
+    // Find the first visible section (since the data is sorted)
+    while(visibleSectionIndex < [bars count] && (timeAtLeftEdge - 1 >= [[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] || timeAtRightEdge + 1 <= [[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        visibleSectionIndex ++;
+    }
+    
+    // Now draw the visible sections (since the data is sorted)
+    while(visibleSectionIndex < [bars count] && (timeAtLeftEdge - 1 < [[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        // Draw grid lines
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        [[NSColor purpleColor] set];
+        NSRectFill(markerLineFrame);
+        
+        visibleSectionIndex ++;
+    }
+}
+
+- (void)drawBeatsForAudioAnalysis:(NSDictionary *)audioAnalysis
+{
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
+    int visibleSectionIndex = 0;
+    NSArray *beats = [audioAnalysis objectForKey:@"beats"];
+    // Find the first visible section (since the data is sorted)
+    while(visibleSectionIndex < [beats count] && (timeAtLeftEdge - 1 >= [[[beats objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] || timeAtRightEdge + 1 <= [[[beats objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        visibleSectionIndex ++;
+    }
+    
+    // Now draw the visible sections (since the data is sorted)
+    while(visibleSectionIndex < [beats count] && (timeAtLeftEdge - 1 < [[[beats objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[beats objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        // Draw grid lines
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[beats objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        [[NSColor orangeColor] set];
+        NSRectFill(markerLineFrame);
+        
+        visibleSectionIndex ++;
+    }
+}
+
+- (void)drawTatumsForAudioAnalysis:(NSDictionary *)audioAnalysis
+{
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
+    int visibleSectionIndex = 0;
+    NSArray *tatums = [audioAnalysis objectForKey:@"tatums"];
+    // Find the first visible section (since the data is sorted)
+    while(visibleSectionIndex < [tatums count] && (timeAtLeftEdge - 1 >= [[[tatums objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] || timeAtRightEdge + 1 <= [[[tatums objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        visibleSectionIndex ++;
+    }
+    
+    // Now draw the visible sections (since the data is sorted)
+    while(visibleSectionIndex < [tatums count] && (timeAtLeftEdge - 1 < [[[tatums objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[tatums objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        // Draw grid lines
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[tatums objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        [[NSColor cyanColor] set];
+        NSRectFill(markerLineFrame);
+        
+        visibleSectionIndex ++;
+    }
+}
+
+- (void)drawSegmentsForAudioAnalysis:(NSDictionary *)audioAnalysis
+{
+    NSRect superViewFrame = [[self superview] frame];
+    float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
+    float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
+    float timeAtRightEdge = timeAtLeftEdge + timeSpan;
+    
+    int visibleSectionIndex = 0;
+    NSArray *segments = [audioAnalysis objectForKey:@"segments"];
+    // Find the first visible section (since the data is sorted)
+    while(visibleSectionIndex < [segments count] && (timeAtLeftEdge - 1 >= [[[segments objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] || timeAtRightEdge + 1 <= [[[segments objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        visibleSectionIndex ++;
+    }
+    
+    // Now draw the visible sections (since the data is sorted)
+    while(visibleSectionIndex < [segments count] && (timeAtLeftEdge - 1 < [[[segments objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[segments objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
+    {
+        // Draw grid lines
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[segments objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        [[NSColor magentaColor] set];
+        NSRectFill(markerLineFrame);
+        
+        visibleSectionIndex ++;
     }
 }
 

@@ -30,5 +30,10 @@
 - (IBAction)skipBackButtonPress:(id)sender;
 - (IBAction)playButtonPress:(id)sender;
 - (IBAction)loopButtonPress:(id)sender;
+- (IBAction)sectionsCheckboxPress:(id)sender;
+- (IBAction)barsCheckboxPress:(id)sender;
+- (IBAction)beatsCheckboxPress:(id)sender;
+- (IBAction)tatumsCheckboxPress:(id)sender;
+- (IBAction)segmentsCheckboxPress:(id)sender;
 
 @end

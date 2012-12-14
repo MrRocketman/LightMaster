@@ -117,4 +117,34 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"LoopButtonPress" object:nil];
 }
 
+- (IBAction)sectionsCheckboxPress:(id)sender
+{
+    data.shouldDrawSections = !data.shouldDrawSections;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (IBAction)barsCheckboxPress:(id)sender
+{
+    data.shouldDrawBars = !data.shouldDrawBars;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (IBAction)beatsCheckboxPress:(id)sender
+{
+    data.shouldDrawBeats = !data.shouldDrawBeats;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (IBAction)tatumsCheckboxPress:(id)sender
+{
+    data.shouldDrawTatums = !data.shouldDrawTatums;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (IBAction)segmentsCheckboxPress:(id)sender
+{
+    data.shouldDrawSegments = !data.shouldDrawSegments;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
 @end
