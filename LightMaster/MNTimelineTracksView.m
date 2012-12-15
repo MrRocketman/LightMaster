@@ -972,12 +972,29 @@
                 [data setChannelIndex:[data channelIndexForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
                 [data setBrightness:[data brightnessForCommand:currentCommand] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandCluster];
                 
-                mouseDraggingEvent = MNCommandMouseDrag;
+                if(mouseEvent.modifierFlags & NSControlKeyMask)
+                {
+                    mouseDraggingEvent = MNCommandMouseDragBetweenChannels;
+                }
+                else
+                {
+                    mouseDraggingEvent = MNCommandMouseDrag;
+                }
                 mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:[data startTimeForCommand:[data commandAtIndex:newCommandIndex fromCommandCluster:commandCluster]]];
                 
                 selectedCommandIndex = newCommandIndex;
                 commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:commandCluster]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [data filePathForCommandCluster:commandCluster], nil]];
+            }
+            // Select a command and lock the start/end times
+            else if(mouseEvent.modifierFlags & NSControlKeyMask)
+            {
+                mouseDraggingEvent = MNCommandMouseDragBetweenChannels;
+                mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
+                
+                selectedCommandIndex = i;
+                commandClusterIndexForSelectedCommand = (int)[[data commandClusterFilePathsForSequence:[data currentSequence]] indexOfObject:[data filePathForCommandCluster:commandCluster]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommand" object:[NSArray arrayWithObjects:[NSNumber numberWithInt:selectedCommandIndex], [data filePathForCommandCluster:commandCluster], nil]];
             }
             // Select a command
@@ -1025,6 +1042,15 @@
                 // Drag the command
                 [data moveCommandAtIndex:i toStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x] whichIsPartOfCommandCluster:commandCluster];
                 
+                // Mouse drag is changing the channel index
+                if(currentMousePoint.y > y + height || currentMousePoint.y < y)
+                {
+                    int newIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT - startingTrackIndex;
+                    [data setChannelIndex:newIndex forCommandAtIndex:i whichIsPartOfCommandCluster:commandCluster];
+                }
+            }
+            else if(mouseDraggingEvent == MNCommandMouseDragBetweenChannels)
+            {
                 // Mouse drag is changing the channel index
                 if(currentMousePoint.y > y + height || currentMousePoint.y < y)
                 {

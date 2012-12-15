@@ -30,6 +30,7 @@ enum
     MNCommandMouseDrag,
     MNCommandMouseDragEndTime,
     MNCommandMouseDragStartTime,
+    MNCommandMouseDragBetweenChannels,
     MNTimeMarkerMouseDrag,
     MNNewClusterMouseDrag,
     MNControlBoxCommandClusterMouseDragStartTime,
