@@ -130,8 +130,8 @@
 		1AEF7BAB167BFE05007230A4 /* MNCheckboxBackground3.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEF7BAA167BFE05007230A4 /* MNCheckboxBackground3.m */; };
 		1AEF7BAE167BFE1A007230A4 /* MNCheckboxBackground4.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEF7BAD167BFE1A007230A4 /* MNCheckboxBackground4.m */; };
 		1AEF7BB1167BFE27007230A4 /* MNCheckboxBackground5.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEF7BB0167BFE26007230A4 /* MNCheckboxBackground5.m */; };
-		1AEF7BB4167C3138007230A4 /* Empty.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 1AEF7BB3167C3138007230A4 /* Empty.m4a */; };
-		1AEF7BB5167C3138007230A4 /* Empty.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 1AEF7BB3167C3138007230A4 /* Empty.m4a */; };
+		1AEF7BB7167C3352007230A4 /* Empty.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 1AEF7BB6167C3352007230A4 /* Empty.m4a */; };
+		1AEF7BB8167C3352007230A4 /* Empty.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 1AEF7BB6167C3352007230A4 /* Empty.m4a */; };
 		1AFA925B1623DA64000E13B7 /* MNSequenceControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA925A1623DA64000E13B7 /* MNSequenceControlBoxSelectorViewController.m */; };
 		1AFA92601623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA925F1623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.m */; };
 		1AFA92631623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA92621623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m */; };
@@ -311,7 +311,7 @@
 		1AEF7BAD167BFE1A007230A4 /* MNCheckboxBackground4.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCheckboxBackground4.m; sourceTree = "<group>"; };
 		1AEF7BAF167BFE26007230A4 /* MNCheckboxBackground5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCheckboxBackground5.h; sourceTree = "<group>"; };
 		1AEF7BB0167BFE26007230A4 /* MNCheckboxBackground5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCheckboxBackground5.m; sourceTree = "<group>"; };
-		1AEF7BB3167C3138007230A4 /* Empty.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Empty.m4a; sourceTree = "<group>"; };
+		1AEF7BB6167C3352007230A4 /* Empty.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Empty.m4a; sourceTree = "<group>"; };
 		1AFA92591623DA64000E13B7 /* MNSequenceControlBoxSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNSequenceControlBoxSelectorViewController.h; sourceTree = "<group>"; };
 		1AFA925A1623DA64000E13B7 /* MNSequenceControlBoxSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNSequenceControlBoxSelectorViewController.m; sourceTree = "<group>"; };
 		1AFA925E1623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNSequenceChannelGroupSelectorViewController.h; sourceTree = "<group>"; };
@@ -468,7 +468,7 @@
 		1A028A88161CD37400B97A5B /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				1AEF7BB3167C3138007230A4 /* Empty.m4a */,
+				1AEF7BB6167C3352007230A4 /* Empty.m4a */,
 				1A68DC7E163F2F6700A0D6FD /* Stars.png */,
 				1A68DC7F163F2F6700A0D6FD /* Stars.artx */,
 				1A68DC7C163F2F4000A0D6FD /* Stars.icns */,
@@ -819,7 +819,7 @@
 				1A68DC81163F2F6700A0D6FD /* Stars.artx in Resources */,
 				1ACEE382167452F200223109 /* Loop.tiff in Resources */,
 				1ACEE383167452F200223109 /* LoopAlternate.tiff in Resources */,
-				1AEF7BB4167C3138007230A4 /* Empty.m4a in Resources */,
+				1AEF7BB7167C3352007230A4 /* Empty.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,7 +828,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A028A1B161CD20800B97A5B /* InfoPlist.strings in Resources */,
-				1AEF7BB5167C3138007230A4 /* Empty.m4a in Resources */,
+				1AEF7BB8167C3352007230A4 /* Empty.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
