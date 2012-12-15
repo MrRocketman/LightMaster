@@ -157,25 +157,25 @@
     {
         NSDictionary *audioAnalysis = [data audioAnalysisForCurrentSequenceAtIndex:i];
         
-        if(data.shouldDrawSections)
+        if(data.shouldDrawSegments)
         {
-            [self drawSectionsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawBars)
-        {
-            [self drawBarsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawBeats)
-        {
-            [self drawBeatsForAudioAnalysis:audioAnalysis];
+            [self drawSegmentsForAudioAnalysis:audioAnalysis];
         }
         if(data.shouldDrawTatums)
         {
             [self drawTatumsForAudioAnalysis:audioAnalysis];
         }
-        if(data.shouldDrawSegments)
+        if(data.shouldDrawBeats)
         {
-            [self drawSegmentsForAudioAnalysis:audioAnalysis];
+            [self drawBeatsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawBars)
+        {
+            [self drawBarsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawSections)
+        {
+            [self drawSectionsForAudioAnalysis:audioAnalysis];
         }
     }
 
