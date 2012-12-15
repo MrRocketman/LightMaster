@@ -561,7 +561,7 @@
                 NSRect commandClusterRect = NSMakeRect([data timeToX:startTime], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - tracksTall * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:endTime - startTime], TRACK_ITEM_HEIGHT * tracksTall - 2);
                 
                 // There is a mouse event within the bounds of the commandCluster
-                if(mouseEvent != nil && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:currentMousePoint] || ((mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
+                if(mouseEvent != nil && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:currentMousePoint] || ((mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragBetweenChannels) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
                 {
                     // Check the commands for mouse down clicks
                     [self checkCommandClusterForCommandMouseEvent:currentCommandCluster atTrackIndex:trackIndex tracksTall:tracksTall forControlBoxOrChannelGroup:MNChannelGroup];
@@ -595,13 +595,28 @@
                                 NSString *newCommandClusterFilePath = [data createCopyOfCommandClusterAndReturnFilePath:currentCommandCluster];
                                 [data addCommandClusterFilePath:newCommandClusterFilePath forSequence:[data currentSequence]];
                                 
-                                mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
+                                if(mouseEvent.modifierFlags & NSControlKeyMask)
+                                {
+                                    mouseDraggingEvent = MNControlBoxCommandClusterMouseDragBetweenChannels;
+                                }
+                                else
+                                {
+                                    mouseDraggingEvent = MNControlBoxCommandClusterMouseDrag;
+                                }
                                 mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
                                 self.selectedCommandClusterIndex = (int)[data commandClusterFilePathsCountForSequence:[data currentSequence]] - 1;
                                 highlightedACluster = YES; // Trick the system
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibrariesViewController" object:nil];
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:[data commandClusterFromFilePath:newCommandClusterFilePath]];
+                            }
+                            else if(mouseEvent.modifierFlags & NSControlKeyMask)
+                            {
+                                mouseDraggingEvent = MNControlBoxCommandClusterMouseDragBetweenChannels;
+                                mouseClickDownPoint.x = mouseClickDownPoint.x - [data timeToX:startTime];
+                                
+                                self.selectedCommandClusterIndex = i;
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"SelectCommandCluster" object:currentCommandCluster];
                             }
                             // Select a cluster
                             else
@@ -650,6 +665,16 @@
                                 // Drag the cluster
                                 [data moveCommandCluster:currentCommandCluster toStartTime:[data xToTime:currentMousePoint.x - mouseClickDownPoint.x]];
                                 
+                                // Mouse drag is moving the cluster to a different controlBox
+                                if(currentMousePoint.y > commandClusterRect.origin.y + commandClusterRect.size.height || currentMousePoint.y < commandClusterRect.origin.y)
+                                {
+                                    int newIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / (TRACK_ITEM_HEIGHT * tracksTall) - (trackIndex / tracksTall);
+                                    //NSLog(@"newI:%d mouseY:%f trackPixels:%f trackIndex:%d", newIndex, self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT, TRACK_ITEM_HEIGHT * tracksTall, trackIndex);
+                                    [data setControlBoxFilePath:[data controlBoxFilePathAtIndex:newIndex forSequence:[data currentSequence]] forCommandCluster:currentCommandCluster];
+                                }
+                            }
+                            else if(mouseDraggingEvent == MNControlBoxCommandClusterMouseDragBetweenChannels)
+                            {
                                 // Mouse drag is moving the cluster to a different controlBox
                                 if(currentMousePoint.y > commandClusterRect.origin.y + commandClusterRect.size.height || currentMousePoint.y < commandClusterRect.origin.y)
                                 {

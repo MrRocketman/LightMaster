@@ -35,6 +35,7 @@ enum
     MNNewClusterMouseDrag,
     MNControlBoxCommandClusterMouseDragStartTime,
     MNControlBoxCommandClusterMouseDragEndTime,
+    MNControlBoxCommandClusterMouseDragBetweenChannels,
 };
 
 @interface MNTimelineTracksView : NSView
