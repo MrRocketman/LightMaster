@@ -156,26 +156,28 @@
     for(int i = 0; i < [data audioClipFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
         NSDictionary *audioAnalysis = [data audioAnalysisForCurrentSequenceAtIndex:i];
-        
-        if(data.shouldDrawSegments)
+        if(audioAnalysis != [NSNull null])
         {
-            [self drawSegmentsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawTatums)
-        {
-            [self drawTatumsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawBeats)
-        {
-            [self drawBeatsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawBars)
-        {
-            [self drawBarsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawSections)
-        {
-            [self drawSectionsForAudioAnalysis:audioAnalysis];
+            if(data.shouldDrawSegments)
+            {
+                [self drawSegmentsForAudioAnalysis:audioAnalysis];
+            }
+            if(data.shouldDrawTatums)
+            {
+                [self drawTatumsForAudioAnalysis:audioAnalysis];
+            }
+            if(data.shouldDrawBeats)
+            {
+                [self drawBeatsForAudioAnalysis:audioAnalysis];
+            }
+            if(data.shouldDrawBars)
+            {
+                [self drawBarsForAudioAnalysis:audioAnalysis];
+            }
+            if(data.shouldDrawSections)
+            {
+                [self drawSectionsForAudioAnalysis:audioAnalysis];
+            }
         }
     }
 
