@@ -16,6 +16,7 @@
 - (NSMutableDictionary *)audioClip;
 - (void)loadOpenPanel;
 - (void)createNewAudioClipFromAudioFilePathNotification:(NSNotification *)aNotification;
+- (void)updateAudioClipUploadProgress:(NSNotification *)aNotification;
 
 @end
 
@@ -33,6 +34,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidEndEditing:) name:@"NSControlTextDidEndEditingNotification" object:nil];
         //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange:) name:@"NSTextDidChangeNotification" object:scriptTextView];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createNewAudioClipFromAudioFilePathNotification:) name:@"CreateNewAudioClipFromFilePath" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAudioClipUploadProgress:) name:@"AudioClipUploadProgressUpdate" object:nil];
         
         audioClipIndex = -1;
     }
@@ -113,6 +115,14 @@
     }
 }
 
+- (void)updateAudioClipUploadProgress:(NSNotification *)aNotification
+{
+    if([[data filePathForAudioClip:[aNotification object]] isEqualToString:[data filePathForAudioClip:[self audioClip]]])
+    {
+        [uploadProgressTextField setStringValue:[NSString stringWithFormat:@"%d%%", (int)([data uploadProgressForAudioClip:[self audioClip]] * 100)]];
+    }
+}
+
 - (void)createNewAudioClipFromAudioFilePath:(NSString *)filePath
 {
     NSString *newFilePath;
@@ -124,12 +134,7 @@
     // Library audioClip
     if(textRange.location != NSNotFound)
     {
-        // Set the filePath
-        [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
         newFilePath = filePath;
-        
-        [data setDescription:[[filePath lastPathComponent] stringByDeletingPathExtension] forAudioClip:[self audioClip]];
-        [filePathLabel setStringValue:[filePath lastPathComponent]];
     }
     // External audioClip
     else
@@ -138,16 +143,20 @@
         newFilePath = [NSString stringWithFormat:@"%@/audioClipLibrary/%@", [data libraryFolder], [filePath lastPathComponent]];
         NSFileManager *fileManager = [NSFileManager defaultManager];
         [fileManager copyItemAtPath:filePath toPath:newFilePath error:NULL];
-        
-        // Set the filePath
-        [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
-        [data setDescription:[[filePath lastPathComponent] stringByDeletingPathExtension] forAudioClip:[self audioClip]];
-        [filePathLabel setStringValue:[filePath lastPathComponent]];
     }
+    // Load the Sound
     NSSound *sound = [[NSSound alloc] initWithContentsOfFile:newFilePath byReference:NO];
-    [data setEndTime:[sound duration] forAudioClip:[self audioClip]];
-    [self updateContent];
     
+    // Set AudioClip Data
+    [data setEndTime:[sound duration] forAudioClip:[self audioClip]];
+    [data setDescription:[[filePath lastPathComponent] stringByDeletingPathExtension] forAudioClip:[self audioClip]];
+    [filePathLabel setStringValue:[filePath lastPathComponent]];
+    
+    // Set the filePath
+    [data setFilePathToAudioFile:[NSString stringWithFormat:@"audioClipLibrary/%@", [filePath lastPathComponent]] forAudioClip:[self audioClip]];
+    
+    // Update all graphics
+    [self updateContent];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 

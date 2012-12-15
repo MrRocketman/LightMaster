@@ -2845,6 +2845,8 @@
     [audioClip setObject:[NSNumber numberWithFloat:uploadProgress] forKey:@"uploadProgress"];
     [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AudioClipUploadProgressUpdate" object:audioClip];
 }
 
 - (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip
@@ -2877,13 +2879,14 @@
     // Track is already uploaded, just waiting for the analysis to complete
     if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"pending"])
     {
-        NSLog(@"waiting for analyze");
-        [self performSelectorInBackground:@selector(pollENPostForTrackStatus:) withObject:request];
+        NSLog(@"waiting for analyze post");
+        [self performSelector:@selector(pollENPostForTrackStatus:) withObject:request afterDelay:3.0];
+        //[self performSelectorInBackground:@selector(pollENPostForTrackStatus:) withObject:request];
     }
     // Bad news
     else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"error"])
     {
-        NSLog(@"EN error");
+        NSLog(@"EN error post");
     }
 }
 
@@ -2901,12 +2904,13 @@
 
 - (void)postRequest:(ENAPIPostRequest *)request didSendBytes:(long long)nBytes
 {
-    NSLog(@"bytes:%llu", nBytes);
+    //NSLog(@"bytes:%llu", nBytes);
 }
 
 - (void)postRequest:(ENAPIPostRequest *)request uploadProgress:(float)progress
 {
-    NSLog(@"upload:%f", progress);
+    //NSLog(@"upload:%f", progress);
+    [self setUploadProgress:progress ForAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
 }
 
 #pragma mark - ENAPIRequestDelegate Methods
@@ -2921,7 +2925,7 @@
     if([[request userInfo] objectForKey:@"filePath"])
     {
         // This audioClip needs to be uploaded
-        if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"unknown"])
+        if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"unknown"] || [[[[response objectForKey:@"response"] objectForKey:@"status"] objectForKey:@"message"] rangeOfString:@"does not exist"].location != NSNotFound)
         {
             NSLog(@"uploading");
             ENAPIPostRequest *enPostRequest = [ENAPIPostRequest trackUploadRequestWithFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], [[request userInfo] objectForKey:@"filePath"]]];
@@ -2934,7 +2938,8 @@
         else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"pending"])
         {
             NSLog(@"waiting for analyze");
-            [self performSelectorInBackground:@selector(pollENForTrackStatus:) withObject:request];
+            [self performSelector:@selector(pollENForTrackStatus:) withObject:request afterDelay:3.0];
+            //[self performSelectorInBackground:@selector(pollENForTrackStatus:) withObject:request];
         }
         // The audioSummary was fetched from EN
         else if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"status"] isEqualToString:@"complete"])
@@ -2957,6 +2962,10 @@
                 [enRequests addObject:enRequest];
                 [enRequest startAsynchronous];
             }
+            else
+            {
+                [self setUploadProgress:1.0 ForAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+            }
         }
     }
     // This is for fetching the full analysis
@@ -2964,6 +2973,8 @@
     {
         NSLog(@"full analysis");
         [self setAudioAnalysis:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
+        
+        [self setUploadProgress:1.0 ForAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
     }
 }
 
@@ -2983,7 +2994,7 @@
 - (void)pollENPostForTrackStatus:(ENAPIPostRequest *)request
 {
     ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
-    [enRequest setValue:[[[request response] objectForKey:@"track"] objectForKey:@"id"] forParameter:@"id"];
+    [enRequest setValue:[[[[request response] objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"id"] forParameter:@"id"];
     [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
     [enRequest setUserInfo:[request userInfo]];
     [enRequest setDelegate:self];
@@ -2994,7 +3005,7 @@
 - (void)pollENForTrackStatus:(ENAPIRequest *)request
 {
     ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
-    [enRequest setValue:[[[request response] objectForKey:@"track"] objectForKey:@"id"] forParameter:@"id"];
+    [enRequest setValue:[[[[request response] objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"id"] forParameter:@"id"];
     [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
     [enRequest setUserInfo:[request userInfo]];
     [enRequest setDelegate:self];
