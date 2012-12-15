@@ -108,6 +108,7 @@
         *filePathToAudioFile (NSString)
         *startTime (NSNumber) float
         *endTime (NSNumber) float
+        *endFadeTime (NSNumber) float
         *seekTime (NSNumber) float // allows portions of an audio clip to be used by starting somewhere in the file
         *uploadProgress (NSNumber) float 0-.99 means it's uploading. 1.0 or greater means it's been uploaded. Less than 0 means it hasn't been uploaded.
         *audioSummary (NSDictionary)

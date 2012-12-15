@@ -80,6 +80,7 @@
         [descriptionTextField setEnabled:YES];
         [startTimeTextField setEditable:YES];
         [endTimeTextField setEnabled:YES];
+        [endFadeTimeTextField setEnabled:YES];
         [seekTimeTextField setEnabled:YES];
         [chooseAudioFileButton setEnabled:YES];
         [chooseAudioFileFromLibraryButton setEnabled:YES];
@@ -87,6 +88,7 @@
         [descriptionTextField setStringValue:[data descriptionForEffect:[self audioClip]]];
         [startTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data startTimeForAudioClip:[self audioClip]]]];
         [endTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data endTimeForAudioClip:[self audioClip]]]];
+        [endFadeTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data endFadeTimeForAudioClip:[self audioClip]]]];
         [seekTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data seekTimeForAudioClip:[self audioClip]]]];
         
         if([[data filePathToAudioFileForAudioClip:[self audioClip]] length] > 0)
@@ -103,6 +105,7 @@
         [descriptionTextField setEnabled:NO];
         [startTimeTextField setEditable:NO];
         [endTimeTextField setEnabled:NO];
+        [endFadeTimeTextField setEnabled:NO];
         [seekTimeTextField setEnabled:NO];
         [chooseAudioFileButton setEnabled:NO];
         [chooseAudioFileFromLibraryButton setEnabled:NO];
@@ -110,6 +113,7 @@
         [descriptionTextField setStringValue:@""];
         [startTimeTextField setStringValue:@""];
         [endTimeTextField setStringValue:@""];
+        [endFadeTimeTextField setStringValue:@""];
         [seekTimeTextField setStringValue:@""];
         [filePathLabel setStringValue:@""];
     }
@@ -224,11 +228,16 @@
     {
         [data setEndTime:[endTimeTextField floatValue] forAudioClip:[self audioClip]];
     }
+    else if([aNotification object] == endFadeTimeTextField)
+    {
+        [data setEndFadeTime:[endFadeTimeTextField floatValue] forAudioClip:[self audioClip]];
+    }
     else if([aNotification object] == seekTimeTextField)
     {
         [data setSeekTime:[seekTimeTextField floatValue] forAudioClip:[self audioClip]];
     }
     
+    [self updateContent];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 

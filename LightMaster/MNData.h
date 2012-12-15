@@ -370,6 +370,7 @@ enum
 - (NSString *)filePathToAudioFileForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)startTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)endTimeForAudioClip:(NSMutableDictionary *)audioClip;
+- (float)endFadeTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)seekTimeForAudioClip:(NSMutableDictionary *)audioClip;
 - (float)uploadProgressForAudioClip:(NSMutableDictionary *)audioClip;
 - (NSDictionary *)audioSummaryForAudioClip:(NSMutableDictionary *)audioClip;
@@ -381,6 +382,7 @@ enum
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
+- (void)setEndFadeTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip byTime:(float)time;
 - (void)moveAudioClip:(NSMutableDictionary *)audioClip toStartTime:(float)startTime;
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip;

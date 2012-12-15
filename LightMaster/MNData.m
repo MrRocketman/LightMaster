@@ -885,6 +885,7 @@
         {
             float startTime = [self startTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
             float endTime = [self endTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
+            float fadeTime = [self endFadeTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
             
             // Play the sound
             if(currentTime >= startTime && currentTime < endTime && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == NO)
@@ -899,6 +900,16 @@
             else if((currentTime < startTime || currentTime >= endTime) && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == YES)
             {
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] stop];
+            }
+            
+            // Fade if neccessary
+            if(currentTime >= endTime - fadeTime)
+            {
+                [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] setVolume:(endTime - currentTime) / fadeTime];
+            }
+            else if(currentTime < endTime - fadeTime && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] volume] < 1.0)
+            {
+                [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] setVolume:1.0];
             }
         }
         
@@ -2630,6 +2641,9 @@
     [self setFilePathToAudioFile:[self filePathToAudioFileForAudioClip:audioClip] forAudioClip:newAudioClip];
     [self setStartTime:[self startTimeForAudioClip:audioClip] forAudioClip:newAudioClip];
     [self setEndTime:[self endTimeForAudioClip:audioClip] forAudioClip:newAudioClip];
+    [self setEndFadeTime:[self endFadeTimeForAudioClip:audioClip] forAudioClip:newAudioClip];
+    // Copy the audioAnalysis
+    [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithFormat:@"%@/%@.lmaa", libraryFolder, [[self filePathForAudioClip:audioClip] stringByDeletingPathExtension]] toPath:[NSString stringWithFormat:@"%@/%@.lmaa", libraryFolder, [newAudioClipFilePath stringByDeletingPathExtension]] error:NULL];
     
     return newAudioClipFilePath;
 }
@@ -2745,6 +2759,11 @@
     return [[audioClip objectForKey:@"endTime"] floatValue];
 }
 
+- (float)endFadeTimeForAudioClip:(NSMutableDictionary *)audioClip
+{
+    return [[audioClip objectForKey:@"endFadeTime"] floatValue];
+}
+
 - (float)seekTimeForAudioClip:(NSMutableDictionary *)audioClip
 {
     return [[audioClip objectForKey:@"seekTime"] floatValue];
@@ -2799,6 +2818,13 @@
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
+    [self saveDictionaryToItsFilePath:audioClip];
+    [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
+}
+
+- (void)setEndFadeTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
+{
+    [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endFadeTime"];
     [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }

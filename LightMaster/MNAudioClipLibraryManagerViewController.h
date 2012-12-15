@@ -17,6 +17,7 @@
     IBOutlet NSTextField *descriptionTextField;
     IBOutlet NSTextField *startTimeTextField;
     IBOutlet NSTextField *endTimeTextField;
+    IBOutlet NSTextField *endFadeTimeTextField;
     IBOutlet NSTextField *seekTimeTextField;
     IBOutlet NSTextField *uploadProgressTextField;
     IBOutlet NSTextField *filePathLabel;
