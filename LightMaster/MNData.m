@@ -881,6 +881,7 @@
         }
         
         // Play/Pause the necessary NSSounds
+        BOOL isPlayingAudio = NO;
         for(int i = 0; i < [currentSequenceNSSounds count]; i ++)
         {
             float startTime = [self startTimeForAudioClip:[self audioClipForCurrentSequenceAtIndex:i]];
@@ -895,11 +896,17 @@
                 // Seek to the appropriate time
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] setCurrentTime:seekTime + currentTime - startTime];
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] play];
+                
+                isPlayingAudio = YES;
             }
             // Pause the sound
             else if((currentTime < startTime || currentTime >= endTime) && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == YES)
             {
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] stop];
+            }
+            else if(currentTime >= startTime && currentTime < endTime && [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] isPlaying] == YES)
+            {
+                isPlayingAudio = YES;
             }
             
             // Fade if neccessary
@@ -911,6 +918,16 @@
             {
                 [(NSSound *)[currentSequenceNSSounds objectAtIndex:i] setVolume:1.0];
             }
+        }
+        
+        // Help keep the audio hardware active on laptops
+        if(isPlayingAudio && [emptySound isPlaying])
+        {
+            [emptySound stop];
+        }
+        else if(!isPlayingAudio && ![emptySound isPlaying])
+        {
+            [emptySound play];
         }
         
         // Determine the channel states
