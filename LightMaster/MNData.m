@@ -83,6 +83,11 @@
         [ENAPI initWithApiKey:@"9F52RBALOQTUGKOT5" ConsumerKey:@"470771f3b2787696050f2f4143cb5c33" AndSharedSecret:@"QMa4TZ+PRL+Nq0e3SAR/RQ"];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
+        
+        NSString *pathForEmptySound = [[NSBundle mainBundle] pathForResource:@"Empty" ofType:@"m4a"];
+        emptySound = [[NSSound alloc] initWithContentsOfFile:pathForEmptySound byReference:NO];
+        [emptySound setLoops:YES];
+        [emptySound play];
     }
     
     return self;

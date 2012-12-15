@@ -69,6 +69,8 @@ enum
     BOOL shouldDrawTatums;
     BOOL shouldDrawSegments;
     BOOL shouldDrawTime;
+    
+    NSSound *emptySound;
 }
 
 @property() NSString *libraryFolder;
