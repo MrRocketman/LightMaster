@@ -18,6 +18,7 @@
     IBOutlet NSTextField *startTimeTextField;
     IBOutlet NSTextField *endTimeTextField;
     IBOutlet NSTextField *seekTimeTextField;
+    IBOutlet NSTextField *uploadProgressTextField;
     IBOutlet NSTextField *filePathLabel;
     IBOutlet NSButton *chooseAudioFileButton;
     IBOutlet NSButton *chooseAudioFileFromLibraryButton;

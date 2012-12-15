@@ -68,6 +68,7 @@ enum
     BOOL shouldDrawBeats;
     BOOL shouldDrawTatums;
     BOOL shouldDrawSegments;
+    BOOL shouldDrawTime;
 }
 
 @property() NSString *libraryFolder;
@@ -84,6 +85,7 @@ enum
 @property() BOOL shouldDrawBeats;
 @property() BOOL shouldDrawTatums;
 @property() BOOL shouldDrawSegments;
+@property() BOOL shouldDrawTime;
 
 #pragma mark - Other Methods
 // Other Methods

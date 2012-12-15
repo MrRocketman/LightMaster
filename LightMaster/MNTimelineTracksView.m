@@ -157,28 +157,28 @@
     {
         NSDictionary *audioAnalysis = [data audioAnalysisForCurrentSequenceAtIndex:i];
         
-        if(data.shouldDrawSegments)
+        if(data.shouldDrawSections)
         {
-            [self drawSegmentsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawTatums)
-        {
-            [self drawTatumsForAudioAnalysis:audioAnalysis];
-        }
-        if(data.shouldDrawBeats)
-        {
-            [self drawBeatsForAudioAnalysis:audioAnalysis];
+            [self drawSectionsForAudioAnalysis:audioAnalysis];
         }
         if(data.shouldDrawBars)
         {
             [self drawBarsForAudioAnalysis:audioAnalysis];
         }
-        if(data.shouldDrawSections)
+        if(data.shouldDrawBeats)
         {
-            [self drawSectionsForAudioAnalysis:audioAnalysis];
+            [self drawBeatsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawTatums)
+        {
+            [self drawTatumsForAudioAnalysis:audioAnalysis];
+        }
+        if(data.shouldDrawSegments)
+        {
+            [self drawSegmentsForAudioAnalysis:audioAnalysis];
         }
     }
-    
+
     // Check for manual channel controls and new commandCluster/audioClip/channelGroup clicks
     if(mouseEvent != nil)
     {
@@ -280,9 +280,12 @@
         [time drawInRect:textFrame withAttributes:attributes];
         
         // Draw grid lines
-        NSRect markerLineFrame = NSMakeRect(textFrame.origin.x, scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
-        [[NSColor whiteColor] set];
-        NSRectFill(markerLineFrame);
+        if(data.shouldDrawTime)
+        {
+            NSRect markerLineFrame = NSMakeRect(textFrame.origin.x, scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+            [[NSColor blackColor] set];
+            NSRectFill(markerLineFrame);
+        }
 	}
     
     // Draw the currentTime marker
@@ -366,7 +369,7 @@
     while(visibleSectionIndex < [sections count] && (timeAtLeftEdge - 1 < [[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
     {
         // Draw grid lines
-        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[sections objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 3, superViewFrame.size.height - TOP_BAR_HEIGHT);
         [[NSColor yellowColor] set];
         NSRectFill(markerLineFrame);
         
@@ -393,8 +396,8 @@
     while(visibleSectionIndex < [bars count] && (timeAtLeftEdge - 1 < [[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue] && timeAtRightEdge + 1 > [[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]))
     {
         // Draw grid lines
-        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
-        [[NSColor purpleColor] set];
+        NSRect markerLineFrame = NSMakeRect([data timeToX:[[[bars objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 2, superViewFrame.size.height - TOP_BAR_HEIGHT);
+        [[NSColor orangeColor] set];
         NSRectFill(markerLineFrame);
         
         visibleSectionIndex ++;
@@ -421,7 +424,7 @@
     {
         // Draw grid lines
         NSRect markerLineFrame = NSMakeRect([data timeToX:[[[beats objectAtIndex:visibleSectionIndex] objectForKey:@"start"] floatValue]], scrollViewOrigin.y, 1, superViewFrame.size.height - TOP_BAR_HEIGHT);
-        [[NSColor orangeColor] set];
+        [[NSColor whiteColor] set];
         NSRectFill(markerLineFrame);
         
         visibleSectionIndex ++;

@@ -147,4 +147,10 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
 }
 
+- (IBAction)timeCheckboxPress:(id)sender
+{
+    data.shouldDrawTime = !data.shouldDrawTime;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
 @end
