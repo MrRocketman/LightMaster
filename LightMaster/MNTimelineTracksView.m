@@ -33,6 +33,7 @@
 // Math Methods
 - (void)updateTimeAtLeftEdgeOfTimelineView:(NSTimer*)theTimer;
 - (float)roundUpNumber:(float)numberToRound toNearestMultipleOfNumber:(float)multiple;
+- (int)controlBoxIndexForTrackIndex:(int)trackIndex;
 
 // Mouse Checking Methods
 - (void)timelineBarMouseChecking;
@@ -117,6 +118,7 @@
     highlightedACluster = NO;
     int trackIndex = 0;
     int tracksTall = 0;
+    int i = 0;
     // Draw the audio track
     if([data audioClipFilePathsCountForSequence:[data currentSequence]] > 0)
     {
@@ -126,23 +128,27 @@
         trackIndex += tracksTall;
     }
     // Draw the controlBox tracks
-    for(int i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
+    for(i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
+        controlBoxTrackIndexes[i] = trackIndex;
         tracksTall = [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]];
         [self drawBackgroundTrackAtTrackIndex:trackIndex tracksTall:tracksTall];
         [self drawCommandClustersAtTrackIndex:trackIndex tracksTall:tracksTall parentIndex:i parentIsControlBox:YES];
         [self drawChannelGuidlinesForParentIndex:i parentIsControlBox:YES atTrackIndex:trackIndex tracksTall:tracksTall];
         trackIndex += tracksTall;
     }
+    memset(controlBoxTrackIndexes + i, -1, 256);
     // Draw the channelGroup tracks
-    for(int i = 0; i < [data channelGroupFilePathsCountForSequence:[data currentSequence]]; i ++)
+    for(i = 0; i < [data channelGroupFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
+        channelGroupTrackIndexes[i] = trackIndex;
         tracksTall = [data itemsCountForChannelGroup:[data channelGroupForCurrentSequenceAtIndex:i]];
         [self drawBackgroundTrackAtTrackIndex:trackIndex tracksTall:tracksTall];
         [self drawCommandClustersAtTrackIndex:trackIndex tracksTall:tracksTall parentIndex:i parentIsControlBox:NO];
         [self drawChannelGuidlinesForParentIndex:i parentIsControlBox:NO atTrackIndex:trackIndex tracksTall:tracksTall];
         trackIndex += tracksTall;
     }
+    memset(channelGroupTrackIndexes + i, -1, 256);
     
     if(!highlightedACluster)
     {
@@ -668,8 +674,9 @@
                                 // Mouse drag is moving the cluster to a different controlBox
                                 if(currentMousePoint.y > commandClusterRect.origin.y + commandClusterRect.size.height || currentMousePoint.y < commandClusterRect.origin.y)
                                 {
-                                    int newIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / (TRACK_ITEM_HEIGHT * tracksTall) - (trackIndex / tracksTall);
-                                    //NSLog(@"newI:%d mouseY:%f trackPixels:%f trackIndex:%d", newIndex, self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT, TRACK_ITEM_HEIGHT * tracksTall, trackIndex);
+                                    int newTrackIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT;
+                                    int newIndex = [self controlBoxIndexForTrackIndex:newTrackIndex];
+                                    //NSLog(@"newI:%d mouseY:%f newTrackIndex:%d trackIndex:%d", newIndex, self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT, newTrackIndex, trackIndex);
                                     [data setControlBoxFilePath:[data controlBoxFilePathAtIndex:newIndex forSequence:[data currentSequence]] forCommandCluster:currentCommandCluster];
                                 }
                             }
@@ -678,8 +685,8 @@
                                 // Mouse drag is moving the cluster to a different controlBox
                                 if(currentMousePoint.y > commandClusterRect.origin.y + commandClusterRect.size.height || currentMousePoint.y < commandClusterRect.origin.y)
                                 {
-                                    int newIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / (TRACK_ITEM_HEIGHT * tracksTall) - (trackIndex / tracksTall);
-                                    //NSLog(@"newI:%d mouseY:%f trackPixels:%f trackIndex:%d", newIndex, self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT, TRACK_ITEM_HEIGHT * tracksTall, trackIndex);
+                                    int newTrackIndex = (self.frame.size.height - currentMousePoint.y - TOP_BAR_HEIGHT) / TRACK_ITEM_HEIGHT;
+                                    int newIndex = [self controlBoxIndexForTrackIndex:newTrackIndex];
                                     [data setControlBoxFilePath:[data controlBoxFilePathAtIndex:newIndex forSequence:[data currentSequence]] forCommandCluster:currentCommandCluster];
                                 }
                             }
@@ -820,6 +827,24 @@
     }
     
     return (intNumberToRound + intMultiple - remainder) / 1000000.0;
+}
+
+- (int)controlBoxIndexForTrackIndex:(int)trackIndex
+{
+    int controlBoxIndex = -1;
+    int i = 0;
+    
+    while(controlBoxIndex == -1 && controlBoxTrackIndexes[i] >= 0)
+    {
+        if(trackIndex >= controlBoxTrackIndexes[i] && (trackIndex < controlBoxTrackIndexes[i + 1] || controlBoxTrackIndexes[i + 1] == -1))
+        {
+            controlBoxIndex = i;
+        }
+        
+        i ++;
+    }
+    
+    return controlBoxIndex;
 }
 
 #pragma mark - Mouse Checking Methods

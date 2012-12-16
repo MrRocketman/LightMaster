@@ -65,6 +65,9 @@ enum
     NSMutableDictionary *selectedAudioClip;
     
     NSMutableArray *audioClipNSSounds;
+    
+    int controlBoxTrackIndexes[256];
+    int channelGroupTrackIndexes[256];
 }
 
 @property(readwrite, assign) int selectedCommandClusterIndex;
