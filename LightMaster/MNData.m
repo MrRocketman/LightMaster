@@ -83,6 +83,7 @@
         [ENAPI initWithApiKey:@"9F52RBALOQTUGKOT5" ConsumerKey:@"470771f3b2787696050f2f4143cb5c33" AndSharedSecret:@"QMa4TZ+PRL+Nq0e3SAR/RQ"];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(splitMostRecentlySelectedCommandClusterAtCurrentTime:) name:@"SplitCommandCluster" object:nil];
         
         NSString *pathForEmptySound = [[NSBundle mainBundle] pathForResource:@"Empty" ofType:@"m4a"];
         emptySound = [[NSSound alloc] initWithContentsOfFile:pathForEmptySound byReference:NO];
@@ -2149,6 +2150,79 @@
     
     [self loadCommandClustersForCurrentSequence];
     //[self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
+}
+
+- (void)splitMostRecentlySelectedCommandClusterAtCurrentTime:(NSNotification *)aNotifcation
+{
+    NSMutableDictionary *mostRecentlySelectedCommandCluster = [self commandClusterForCurrentSequenceAtIndex:mostRecentlySelectedCommandClusterIndex];
+    
+    if(mostRecentlySelectedCommandClusterIndex)
+    {
+        // Make a new cluster and set it's controlBox/channelGroup to the mostRecentlySelectedCommandCluster's controlBox/channelGroup
+        NSString *newCommandClusterFilePath = [self createCommandClusterAndReturnFilePath];
+        NSMutableDictionary *newCommandCluster = [self commandClusterFromFilePath:newCommandClusterFilePath];
+        if([[self controlBoxFilePathForCommandCluster:mostRecentlySelectedCommandCluster] length] > 0)
+        {
+            [self setControlBoxFilePath:[self controlBoxFilePathForCommandCluster:mostRecentlySelectedCommandCluster] forCommandCluster:newCommandCluster];
+        }
+        else if([[self channelGroupFilePathForCommandCluster:mostRecentlySelectedCommandCluster] length] > 0)
+        {
+            [self setChannelGroupFilePath:[self channelGroupFilePathForCommandCluster:mostRecentlySelectedCommandCluster] forCommandCluster:newCommandCluster];
+        }
+        [self setDescription:[self descriptionForCommandCluster:mostRecentlySelectedCommandCluster] forCommandCluster:newCommandCluster];
+        [self setEndTime:[self endTimeForCommandCluster:mostRecentlySelectedCommandCluster] forCommandcluster:newCommandCluster];
+        [self setStartTime:currentTime forCommandCluster:newCommandCluster];
+        [self setEndTime:currentTime forCommandcluster:mostRecentlySelectedCommandCluster];
+        
+        NSMutableArray *commandsToRemoveFromMostRecentlySelectedCommandCluster = [[NSMutableArray alloc] init];
+        for(int i = 0; i < [self commandsCountForCommandCluster:mostRecentlySelectedCommandCluster]; i ++)
+        {
+            NSMutableDictionary *command = [self commandAtIndex:i fromCommandCluster:mostRecentlySelectedCommandCluster];
+            
+            // Move commands past the currentTime to the new cluster
+            if([self startTimeForCommand:command] >= currentTime)
+            {
+                NSMutableArray *commands = [self commandsFromCommandCluster:newCommandCluster];
+                [commands addObject:command];
+                [newCommandCluster setObject:commands forKey:@"commands"];
+                
+                // Keep track of this command so it can be removed after we are done processing this cluster
+                [commandsToRemoveFromMostRecentlySelectedCommandCluster addObject:command];
+            }
+            // Commands that are in the middle of the currentTime get split in half.
+            else if([self startTimeForCommand:command] < currentTime && [self endTimeForCommand:command] >= currentTime)
+            {
+                // Set the end time for the first command
+                float oldEndTime = [self endTimeForCommand:command];
+                [self setEndTime:currentTime forCommandAtIndex:i whichIsPartOfCommandCluster:mostRecentlySelectedCommandCluster];
+                
+                // Now make a new command for the new cluster and set it's end time to the old ent time
+                int newCommandIndex = [self createCommandAndReturnNewCommandIndexForCommandCluster:newCommandCluster];
+                [self setStartTime:currentTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                [self setEndTime:oldEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                [self setChannelIndex:[self channelIndexForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                [self setBrightness:[self brightnessForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                [self setFadeInDuration:[self fadeInDurationForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+                [self setFadeOutDuration:[self fadeOutDurationForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+            }
+        }
+        
+        // Remove any commands from the mostRecentlySelectedCommandCluster
+        for(int i = 0; i < [commandsToRemoveFromMostRecentlySelectedCommandCluster count]; i ++)
+        {
+            [self removeCommand:[commandsToRemoveFromMostRecentlySelectedCommandCluster objectAtIndex:i] fromCommandCluster:mostRecentlySelectedCommandCluster];
+        }
+        
+        [self saveDictionaryToItsFilePath:mostRecentlySelectedCommandCluster];
+        //[self updateCurrentSequenceCommandClustersWithCommandCluster:mostRecentlySelectedCommandCluster];
+        
+        [self addCommandClusterFilePath:newCommandClusterFilePath forSequence:currentSequence];
+        [self saveDictionaryToItsFilePath:newCommandCluster];
+        //[self updateCurrentSequenceCommandClustersWithCommandCluster:newCommandCluster];
+        [self loadCommandClustersForCurrentSequence];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+    }
 }
 
 // Getter Methods

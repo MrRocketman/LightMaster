@@ -257,6 +257,7 @@ enum
 - (NSString *)createCommandClusterAndReturnFilePath;
 - (NSString *)createCopyOfCommandClusterAndReturnFilePath:(NSMutableDictionary *)commandCluster;
 - (void)removeCommandClusterFromLibrary:(NSMutableDictionary *)commandCluster;
+- (void)splitMostRecentlySelectedCommandClusterAtCurrentTime:(NSNotification *)aNotifcation;
 
 // Getter Methods
 - (float)versionNumberForCommandClusterLibrary;

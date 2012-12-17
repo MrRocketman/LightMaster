@@ -74,6 +74,11 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NewCommandCluster" object:nil userInfo:nil];
 }
 
+- (IBAction)splitCommandCluster:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SplitCommandCluster" object:nil userInfo:nil];
+}
+
 - (IBAction)newEffect:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"NewEffect" object:nil userInfo:nil];
