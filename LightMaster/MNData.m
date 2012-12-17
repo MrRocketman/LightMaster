@@ -74,11 +74,11 @@
         enRequests = [[NSMutableArray alloc] init];
         loop = YES;
         currentPlaylistIndex = -1;
-        self.shouldDrawSections = YES;
-        self.shouldDrawBars = YES;
-        self.shouldDrawBeats = YES;
-        self.shouldDrawTatums = YES;
-        self.shouldDrawSegments = YES;
+        self.shouldDrawSections = NO;
+        self.shouldDrawBars = NO;
+        self.shouldDrawBeats = NO;
+        self.shouldDrawTatums = NO;
+        self.shouldDrawSegments = NO;
         self.shouldDrawTime = YES;
         [ENAPI initWithApiKey:@"9F52RBALOQTUGKOT5" ConsumerKey:@"470771f3b2787696050f2f4143cb5c33" AndSharedSecret:@"QMa4TZ+PRL+Nq0e3SAR/RQ"];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
