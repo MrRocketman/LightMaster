@@ -162,7 +162,7 @@
     for(int i = 0; i < [data audioClipFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
         NSDictionary *audioAnalysis = [data audioAnalysisForCurrentSequenceAtIndex:i];
-        if(audioAnalysis != [NSNull null])
+        if(![[NSNull null] isEqual:audioAnalysis])
         {
             if(data.shouldDrawSegments)
             {
