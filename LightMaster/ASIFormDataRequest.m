@@ -113,9 +113,9 @@
 		}
 
 		// If we were given the path to a file, and the user didn't specify a mime type, we can detect it from the file extension
-		//if (!contentType) {
-		//	contentType = [ASIHTTPRequest mimeTypeForFileAtPath:data];
-		//}
+		if (!contentType) {
+			contentType = [ASIHTTPRequest mimeTypeForFileAtPath:data];
+		}
 	}
 	
 	NSDictionary *fileInfo = [NSDictionary dictionaryWithObjectsAndKeys:data, @"data", contentType, @"contentType", fileName, @"fileName", key, @"key", nil];

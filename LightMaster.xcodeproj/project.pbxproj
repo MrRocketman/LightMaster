@@ -59,7 +59,7 @@
 		1AAA049C162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049B162547940052A779 /* MNCommandClusterControlBoxSelectorViewController.m */; };
 		1AAA049F162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */; };
 		1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */; };
-		1AB96DBC167E65AE00324EB5 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AB96DBB167E65AE00324EB5 /* ApplicationServices.framework */; };
+		1AB96DBE1680F83500324EB5 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AB96DBD1680F83500324EB5 /* ApplicationServices.framework */; };
 		1ACEE382167452F200223109 /* Loop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1ACEE380167452F200223109 /* Loop.tiff */; };
 		1ACEE383167452F200223109 /* LoopAlternate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1ACEE381167452F200223109 /* LoopAlternate.tiff */; };
 		1AD64DE1167A9E2600A89D5A /* ENAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD64DE0167A9E2600A89D5A /* ENAPI.m */; };
@@ -229,7 +229,7 @@
 		1AAA049E162547A60052A779 /* MNCommandClusterChannelGroupSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandClusterChannelGroupSelectorViewController.m; sourceTree = "<group>"; };
 		1AAA04A0162547B70052A779 /* MNCommandChannelSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCommandChannelSelectorViewController.h; sourceTree = "<group>"; };
 		1AAA04A1162547B70052A779 /* MNCommandChannelSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCommandChannelSelectorViewController.m; sourceTree = "<group>"; };
-		1AB96DBB167E65AE00324EB5 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		1AB96DBD1680F83500324EB5 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		1ACEE380167452F200223109 /* Loop.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Loop.tiff; sourceTree = "<group>"; };
 		1ACEE381167452F200223109 /* LoopAlternate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = LoopAlternate.tiff; sourceTree = "<group>"; };
 		1AD64DDF167A9E2600A89D5A /* ENAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ENAPI.h; sourceTree = "<group>"; };
@@ -329,7 +329,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1AB96DBC167E65AE00324EB5 /* ApplicationServices.framework in Frameworks */,
+				1AB96DBE1680F83500324EB5 /* ApplicationServices.framework in Frameworks */,
 				1AD64E58167AA77D00A89D5A /* libz.dylib in Frameworks */,
 				1AD64E54167AA75B00A89D5A /* CoreGraphics.framework in Frameworks */,
 				1AD64E31167AA2CB00A89D5A /* Security.framework in Frameworks */,
@@ -375,7 +375,7 @@
 			isa = PBXGroup;
 			children = (
 				1AD64E57167AA77D00A89D5A /* libz.dylib */,
-				1AB96DBB167E65AE00324EB5 /* ApplicationServices.framework */,
+				1AB96DBD1680F83500324EB5 /* ApplicationServices.framework */,
 				1AD64E53167AA75B00A89D5A /* CoreGraphics.framework */,
 				1AD64E30167AA2CB00A89D5A /* Security.framework */,
 				1AD64E2E167AA2C500A89D5A /* SystemConfiguration.framework */,
@@ -1027,7 +1027,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -1051,7 +1051,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
 			};
 			name = Release;

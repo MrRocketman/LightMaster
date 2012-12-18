@@ -4430,7 +4430,7 @@ static NSOperationQueue *sharedQueue = nil;
 
 #pragma mark mime-type detection
 
-/*+ (NSString *)mimeTypeForFileAtPath:(NSString *)path
++ (NSString *)mimeTypeForFileAtPath:(NSString *)path
 {
 	if (![[[[NSFileManager alloc] init] autorelease] fileExistsAtPath:path]) {
 		return nil;
@@ -4443,7 +4443,7 @@ static NSOperationQueue *sharedQueue = nil;
 		return @"application/octet-stream";
 	}
     return NSMakeCollectable([(NSString *)MIMEType autorelease]);
-}*/
+}
 
 #pragma mark bandwidth measurement / throttling
 

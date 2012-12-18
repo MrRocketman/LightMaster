@@ -806,7 +806,7 @@ typedef void (^ASIDataBlock)(NSData *data);
 #pragma mark mime-type detection
 
 // Return the mime type for a file
-//+ (NSString *)mimeTypeForFileAtPath:(NSString *)path;
++ (NSString *)mimeTypeForFileAtPath:(NSString *)path;
 
 #pragma mark bandwidth measurement / throttling
 
