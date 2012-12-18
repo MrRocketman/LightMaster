@@ -2995,6 +2995,7 @@
 - (void)postRequestFinished:(ENAPIPostRequest *)request
 {
     NSDictionary *response = [request response];
+    NSLog(@"post finished. response:%@", response);
     
     [enRequests removeObject:request];
     
@@ -3026,12 +3027,12 @@
 
 - (void)postRequest:(ENAPIPostRequest *)request didSendBytes:(long long)nBytes
 {
-    //NSLog(@"bytes:%llu", nBytes);
+    NSLog(@"bytes:%llu", nBytes);
 }
 
 - (void)postRequest:(ENAPIPostRequest *)request uploadProgress:(float)progress
 {
-    //NSLog(@"upload:%f", progress);
+    NSLog(@"upload:%f", progress);
     [self setUploadProgress:progress ForAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
 }
 
@@ -3040,6 +3041,7 @@
 - (void)requestFinished:(ENAPIRequest *)request
 {
     NSDictionary *response = [request response];
+    NSLog(@"finished. Response:%@", response);
     
     [enRequests removeObject:request];
     

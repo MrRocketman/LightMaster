@@ -985,6 +985,7 @@
         float startTime = [data startTimeForCommand:currentCommand];
         float endTime = [data endTimeForCommand:currentCommand];
         
+        BOOL valildCommand = YES;
         NSRect commandRect;
         float x, y, width , height;
         x  = [data timeToX:startTime];
@@ -992,20 +993,52 @@
         width = [data widthForTimeInterval:endTime - startTime];
         height = TRACK_ITEM_HEIGHT - 2;
         
-        // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
-        if(endTime > [data endTimeForCommandCluster:commandCluster])
-        {
-            width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - startTime];
-        }
         // Command extends over the beggining of it's parent cluster, bind it to the beginning of the parent cluster
-        else if(startTime < [data startTimeForCommandCluster:commandCluster])
+        if(startTime < [data startTimeForCommandCluster:commandCluster])
         {
             x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
+            
+            // Command is not visible within this cluster
+            if(endTime <= [data startTimeForCommandCluster:commandCluster])
+            {
+                valildCommand = NO;
+            }
+            // Command end time is valid
+            else if(endTime < [data endTimeForCommandCluster:commandCluster])
+            {
+                width = [data widthForTimeInterval:endTime - [data startTimeForCommandCluster:commandCluster]];
+            }
+            // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
+            else if(endTime >= [data endTimeForCommandCluster:commandCluster])
+            {
+                width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommandCluster:commandCluster]];
+            }
         }
+        // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
+        else if(endTime > [data endTimeForCommandCluster:commandCluster])
+        {
+            // Command is not visible within this cluster
+            if(startTime >= [data endTimeForCommandCluster:commandCluster])
+            {
+                valildCommand = NO;
+            }
+            // Command start time is valid
+            else if(startTime > [data startTimeForCommandCluster:commandCluster])
+            {
+                width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - startTime];
+            }
+            // Command extends over the end of it's parent cluster, bind it to the end of the parent cluster
+            else
+            {
+                x = [data timeToX:[data startTimeForCommandCluster:commandCluster]];
+                width = [data widthForTimeInterval:[data endTimeForCommandCluster:commandCluster] - [data startTimeForCommandCluster:commandCluster]];
+            }
+        }
+        
         commandRect = NSMakeRect(x, y, width, height);
         
         // Command Mouse Checking Here
-        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:currentMousePoint]))
+        if(mouseEvent != nil && (mouseAction == MNMouseDown && [[NSBezierPath bezierPathWithRect:commandRect] containsPoint:currentMousePoint]) && valildCommand)
         {
             // Delete a command if it's 'command clicked'
             if(mouseEvent.modifierFlags & NSCommandKeyMask)
