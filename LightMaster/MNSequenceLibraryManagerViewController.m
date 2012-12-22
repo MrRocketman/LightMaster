@@ -66,6 +66,8 @@
         [addChannelGroupToSequenceButton setEnabled:YES];
         [addCommandClusterToSequenceButton setEnabled:YES];
         [addAudioClipToSequenceButton setEnabled:YES];
+        [autogenSequenceButton setEnabled:YES];
+        [autogenIntensitySlider setEnabled:YES];
         
         [descriptionTextField setStringValue:[data descriptionForSequence:sequence]];
         [startTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data startTimeForSequence:sequence]]];
@@ -85,6 +87,8 @@
         [deleteCommandClusterFromSequenceButton setEnabled:NO];
         [addAudioClipToSequenceButton setEnabled:NO];
         [deleteAudioClipFromSequenceButton setEnabled:NO];
+        [autogenSequenceButton setEnabled:NO];
+        [autogenIntensitySlider setEnabled:NO];
         
         [descriptionTextField setStringValue:@""];
         [startTimeTextField setStringValue:@""];
@@ -217,6 +221,16 @@
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+}
+
+- (IBAction)autogenSequenceButtonPress:(id)sender
+{
+    [data autogenCurrentSequence];
+}
+
+- (IBAction)autogenIntensitySliderChange:(id)sender
+{
+    [data setAutogenIntensity:[autogenIntensitySlider floatValue]];
 }
 
 #pragma mark - NSTableViewDataSource Methods

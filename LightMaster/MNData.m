@@ -58,7 +58,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager, shouldDrawSections, shouldDrawBars, shouldDrawBeats, shouldDrawTatums, shouldDrawSegments, shouldDrawTime;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager, shouldDrawSections, shouldDrawBars, shouldDrawBeats, shouldDrawTatums, shouldDrawSegments, shouldDrawTime, autogenIntensity;
 
 #pragma mark - System
 
@@ -67,6 +67,7 @@
     if(self = [super init])
     {
         // Custom initialization here
+        shouldAutosave = YES;
         [self loadLibaries];
         zoomLevel = 3.0;
         [self setCurrentTime:1.0];
@@ -80,6 +81,7 @@
         self.shouldDrawTatums = NO;
         self.shouldDrawSegments = NO;
         self.shouldDrawTime = YES;
+        self.autogenIntensity = 1.0;
         [ENAPI initWithApiKey:@"9F52RBALOQTUGKOT5" ConsumerKey:@"470771f3b2787696050f2f4143cb5c33" AndSharedSecret:@"QMa4TZ+PRL+Nq0e3SAR/RQ"];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopButtonPress:) name:@"LoopButtonPress" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
@@ -444,7 +446,8 @@
     NSMutableArray *beingUsedInSequenceFilePaths = [self dictionaryBeingUsedInSequenceFilePaths:dictionary];
     [beingUsedInSequenceFilePaths addObject:sequenceFilePath];
     [dictionary setObject:beingUsedInSequenceFilePaths forKey:@"beingUsedInSequenceFilePaths"];
-    [self saveDictionaryToItsFilePath:dictionary];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:dictionary];
 }
 
 - (void)removeBeingUsedInSequenceFilePath:(NSString *)sequenceFilePath forDictionary:(NSMutableDictionary *)dictionary
@@ -452,7 +455,8 @@
     NSMutableArray *beingUsedInSequenceFilePaths = [self dictionaryBeingUsedInSequenceFilePaths:dictionary];
     [beingUsedInSequenceFilePaths removeObject:sequenceFilePath];
     [dictionary setObject:beingUsedInSequenceFilePaths forKey:@"beingUsedInSequenceFilePaths"];
-    [self saveDictionaryToItsFilePath:dictionary];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:dictionary];
 }
 
 - (NSMutableDictionary *)dictionaryFromFilePath:(NSString *)filePath
@@ -835,7 +839,8 @@
     currentSequence = newSequence;
     
     [self loadControlBoxesForCurrentSequence];
-    [self loadCommandClustersForCurrentSequence];
+    if(shouldAutosave)
+            [self loadCommandClustersForCurrentSequence];
     [self loadAudioClipsForCurrentSequence];
     [self loadChannelGroupsForCurrentSequence];
     
@@ -1099,27 +1104,42 @@
 
 - (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i
 {
-    return [currentSequenceControlBoxes objectAtIndex:i];
+    if([currentSequenceControlBoxes count] - 1 >= i)
+        return [currentSequenceControlBoxes objectAtIndex:i];
+    
+    return nil;
 }
 
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i
 {
-    return [currentSequenceCommandClusters objectAtIndex:i];
+    if([currentSequenceCommandClusters count] - 1 >= i)
+        return [currentSequenceCommandClusters objectAtIndex:i];
+    
+    return nil;
 }
 
 - (NSMutableDictionary *)audioClipForCurrentSequenceAtIndex:(int)i
 {
-    return [currentSequenceAudioClips objectAtIndex:i];
+    if([currentSequenceAudioClips count] - 1 >= i)
+        return [currentSequenceAudioClips objectAtIndex:i];
+    
+    return nil;
 }
 
 - (NSDictionary *)audioAnalysisForCurrentSequenceAtIndex:(int)i
 {
-    return [currentSequenceAudioAnalyses objectAtIndex:i];
+    if([currentSequenceAudioAnalyses count] - 1 >= i)
+        return [currentSequenceAudioAnalyses objectAtIndex:i];
+    
+    return nil;
 }
 
 - (NSMutableDictionary *)channelGroupForCurrentSequenceAtIndex:(int)i
 {
-    return [currentSequenceChannelGroups objectAtIndex:i];
+    if([currentSequenceChannelGroups count] - 1 >= i)
+        return [currentSequenceChannelGroups objectAtIndex:i];
+    
+    return nil;
 }
 
 - (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count
@@ -1166,6 +1186,350 @@
     currentPlaylistIndex = -1;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+}
+
+- (void)autogenCurrentSequence
+{
+    // Delete all previous data for the sequence
+    int commandClusterFilePathsCountForSequence = [self commandClusterFilePathsCountForSequence:currentSequence];
+    NSLog(@"ccCount:%d", commandClusterFilePathsCountForSequence);
+    for(int i = 0; i < commandClusterFilePathsCountForSequence; i ++)
+    {
+        NSLog(@"delete cluster:%d", i);
+        NSMutableDictionary *commandCluster = [self commandClusterForCurrentSequenceAtIndex:0];
+        
+        // Remove the commandCluster from any sequences
+        NSMutableArray *sequenceFilePaths = [self commandClusterBeingUsedInSequenceFilePaths:commandCluster];
+        for(int i = 0; i < [sequenceFilePaths count]; i ++)
+        {
+            [self removeCommandClusterFilePath:[self filePathForCommandCluster:commandCluster] forSequence:[self sequenceFromFilePath:[sequenceFilePaths objectAtIndex:i]]];
+        }
+        
+        NSMutableArray *filePaths = [self commandClusterFilePaths];
+        [filePaths removeObject:[self filePathForCommandCluster:commandCluster]];
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForCommandCluster:commandCluster]] error:NULL];
+        [commandClusterLibrary setObject:filePaths forKey:@"commandClusterFilePaths"];
+        [self saveCommandClusterLibrary];
+        
+        //[self loadCommandClustersForCurrentSequence];
+        [self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
+    }
+    
+    // Get the first audioAnalysis for this sequence (autogen does not yet support multiple audioAnalysi)
+    NSDictionary *audioAnalysis = nil;
+    audioAnalysis = [self audioAnalysisForCurrentSequenceAtIndex:0];
+    
+    // If the sequence has an analysis, autogen commands
+    if(audioAnalysis != nil)
+    {
+        //NSDictionary *metaData = [audioAnalysis objectForKey:@"track"];
+        NSArray *beats = [audioAnalysis objectForKey:@"beats"];
+        NSArray *tatums = [audioAnalysis objectForKey:@"tatums"];
+        NSArray *segments = [audioAnalysis objectForKey:@"segments"];
+        
+        int controlBoxesCount = [self controlBoxFilePathsCountForSequence:currentSequence];
+        // Create one commandCluster per controlBox (these will get split up into smaller clusters layer)
+        for(int i = 0; i < controlBoxesCount; i ++)
+        {
+            NSString *newCommandClusterFilePath = [self createCommandClusterAndReturnFilePath];
+            NSMutableDictionary *newCommandCluster = [self commandClusterFromFilePath:newCommandClusterFilePath];
+            [self setEndTime:[self endTimeForSequence:currentSequence] forCommandcluster:newCommandCluster];
+            [self setDescription:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]]] forCommandCluster:newCommandCluster];
+            [self setControlBoxFilePath:[self controlBoxFilePathAtIndex:i forSequence:currentSequence] forCommandCluster:newCommandCluster];
+            [self addCommandClusterFilePath:newCommandClusterFilePath forSequence:currentSequence];
+        }
+        shouldAutosave = NO;
+        // Assgin the boxes to a data type
+        int *controlBoxDataTypes = malloc(controlBoxesCount * sizeof(int));
+        int *beatControlBoxIndexes = malloc(controlBoxesCount * sizeof(int));
+        int beatControlBoxesCount = 0;
+        int *tatumControlBoxIndexes = malloc(controlBoxesCount * sizeof(int));
+        int tatumControlBoxesCount = 0;
+        int *segmentControlBoxIndexes = malloc(controlBoxesCount * sizeof(int));
+        int segmentControlBoxesCount = 0;
+        for(int i = 0; i < controlBoxesCount; i ++)
+        {
+            int dataType = arc4random() % 3; // Either a 0, 1, or 2 (beat, tatum, or segment)
+            NSLog(@"dataType:%d", dataType);
+            controlBoxDataTypes[i] = dataType;
+            if(dataType == MNBeat)
+            {
+                beatControlBoxIndexes[beatControlBoxesCount] = i;
+                beatControlBoxesCount ++;
+            }
+            else if(dataType == MNTatum)
+            {
+                tatumControlBoxIndexes[tatumControlBoxesCount] = i;
+                tatumControlBoxesCount ++;
+            }
+            else if(dataType == MNSegment)
+            {
+                segmentControlBoxIndexes[segmentControlBoxesCount] = i;
+                segmentControlBoxesCount ++;
+            }
+        }
+        
+        // Get the numberOfAvailableChannels for beatControlBoxes
+        int numberOfAvailableChannelsForBeats = 0;
+        for(int i = 0; i < beatControlBoxesCount; i ++)
+        {
+            NSLog(@"bcontrolBoxAtIndex:%d", beatControlBoxIndexes[i]);
+            numberOfAvailableChannelsForBeats += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
+        }
+        // Get the numberOfAvailableChannels for tatumControlBoxes
+        int numberOfAvailableChannelsForTatums = 0;
+        for(int i = 0; i < tatumControlBoxesCount; i ++)
+        {
+            NSLog(@"tcontrolBoxAtIndex:%d", tatumControlBoxIndexes[i]);
+            numberOfAvailableChannelsForTatums += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
+        }
+        // Get the numberOfAvailableChannels for segmentControlBoxes
+        int numberOfAvailableChannelsForSegments = 0;
+        for(int i = 0; i < segmentControlBoxesCount; i ++)
+        {
+            NSLog(@"scontrolBoxAtIndex:%d", segmentControlBoxIndexes[i]);
+            numberOfAvailableChannelsForSegments += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]];
+        }
+        
+        int numberOfChannelsToUse = 0;
+        //float averageLoudness = [[metaData objectForKey:@"loudness"] floatValue];
+        float minLoudness = INT32_MAX;
+        float maxLoudness = -INT32_MAX;
+        // Find the min and max loudness of the audioAnalysis
+        for(int currentSegmentIndex = 0; currentSegmentIndex < [segments count]; currentSegmentIndex ++)
+        {
+            NSDictionary *segment = [segments objectAtIndex:currentSegmentIndex];
+            float segmentLoudness = [[segment objectForKey:@"loudness_max"] floatValue];
+            
+            if(segmentLoudness > maxLoudness)
+            {
+                maxLoudness = segmentLoudness;
+            }
+            if(segmentLoudness < minLoudness)
+            {
+                minLoudness = segmentLoudness;
+            }
+        }
+        float loudnessRange = maxLoudness - minLoudness;
+        
+        // Loop through the segments
+        for(int currentSegmentIndex = 0, currentTatumIndex = 0, currentBeatIndex = 0; currentSegmentIndex < [segments count]; currentSegmentIndex ++)
+        {
+            NSLog(@"segment:%d of %d", currentSegmentIndex, (int)[segments count]);
+            // Determine how many channels we should use for this segment
+            NSDictionary *segment = [segments objectAtIndex:currentSegmentIndex];
+            float segmentLoudness = [[segment objectForKey:@"loudness_max"] floatValue];
+            float currentSegmentStartTime = [[segment objectForKey:@"start"] floatValue];
+            float currentSegmentEndTime;
+            if(currentSegmentIndex < [segments count] - 1)
+            {
+                currentSegmentEndTime = [[[segments objectAtIndex:currentSegmentIndex + 1] objectForKey:@"start"] floatValue];
+            }
+            else
+            {
+                currentSegmentEndTime = [self endTimeForSequence:currentSequence];
+            }
+            int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForSegments * 0.20) - (int)(numberOfAvailableChannelsForSegments * 0.10); // Add/subtract a 10% variation to the numberOfChannels
+            numberOfChannelsToUse = ((segmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForSegments + numberOfChannelsVariation;
+            // Limit the numberOfChannelsToUse
+            if(numberOfChannelsToUse > numberOfAvailableChannelsForSegments)
+            {
+                numberOfChannelsToUse = numberOfAvailableChannelsForSegments;
+            }
+            else if(numberOfChannelsToUse < 0)
+            {
+                numberOfChannelsToUse = 0;
+            }
+            // Make an array of the availble channels for segment commands for easy command insertion (controlBoxIndex at index 0, channelIndex at index 1)
+            NSMutableArray *availbleSegmentChannelIndexPaths = [[NSMutableArray alloc] init];
+            for(int i = 0; i < segmentControlBoxesCount; i ++)
+            {
+                for(int i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]]; i2 ++)
+                {
+                    [availbleSegmentChannelIndexPaths addObject:[[NSIndexPath indexPathWithIndex:segmentControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
+                }
+            }
+            
+            // Create the commands for this segment
+            for(int i = 0; i < numberOfChannelsToUse; i ++)
+            {
+                // Randomly pick a channel/controlBox to use
+                int segmentChannelIndexPathToUse = arc4random() % [availbleSegmentChannelIndexPaths count];
+                NSMutableDictionary *commandClusterForNewCommand = [self commandClusterForCurrentSequenceAtIndex:(int)[[availbleSegmentChannelIndexPaths objectAtIndex:segmentChannelIndexPathToUse] indexAtPosition:0]];
+                // Create the newCommand and set it's start/end time
+                int newCommandIndex = [self createCommandAndReturnNewCommandIndexForCommandCluster:commandClusterForNewCommand];
+                [self setChannelIndex:(int)[[availbleSegmentChannelIndexPaths objectAtIndex:segmentChannelIndexPathToUse] indexAtPosition:1] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                [self setStartTime:[[segment objectForKey:@"start"] floatValue] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                float newCommandEndTime = 0;
+                if(currentSegmentIndex < [segments count] - 1)
+                {
+                    newCommandEndTime = [[[segments objectAtIndex:currentSegmentIndex + 1] objectForKey:@"start"] floatValue];
+                }
+                else
+                {
+                    newCommandEndTime = [self endTimeForSequence:currentSequence];
+                }
+                [self setEndTime:newCommandEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                
+                // Remove this channel/controlBox from the availble channels to use
+                [availbleSegmentChannelIndexPaths removeObjectAtIndex:segmentChannelIndexPathToUse];
+            }
+            
+            // Now create the commands for the tatums within the doman of the current segment
+            for( ; (currentTatumIndex < [tatums count] && tatumControlBoxesCount > 0); currentTatumIndex ++)
+            {
+                NSDictionary *tatum = [tatums objectAtIndex:currentTatumIndex];
+                float tatumStartTime = [[tatum objectForKey:@"start"] floatValue];
+                
+                // This tatum should have commands added
+                if(tatumStartTime >= currentSegmentStartTime && tatumStartTime < currentSegmentEndTime)
+                {
+                    int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForTatums * 0.20) - (int)(numberOfAvailableChannelsForTatums * 0.10); // Add/subtract a 10% variation to the numberOfChannels
+                    numberOfChannelsToUse = ((segmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForTatums + numberOfChannelsVariation;
+                    // Limit the numberOfChannelsToUse
+                    if(numberOfChannelsToUse > numberOfAvailableChannelsForTatums)
+                    {
+                        numberOfChannelsToUse = numberOfAvailableChannelsForTatums;
+                    }
+                    else if(numberOfChannelsToUse < 0)
+                    {
+                        numberOfChannelsToUse = 0;
+                    }
+                    // Make an array of the availble channels for tatum commands for easy command insertion (controlBoxIndex at index 0, channelIndex at index 1)
+                    NSMutableArray *availbleTatumChannelIndexPaths = [[NSMutableArray alloc] init];
+                    for(int i = 0; i < tatumControlBoxesCount; i ++)
+                    {
+                        for(int i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]]; i2 ++)
+                        {
+                            [availbleTatumChannelIndexPaths addObject:[[NSIndexPath indexPathWithIndex:tatumControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
+                        }
+                    }
+                    
+                    // Create the commands for this tatum
+                    for(int i = 0; i < numberOfChannelsToUse; i ++)
+                    {
+                        // Randomly pick a channel/controlBox to use
+                        int tatumChannelIndexPathToUse = arc4random() % [availbleTatumChannelIndexPaths count];
+                        NSMutableDictionary *commandClusterForNewCommand = [self commandClusterForCurrentSequenceAtIndex:(int)[[availbleTatumChannelIndexPaths objectAtIndex:tatumChannelIndexPathToUse] indexAtPosition:0]];
+                        // Create the newCommand and set it's start/end time
+                        int newCommandIndex = [self createCommandAndReturnNewCommandIndexForCommandCluster:commandClusterForNewCommand];
+                        [self setChannelIndex:(int)[[availbleTatumChannelIndexPaths objectAtIndex:tatumChannelIndexPathToUse] indexAtPosition:1] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                        [self setStartTime:[[tatum objectForKey:@"start"] floatValue] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                        float newCommandEndTime = 0;
+                        if(currentTatumIndex < [tatums count] - 1)
+                        {
+                            newCommandEndTime = [[[tatums objectAtIndex:currentTatumIndex + 1] objectForKey:@"start"] floatValue];
+                        }
+                        else
+                        {
+                            newCommandEndTime = [self endTimeForSequence:currentSequence];
+                        }
+                        [self setEndTime:newCommandEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                        
+                        // Remove this channel/controlBox from the availble channels to use
+                        [availbleTatumChannelIndexPaths removeObjectAtIndex:tatumChannelIndexPathToUse];
+                    }
+                }
+                // We are done looking if we get past the endTime of the current segment since the data is sorted
+                else if(tatumStartTime >= currentSegmentEndTime)
+                {
+                    break;
+                }
+            }
+            
+            // Now create the commands for the beats within the doman of the current segment
+            for( ; (currentBeatIndex < [beats count] && beatControlBoxesCount > 0); currentBeatIndex ++)
+            {
+                NSDictionary *beat = [beats objectAtIndex:currentBeatIndex];
+                float beatStartTime = [[beat objectForKey:@"start"] floatValue];
+                
+                // This beat should have commands added
+                if(beatStartTime >= currentSegmentStartTime && beatStartTime < currentSegmentEndTime)
+                {
+                    int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForBeats * 0.20) - (int)(numberOfAvailableChannelsForBeats * 0.10); // Add/subtract a 10% variation to the numberOfChannels
+                    numberOfChannelsToUse = ((segmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForBeats + numberOfChannelsVariation;
+                    // Limit the numberOfChannelsToUse
+                    if(numberOfChannelsToUse > numberOfAvailableChannelsForBeats)
+                    {
+                        numberOfChannelsToUse = numberOfAvailableChannelsForBeats;
+                    }
+                    else if(numberOfChannelsToUse < 0)
+                    {
+                        numberOfChannelsToUse = 0;
+                    }
+                    // Make an array of the availble channels for beat commands for easy command insertion (controlBoxIndex at index 0, channelIndex at index 1)
+                    NSMutableArray *availbleBeatChannelIndexPaths = [[NSMutableArray alloc] init];
+                    for(int i = 0; i < beatControlBoxesCount; i ++)
+                    {
+                        for(int i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]]; i2 ++)
+                        {
+                            [availbleBeatChannelIndexPaths addObject:[[NSIndexPath indexPathWithIndex:beatControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
+                        }
+                    }
+                    
+                    // Create the commands for this beat
+                    for(int i = 0; i < numberOfChannelsToUse; i ++)
+                    {
+                        // Randomly pick a channel/controlBox to use
+                        int beatChannelIndexPathToUse = arc4random() % [availbleBeatChannelIndexPaths count];
+                        NSMutableDictionary *commandClusterForNewCommand = [self commandClusterForCurrentSequenceAtIndex:(int)[[availbleBeatChannelIndexPaths objectAtIndex:beatChannelIndexPathToUse] indexAtPosition:0]];
+                        // Create the newCommand and set it's start/end time
+                        int newCommandIndex = [self createCommandAndReturnNewCommandIndexForCommandCluster:commandClusterForNewCommand];
+                        [self setChannelIndex:(int)[[availbleBeatChannelIndexPaths objectAtIndex:beatChannelIndexPathToUse] indexAtPosition:1] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                        [self setStartTime:[[beat objectForKey:@"start"] floatValue] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                        float newCommandEndTime = 0;
+                        if(currentBeatIndex < [beats count] - 1)
+                        {
+                            newCommandEndTime = [[[beats objectAtIndex:currentBeatIndex + 1] objectForKey:@"start"] floatValue];
+                        }
+                        else
+                        {
+                            newCommandEndTime = [self endTimeForSequence:currentSequence];
+                        }
+                        [self setEndTime:newCommandEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
+                        
+                        // Remove this channel/controlBox from the availble channels to use
+                        [availbleBeatChannelIndexPaths removeObjectAtIndex:beatChannelIndexPathToUse];
+                    }
+                }
+                // We are done looking if we get past the endTime of the current segment since the data is sorted
+                else if(beatStartTime >= currentSegmentEndTime)
+                {
+                    break;
+                }
+            }
+        }
+        
+        // Split up the commandClusters every 5 seconds
+        for(int i = 0; i < controlBoxesCount; i ++)
+        {
+            int commandClusterIndexToSplit = i;
+            int newCommandClusterIndexToSplit = 0;
+            for(float t = 5.0; t < [self endTimeForSequence:currentSequence]; t += 5.0)
+            {
+                NSLog(@"splitting commandClusterIndex:%d", commandClusterIndexToSplit);
+                newCommandClusterIndexToSplit = [self splitCommandClusterForCurrentSequenceAtIndex:commandClusterIndexToSplit atTime:t];
+                
+                // Manually save each cluster now that we are done changing it
+                [self saveDictionaryToItsFilePath:[self commandClusterForCurrentSequenceAtIndex:commandClusterIndexToSplit]];
+                
+                commandClusterIndexToSplit = newCommandClusterIndexToSplit;
+            }
+            
+            // Manually save each cluster now that we are done changing it
+            [self saveDictionaryToItsFilePath:[self commandClusterForCurrentSequenceAtIndex:commandClusterIndexToSplit]];
+        }
+        
+        // Manually save each cluster now that we are done changing it
+        /*for(int i = 0; i < controlBoxesCount; i ++)
+        {
+            [self saveDictionaryToItsFilePath:[self commandClusterForCurrentSequenceAtIndex:i]];
+        }*/
+        
+        shouldAutosave = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLibraryContent" object:nil];
+    }
 }
 
 // File Name Methods
@@ -1299,6 +1663,7 @@
 
 - (void)removeSequenceFromLibrary:(NSMutableDictionary *)sequence
 {
+    shouldAutosave = NO;
     // Remove any controlBoxes from this sequence
     NSMutableArray *controlBoxFilePaths = [self controlBoxFilePathsForSequence:sequence];
     for(int i = 0; i < [controlBoxFilePaths count]; i ++)
@@ -1328,6 +1693,7 @@
         [self removeAudioClipFilePath:[audioClipFilePaths objectAtIndex:i] forSequence:sequence];
     }
     
+    shouldAutosave = YES;
     // Remove the sequence
     NSMutableArray *filePaths = [self sequenceFilePaths];
     [filePaths removeObject:[self filePathForSequence:sequence]];
@@ -1472,25 +1838,29 @@
 - (void)setVersionNumber:(float)newVersionNumber forSequence:(NSMutableDictionary *)sequence
 {
     [self setVersionNumber:newVersionNumber forDictionary:sequence];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
 }
 
 - (void)setDescription:(NSString *)description forSequence:(NSMutableDictionary *)sequence
 {
     [sequence setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
 }
 
 - (void)setStartTime:(float)startTIme forSequence:(NSMutableDictionary *)sequence
 {
     [sequence setObject:[NSNumber numberWithFloat:startTIme] forKey:@"startTime"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
 }
 
 - (void)setEndTime:(float)endTime forSequence:(NSMutableDictionary *)sequence
 {
     [sequence setObject:[NSNumber numberWithFloat:endTime] forKey:@"endTime"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
 }
 
 - (void)addAudioClipFilePath:(NSString *)filePath forSequence:(NSMutableDictionary *)sequence
@@ -1498,7 +1868,8 @@
     NSMutableArray *filePaths = [self audioClipFilePathsForSequence:sequence];
     [filePaths addObject:filePath];
     [sequence setObject:filePaths forKey:@"audioClipFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
@@ -1521,7 +1892,8 @@
     NSMutableArray *filePaths = [self audioClipFilePathsForSequence:sequence];
     [filePaths removeObject:filePath];
     [sequence setObject:filePaths forKey:@"audioClipFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
@@ -1545,7 +1917,8 @@
     NSMutableArray *filePaths = [self controlBoxFilePathsForSequence:sequence];
     [filePaths addObject:filePath];
     [sequence setObject:filePaths forKey:@"controlBoxFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
@@ -1560,7 +1933,8 @@
     NSMutableArray *filePaths = [self controlBoxFilePathsForSequence:sequence];
     [filePaths removeObject:filePath];
     [sequence setObject:filePaths forKey:@"controlBoxFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
@@ -1575,7 +1949,8 @@
     NSMutableArray *filePaths = [self channelGroupFilePathsForSequence:sequence];
     [filePaths addObject:filePath];
     [sequence setObject:filePaths forKey:@"channelGroupFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
@@ -1590,7 +1965,8 @@
     NSMutableArray *filePaths = [self channelGroupFilePathsForSequence:sequence];
     [filePaths removeObject:filePath];
     [sequence setObject:filePaths forKey:@"channelGroupFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
@@ -1605,13 +1981,15 @@
     NSMutableArray *filePaths = [self commandClusterFilePathsForSequence:sequence];
     [filePaths addObject:filePath];
     [sequence setObject:filePaths forKey:@"commandClusterFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
     if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
-        [self loadCommandClustersForCurrentSequence];
+        if(shouldAutosave)
+            [self loadCommandClustersForCurrentSequence];
     }
 }
 
@@ -1620,13 +1998,15 @@
     NSMutableArray *filePaths = [self commandClusterFilePathsForSequence:sequence];
     [filePaths removeObject:filePath];
     [sequence setObject:filePaths forKey:@"commandClusterFilePaths"];
-    [self saveDictionaryToItsFilePath:sequence];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:sequence];
     
     [self removeBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
     
     if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
     {
-        [self loadCommandClustersForCurrentSequence];
+        if(shouldAutosave)
+            [self loadCommandClustersForCurrentSequence];
     }
 }
 
@@ -1799,21 +2179,24 @@
 - (void)setVersionNumber:(float)newVersionNumber forControlBox:(NSMutableDictionary *)controlBox
 {
     [self setVersionNumber:newVersionNumber forDictionary:controlBox];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setControlBoxID:(NSString *)ID forControlBox:(NSMutableDictionary *)controlBox
 {
     [controlBox setObject:ID forKey:@"controlBoxID"];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
 - (void)setDescription:(NSString *)description forControlBox:(NSMutableDictionary *)controlBox
 {
     [controlBox setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
@@ -1830,7 +2213,8 @@
     [controlBox setObject:channels forKey:@"channels"];
     int index = (int)[channels count] - 1;
     
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
     
     return index;
@@ -1841,7 +2225,8 @@
     NSMutableArray *channels = [self channelsForControlBox:controlBox];
     [channels removeObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
@@ -1852,7 +2237,8 @@
     [channel setObject:[NSNumber numberWithInt:number] forKey:@"number"];
     [channels replaceObjectAtIndex:index withObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
@@ -1863,7 +2249,8 @@
     [channel setObject:color forKey:@"color"];
     [channels replaceObjectAtIndex:index withObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
@@ -1874,7 +2261,8 @@
     [channel setObject:description forKey:@"description"];
     [channels replaceObjectAtIndex:index withObject:channel];
     [controlBox setObject:channels forKey:@"channels"];
-    [self saveDictionaryToItsFilePath:controlBox];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:controlBox];
     [self updateCurrentSequenceControlBoxesWithControlBox:controlBox];
 }
 
@@ -2033,14 +2421,16 @@
 - (void)setVersionNumber:(float)newVersionNumber forChannelGroup:(NSMutableDictionary *)channelGroup
 {
     [self setVersionNumber:newVersionNumber forDictionary:channelGroup];
-    [self saveDictionaryToItsFilePath:channelGroup];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:channelGroup];
     [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
 - (void)setDescription:(NSString *)description forChannelGroup:(NSMutableDictionary *)channelGroup
 {
     [channelGroup setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:channelGroup];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:channelGroup];
     [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
@@ -2054,7 +2444,8 @@
     [channelGroup setObject:items forKey:@"commands"];
     int index = (int)[items count] - 1;
     
-    [self saveDictionaryToItsFilePath:channelGroup];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:channelGroup];
     [self setChannelIndex:0 forItemDataAtIndex:index whichIsPartOfChannelGroup:channelGroup];
     [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
     
@@ -2066,7 +2457,8 @@
     NSMutableArray *items = [self itemsForChannelGroup:channelGroup];
     [items removeObject:itemData];
     [channelGroup setObject:items forKey:@"items"];
-    [self saveDictionaryToItsFilePath:channelGroup];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:channelGroup];
     [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
@@ -2077,7 +2469,8 @@
     [itemData setObject:filePath forKey:@"controlBoxFilePath"];
     [items replaceObjectAtIndex:index withObject:itemData];
     [channelGroup setObject:items forKey:@"items"];
-    [self saveDictionaryToItsFilePath:channelGroup];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:channelGroup];
     [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
@@ -2088,7 +2481,8 @@
     [itemData setObject:[NSNumber numberWithInt:channelIndex] forKey:@"channelIndex"];
     [items replaceObjectAtIndex:index withObject:itemData];
     [channelGroup setObject:items forKey:@"items"];
-    [self saveDictionaryToItsFilePath:channelGroup];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:channelGroup];
     [self updateCurrentSequenceChannelGroupsWithChannelGroup:channelGroup];
 }
 
@@ -2148,7 +2542,8 @@
     [commandClusterLibrary setObject:filePaths forKey:@"commandClusterFilePaths"];
     [self saveCommandClusterLibrary];
     
-    [self loadCommandClustersForCurrentSequence];
+    if(shouldAutosave)
+            [self loadCommandClustersForCurrentSequence];
     //[self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
 }
 
@@ -2213,16 +2608,103 @@
             [self removeCommand:[commandsToRemoveFromMostRecentlySelectedCommandCluster objectAtIndex:i] fromCommandCluster:mostRecentlySelectedCommandCluster];
         }
         
+        if(shouldAutosave)
         [self saveDictionaryToItsFilePath:mostRecentlySelectedCommandCluster];
         //[self updateCurrentSequenceCommandClustersWithCommandCluster:mostRecentlySelectedCommandCluster];
         
         [self addCommandClusterFilePath:newCommandClusterFilePath forSequence:currentSequence];
+        if(shouldAutosave)
         [self saveDictionaryToItsFilePath:newCommandCluster];
         //[self updateCurrentSequenceCommandClustersWithCommandCluster:newCommandCluster];
-        [self loadCommandClustersForCurrentSequence];
+        if(shouldAutosave)
+            [self loadCommandClustersForCurrentSequence];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
     }
+}
+
+// Returns the index of the newCommandCluster
+- (int)splitCommandClusterForCurrentSequenceAtIndex:(int)commandClusterIndex atTime:(float)time
+{
+    NSMutableDictionary *mostRecentlySelectedCommandCluster = [self commandClusterForCurrentSequenceAtIndex:commandClusterIndex];
+    
+    // Make a new cluster and set it's controlBox/channelGroup to the mostRecentlySelectedCommandCluster's controlBox/channelGroup
+    NSString *newCommandClusterFilePath = [self createCommandClusterAndReturnFilePath];
+    NSMutableDictionary *newCommandCluster = [self commandClusterFromFilePath:newCommandClusterFilePath];
+    if([[self controlBoxFilePathForCommandCluster:mostRecentlySelectedCommandCluster] length] > 0)
+    {
+        [self setControlBoxFilePath:[self controlBoxFilePathForCommandCluster:mostRecentlySelectedCommandCluster] forCommandCluster:newCommandCluster];
+    }
+    else if([[self channelGroupFilePathForCommandCluster:mostRecentlySelectedCommandCluster] length] > 0)
+    {
+        [self setChannelGroupFilePath:[self channelGroupFilePathForCommandCluster:mostRecentlySelectedCommandCluster] forCommandCluster:newCommandCluster];
+    }
+    [self setDescription:[self descriptionForCommandCluster:mostRecentlySelectedCommandCluster] forCommandCluster:newCommandCluster];
+    [self setEndTime:[self endTimeForCommandCluster:mostRecentlySelectedCommandCluster] forCommandcluster:newCommandCluster];
+    [self setStartTime:time forCommandCluster:newCommandCluster];
+    [self setEndTime:time forCommandcluster:mostRecentlySelectedCommandCluster];
+    
+    NSMutableArray *commandsToRemoveFromMostRecentlySelectedCommandCluster = [[NSMutableArray alloc] init];
+    for(int i = 0; i < [self commandsCountForCommandCluster:mostRecentlySelectedCommandCluster]; i ++)
+    {
+        NSMutableDictionary *command = [self commandAtIndex:i fromCommandCluster:mostRecentlySelectedCommandCluster];
+        
+        // Move commands past the time to the new cluster
+        if([self startTimeForCommand:command] >= time)
+        {
+            NSMutableArray *commands = [self commandsFromCommandCluster:newCommandCluster];
+            [commands addObject:command];
+            [newCommandCluster setObject:commands forKey:@"commands"];
+            
+            // Keep track of this command so it can be removed after we are done processing this cluster
+            [commandsToRemoveFromMostRecentlySelectedCommandCluster addObject:[NSNumber numberWithInt:i]];
+        }
+        // Commands that are in the middle of the time get split in half.
+        else if([self startTimeForCommand:command] < time && [self endTimeForCommand:command] >= time)
+        {
+            // Set the end time for the first command
+            float oldEndTime = [self endTimeForCommand:command];
+            [self setEndTime:time forCommandAtIndex:i whichIsPartOfCommandCluster:mostRecentlySelectedCommandCluster];
+            
+            // Now make a new command for the new cluster and set it's end time to the old ent time
+            int newCommandIndex = [self createCommandAndReturnNewCommandIndexForCommandCluster:newCommandCluster];
+            [self setStartTime:time forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+            [self setEndTime:oldEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+            [self setChannelIndex:[self channelIndexForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+            [self setBrightness:[self brightnessForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+            [self setFadeInDuration:[self fadeInDurationForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+            [self setFadeOutDuration:[self fadeOutDurationForCommand:command] forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:newCommandCluster];
+        }
+    }
+    
+    // Remove any commands from the mostRecentlySelectedCommandCluster
+    for(int i = (int)[commandsToRemoveFromMostRecentlySelectedCommandCluster count] - 1; i >= 0; i --)
+    {
+        //[self removeCommand:[commandsToRemoveFromMostRecentlySelectedCommandCluster objectAtIndex:i] fromCommandCluster:mostRecentlySelectedCommandCluster];
+        
+        NSMutableArray *commands = [self commandsFromCommandCluster:mostRecentlySelectedCommandCluster];
+        [commands removeObjectAtIndex:[[commandsToRemoveFromMostRecentlySelectedCommandCluster objectAtIndex:i] intValue]];
+        //[commands removeObject:command];
+        [mostRecentlySelectedCommandCluster setObject:commands forKey:@"commands"];
+        if(shouldAutosave)
+            [self saveDictionaryToItsFilePath:mostRecentlySelectedCommandCluster];
+        //[self updateCurrentSequenceCommandClustersWithCommandCluster:mostRecentlySelectedCommandCluster];
+    }
+    
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:mostRecentlySelectedCommandCluster];
+    [self updateCurrentSequenceCommandClustersWithCommandCluster:mostRecentlySelectedCommandCluster];
+    //NSLog(@"new original cluster:%@", mostRecentlySelectedCommandCluster);
+    
+    [self addCommandClusterFilePath:newCommandClusterFilePath forSequence:currentSequence];
+    [currentSequenceCommandClusters addObject:newCommandCluster];
+    
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:newCommandCluster];
+    //[self updateCurrentSequenceCommandClustersWithCommandCluster:newCommandCluster];
+    //[self loadCommandClustersForCurrentSequence];
+    
+    return [self commandClusterFilePathsCountForSequence:currentSequence] - 1;
 }
 
 // Getter Methods
@@ -2375,35 +2857,40 @@
 - (void)setVersionNumber:(float)newVersionNumber forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [self setVersionNumber:newVersionNumber forDictionary:commandCluster];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setDescription:(NSString *)description forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setControlBoxFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:filePath forKey:@"controlBoxFilePath"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setChannelGroupFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:filePath forKey:@"channelGroupFilePath"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
 - (void)setStartTime:(float)time forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:[NSNumber numberWithFloat:time] forKey:@"startTime"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2411,7 +2898,8 @@
 {
     
     [commandCluster setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2440,7 +2928,8 @@
     
     [self setStartTime:[self startTimeForCommandCluster:commandCluster] + time forCommandCluster:commandCluster];
     [self setEndTime:[self endTimeForCommandCluster:commandCluster] + time forCommandcluster:commandCluster];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2455,7 +2944,8 @@
 - (void)setAudioClipFilePath:(NSString *)filePath forCommandCluster:(NSMutableDictionary *)commandCluster
 {
     [commandCluster setObject:filePath forKey:@"audioClipFilePath"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2469,7 +2959,8 @@
     [commandCluster setObject:commands forKey:@"commands"];
     int index = (int)[commands count] - 1;
     
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self setChannelIndex:0 forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
     [self setEndTime:1.0 forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
     [self setBrightness:100 forCommandAtIndex:index whichIsPartOfCommandCluster:commandCluster];
@@ -2483,7 +2974,8 @@
     NSMutableArray *commands = [self commandsFromCommandCluster:commandCluster];
     [commands removeObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2494,7 +2986,8 @@
     [command setObject:[NSNumber numberWithFloat:time] forKey:@"startTime"];
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2505,7 +2998,8 @@
     [command setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2529,7 +3023,8 @@
     [command setObject:[NSNumber numberWithInt:channelIndex] forKey:@"channelIndex"];
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2540,7 +3035,8 @@
     [command setObject:[NSNumber numberWithInt:brightness] forKey:@"brightness"];
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2551,7 +3047,8 @@
     [command setObject:[NSNumber numberWithFloat:fadeInDuration] forKey:@"fadeInDuration"];
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2562,7 +3059,8 @@
     [command setObject:[NSNumber numberWithFloat:fadeOutDuration] forKey:@"fadeOutDuration"];
     [commands replaceObjectAtIndex:index withObject:command];
     [commandCluster setObject:commands forKey:@"commands"];
-    [self saveDictionaryToItsFilePath:commandCluster];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:commandCluster];
     [self updateCurrentSequenceCommandClustersWithCommandCluster:commandCluster];
 }
 
@@ -2680,25 +3178,29 @@
 - (void)setVersionNumber:(float)newVersionNumber forEffect:(NSMutableDictionary *)effect
 {
     [self setVersionNumber:newVersionNumber forDictionary:effect];
-    [self saveDictionaryToItsFilePath:effect];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:effect];
 }
 
 - (void)setDescription:(NSString *)description forEffect:(NSMutableDictionary *)effect
 {
     [effect setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:effect];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:effect];
 }
 
 - (void)setParameters:(NSString *)parameters forEffect:(NSMutableDictionary *)effect
 {
     [effect setObject:parameters forKey:@"parameters"];
-    [self saveDictionaryToItsFilePath:effect];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:effect];
 }
 
 - (void)setScript:(NSString *)script forEffect:(NSMutableDictionary *)effect
 {
     [effect setObject:script forKey:@"script"];
-    [self saveDictionaryToItsFilePath:effect];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:effect];
 }
 
 #pragma mark - AudioClipLibrary Methods
@@ -2879,21 +3381,24 @@
 - (void)setVersionNumber:(float)newVersionNumber forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:newVersionNumber] forKey:@"versionNumber"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setDescription:(NSString *)description forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:description forKey:@"description"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setFilePathToAudioFile:(NSString *)filePath forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:filePath forKey:@"filePathToAudioFile"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
     
     [self updateAudioAnalysisForAudioClip:audioClip];
@@ -2902,21 +3407,24 @@
 - (void)setStartTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"startTime"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setEndTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endTime"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
 - (void)setEndFadeTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"endFadeTime"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
@@ -2924,7 +3432,8 @@
 {
     [audioClip setObject:[NSNumber numberWithFloat:[self startTimeForAudioClip:audioClip] + time] forKey:@"startTime"];
     [audioClip setObject:[NSNumber numberWithFloat:[self endTimeForAudioClip:audioClip] + time] forKey:@"endTime"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
@@ -2939,7 +3448,8 @@
 - (void)setSeekTime:(float)time forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:[NSNumber numberWithFloat:time] forKey:@"seekTime"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 
@@ -2965,7 +3475,8 @@
 - (void)setUploadProgress:(float)uploadProgress ForAudioClip:(NSMutableDictionary *)audioClip;
 {
     [audioClip setObject:[NSNumber numberWithFloat:uploadProgress] forKey:@"uploadProgress"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"AudioClipUploadProgressUpdate" object:audioClip];
@@ -2974,7 +3485,8 @@
 - (void)setAudioSummary:(NSDictionary *)audioSummary forAudioClip:(NSMutableDictionary *)audioClip
 {
     [audioClip setObject:audioSummary forKey:@"audioSummary"];
-    [self saveDictionaryToItsFilePath:audioClip];
+    if(shouldAutosave)
+        [self saveDictionaryToItsFilePath:audioClip];
     [self updateCurrentSequenceAudioClipsWithAudioClip:audioClip];
 }
 

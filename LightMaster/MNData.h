@@ -26,6 +26,13 @@ enum
     MNMouseUp
 };
 
+enum
+{
+    MNBeat,
+    MNTatum,
+    MNSegment
+};
+
 @interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate>
 {
     NSMutableDictionary *sequenceLibrary;
@@ -71,6 +78,9 @@ enum
     BOOL shouldDrawTime;
     
     NSSound *emptySound;
+    
+    float autogenIntensity; // Must be between 0 and 1.0
+    BOOL shouldAutosave;
 }
 
 @property() NSString *libraryFolder;
@@ -88,6 +98,7 @@ enum
 @property() BOOL shouldDrawTatums;
 @property() BOOL shouldDrawSegments;
 @property() BOOL shouldDrawTime;
+@property() float autogenIntensity;
 
 #pragma mark - Other Methods
 // Other Methods
@@ -100,6 +111,7 @@ enum
 - (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count;
 - (void)playNextPlaylistItem;
 - (void)stopPlaylist;
+- (void)autogenCurrentSequence;
 // Quick access to data
 - (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;
@@ -258,6 +270,7 @@ enum
 - (NSString *)createCopyOfCommandClusterAndReturnFilePath:(NSMutableDictionary *)commandCluster;
 - (void)removeCommandClusterFromLibrary:(NSMutableDictionary *)commandCluster;
 - (void)splitMostRecentlySelectedCommandClusterAtCurrentTime:(NSNotification *)aNotifcation;
+- (int)splitCommandClusterForCurrentSequenceAtIndex:(int)commandClusterIndex atTime:(float)time;
 
 // Getter Methods
 - (float)versionNumberForCommandClusterLibrary;

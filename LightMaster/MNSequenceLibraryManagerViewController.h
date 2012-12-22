@@ -46,6 +46,9 @@
     IBOutlet NSTableView *audioClipsTableView;
     IBOutlet NSButton *deleteAudioClipFromSequenceButton;
     IBOutlet NSButton *addAudioClipToSequenceButton;
+    
+    IBOutlet NSButton *autogenSequenceButton;
+    IBOutlet NSSlider *autogenIntensitySlider;
 }
 
 @property (weak) NSMutableDictionary *sequence;
@@ -63,5 +66,8 @@
 
 - (IBAction)deleteAudioClipFromSequenceButtonPress:(id)sender;
 - (IBAction)addAudioClipToSequenceButtonPress:(id)sender;
+
+- (IBAction)autogenSequenceButtonPress:(id)sender;
+- (IBAction)autogenIntensitySliderChange:(id)sender;
 
 @end
