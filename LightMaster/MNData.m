@@ -1262,26 +1262,24 @@
         int numberOfAvailableChannelsForBeats = 0;
         for(int i = 0; i < beatControlBoxesCount; i ++)
         {
-            NSLog(@"bcontrolBoxAtIndex:%d", beatControlBoxIndexes[i]);
             numberOfAvailableChannelsForBeats += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
         }
         // Get the numberOfAvailableChannels for tatumControlBoxes
         int numberOfAvailableChannelsForTatums = 0;
         for(int i = 0; i < tatumControlBoxesCount; i ++)
         {
-            NSLog(@"tcontrolBoxAtIndex:%d", tatumControlBoxIndexes[i]);
             numberOfAvailableChannelsForTatums += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
         }
         // Get the numberOfAvailableChannels for segmentControlBoxes
         int numberOfAvailableChannelsForSegments = 0;
         for(int i = 0; i < segmentControlBoxesCount; i ++)
         {
-            NSLog(@"scontrolBoxAtIndex:%d", segmentControlBoxIndexes[i]);
             numberOfAvailableChannelsForSegments += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]];
         }
         
         int numberOfChannelsToUse = 0;
-        //float averageLoudness = [[metaData objectForKey:@"loudness"] floatValue];
+        float averageLoudness = [[[audioAnalysis objectForKey:@"track"] objectForKey:@"loudness"] floatValue];
+        NSLog(@"averageLoudness:%f", averageLoudness);
         float minLoudness = INT32_MAX;
         float maxLoudness = -INT32_MAX;
         // Find the min and max loudness of the audioAnalysis
@@ -1294,17 +1292,17 @@
             {
                 maxLoudness = segmentLoudness;
             }
-            if(segmentLoudness < minLoudness)
+            if(segmentLoudness < minLoudness && segmentLoudness >= -50.000)
             {
                 minLoudness = segmentLoudness;
             }
         }
         float loudnessRange = maxLoudness - minLoudness;
+        NSLog(@"loudnessMin:%f max:%f", minLoudness, maxLoudness);
         
         // Loop through the segments
         for(int currentSegmentIndex = 0, currentTatumIndex = 0, currentBeatIndex = 0; currentSegmentIndex < [segments count]; currentSegmentIndex ++)
         {
-            NSLog(@"segment:%d of %d", currentSegmentIndex, (int)[segments count]);
             // Determine how many channels we should use for this segment
             NSDictionary *segment = [segments objectAtIndex:currentSegmentIndex];
             float segmentLoudness = [[segment objectForKey:@"loudness_max"] floatValue];
@@ -1318,8 +1316,8 @@
             {
                 currentSegmentEndTime = [self endTimeForSequence:currentSequence];
             }
-            int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForSegments * 0.20) - (int)(numberOfAvailableChannelsForSegments * 0.10); // Add/subtract a 10% variation to the numberOfChannels
-            numberOfChannelsToUse = ((segmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForSegments + numberOfChannelsVariation;
+            //int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForSegments * 0.10) - (int)(numberOfAvailableChannelsForSegments * 0.05); // Add/subtract a 10% variation to the numberOfChannels
+            numberOfChannelsToUse = ((segmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForSegments;// + numberOfChannelsVariation;
             // Limit the numberOfChannelsToUse
             if(numberOfChannelsToUse > numberOfAvailableChannelsForSegments)
             {
@@ -1338,6 +1336,7 @@
                     [availbleSegmentChannelIndexPaths addObject:[[NSIndexPath indexPathWithIndex:segmentControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
                 }
             }
+            NSLog(@"segment:%d of %d\tloudness:%f\tchannels:%d", currentSegmentIndex, (int)[segments count], segmentLoudness, numberOfChannelsToUse);
             
             // Create the commands for this segment
             for(int i = 0; i < numberOfChannelsToUse; i ++)
