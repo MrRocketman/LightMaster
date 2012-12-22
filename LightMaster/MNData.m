@@ -1193,27 +1193,16 @@
     // Delete all previous data for the sequence
     int commandClusterFilePathsCountForSequence = [self commandClusterFilePathsCountForSequence:currentSequence];
     NSLog(@"ccCount:%d", commandClusterFilePathsCountForSequence);
+    shouldAutosave = NO;
     for(int i = 0; i < commandClusterFilePathsCountForSequence; i ++)
     {
         NSLog(@"delete cluster:%d", i);
         NSMutableDictionary *commandCluster = [self commandClusterForCurrentSequenceAtIndex:0];
-        
-        // Remove the commandCluster from any sequences
-        NSMutableArray *sequenceFilePaths = [self commandClusterBeingUsedInSequenceFilePaths:commandCluster];
-        for(int i = 0; i < [sequenceFilePaths count]; i ++)
-        {
-            [self removeCommandClusterFilePath:[self filePathForCommandCluster:commandCluster] forSequence:[self sequenceFromFilePath:[sequenceFilePaths objectAtIndex:i]]];
-        }
-        
-        NSMutableArray *filePaths = [self commandClusterFilePaths];
-        [filePaths removeObject:[self filePathForCommandCluster:commandCluster]];
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", libraryFolder, [self filePathForCommandCluster:commandCluster]] error:NULL];
-        [commandClusterLibrary setObject:filePaths forKey:@"commandClusterFilePaths"];
-        [self saveCommandClusterLibrary];
-        
-        //[self loadCommandClustersForCurrentSequence];
-        [self removeCommandClusterFromCurrentSequenceCommandClusters:commandCluster];
+        [self removeCommandClusterFromLibrary:commandCluster];
+        [currentSequenceCommandClusters removeObject:commandCluster];
     }
+    shouldAutosave = YES;
+    [self setCurrentSequence:currentSequence];
     
     // Get the first audioAnalysis for this sequence (autogen does not yet support multiple audioAnalysi)
     NSDictionary *audioAnalysis = nil;
@@ -1519,6 +1508,8 @@
             // Manually save each cluster now that we are done changing it
             [self saveDictionaryToItsFilePath:[self commandClusterForCurrentSequenceAtIndex:commandClusterIndexToSplit]];
         }
+        
+        [self saveDictionaryToItsFilePath:currentSequence];
         
         // Manually save each cluster now that we are done changing it
         /*for(int i = 0; i < controlBoxesCount; i ++)
