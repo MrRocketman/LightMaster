@@ -1292,7 +1292,7 @@
             {
                 maxLoudness = segmentLoudness;
             }
-            if(segmentLoudness < minLoudness && segmentLoudness >= -50.000)
+            if(segmentLoudness < minLoudness && segmentLoudness >= -51.000)
             {
                 minLoudness = segmentLoudness;
             }
@@ -1336,7 +1336,7 @@
                     [availbleSegmentChannelIndexPaths addObject:[[NSIndexPath indexPathWithIndex:segmentControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
                 }
             }
-            NSLog(@"segment:%d of %d\tloudness:%f\tchannels:%d", currentSegmentIndex, (int)[segments count], segmentLoudness, numberOfChannelsToUse);
+            NSLog(@"segment:%d of %d\tloudnessmax:%f\tloudnesss:%f\tchannels:%d", currentSegmentIndex, (int)[segments count], segmentLoudness, [[segment objectForKey:@"loudness_start"] floatValue],numberOfChannelsToUse);
             
             // Create the commands for this segment
             for(int i = 0; i < numberOfChannelsToUse; i ++)
@@ -1351,11 +1351,11 @@
                 float newCommandEndTime = 0;
                 if(currentSegmentIndex < [segments count] - 1)
                 {
-                    newCommandEndTime = [[[segments objectAtIndex:currentSegmentIndex + 1] objectForKey:@"start"] floatValue];
+                    newCommandEndTime = [[[segments objectAtIndex:currentSegmentIndex + 1] objectForKey:@"start"] floatValue] - 0.1;
                 }
                 else
                 {
-                    newCommandEndTime = [self endTimeForSequence:currentSequence];
+                    newCommandEndTime = [self endTimeForSequence:currentSequence] - 0.1;
                 }
                 [self setEndTime:newCommandEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
                 
@@ -1406,11 +1406,11 @@
                         float newCommandEndTime = 0;
                         if(currentTatumIndex < [tatums count] - 1)
                         {
-                            newCommandEndTime = [[[tatums objectAtIndex:currentTatumIndex + 1] objectForKey:@"start"] floatValue];
+                            newCommandEndTime = [[[tatums objectAtIndex:currentTatumIndex + 1] objectForKey:@"start"] floatValue] - 0.1;
                         }
                         else
                         {
-                            newCommandEndTime = [self endTimeForSequence:currentSequence];
+                            newCommandEndTime = [self endTimeForSequence:currentSequence] - 0.1;
                         }
                         [self setEndTime:newCommandEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
                         
@@ -1468,11 +1468,11 @@
                         float newCommandEndTime = 0;
                         if(currentBeatIndex < [beats count] - 1)
                         {
-                            newCommandEndTime = [[[beats objectAtIndex:currentBeatIndex + 1] objectForKey:@"start"] floatValue];
+                            newCommandEndTime = [[[beats objectAtIndex:currentBeatIndex + 1] objectForKey:@"start"] floatValue] - 0.1;
                         }
                         else
                         {
-                            newCommandEndTime = [self endTimeForSequence:currentSequence];
+                            newCommandEndTime = [self endTimeForSequence:currentSequence] - 0.1;
                         }
                         [self setEndTime:newCommandEndTime forCommandAtIndex:newCommandIndex whichIsPartOfCommandCluster:commandClusterForNewCommand];
                         
