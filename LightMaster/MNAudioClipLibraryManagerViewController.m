@@ -170,11 +170,11 @@
     
     if(previousOpenPanelDirectory == nil)
     {
-        [openPanel setDirectoryURL:[NSURL URLWithString:@"~"]];
+        [openPanel setDirectoryURL:[NSURL fileURLWithPathComponents:@[@"~", @"Music"]]];
     }
     else
     {
-        [openPanel setDirectoryURL:[NSURL URLWithString:previousOpenPanelDirectory]];
+        [openPanel setDirectoryURL:[NSURL fileURLWithPath:previousOpenPanelDirectory]];
     }
     
     [openPanel beginWithCompletionHandler:^(NSInteger result)
@@ -193,7 +193,7 @@
     [self loadOpenPanel];
     
     NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", [data libraryFolder]];
-    [openPanel setDirectoryURL:[NSURL URLWithString:audioClipLibraryDirectory]];
+    [openPanel setDirectoryURL:[NSURL fileURLWithPathComponents:@[@"~", @"Library", @"Application Support", @"Light Master", @"audioClipLibrary"]]];
     
     [openPanel beginWithCompletionHandler:^(NSInteger result)
      {
