@@ -1286,7 +1286,7 @@
         for(int currentSegmentIndex = 0; currentSegmentIndex < [segments count]; currentSegmentIndex ++)
         {
             NSDictionary *segment = [segments objectAtIndex:currentSegmentIndex];
-            float segmentLoudness = [[segment objectForKey:@"loudness_max"] floatValue];
+            float segmentLoudness = [[segment objectForKey:@"loudness_start"] floatValue];
             
             if(segmentLoudness > maxLoudness)
             {
@@ -1305,7 +1305,7 @@
         {
             // Determine how many channels we should use for this segment
             NSDictionary *segment = [segments objectAtIndex:currentSegmentIndex];
-            float segmentLoudness = [[segment objectForKey:@"loudness_max"] floatValue];
+            float segmentLoudness = [[segment objectForKey:@"loudness_start"] floatValue];
             float currentSegmentStartTime = [[segment objectForKey:@"start"] floatValue];
             float currentSegmentEndTime;
             if(currentSegmentIndex < [segments count] - 1)
@@ -1336,7 +1336,7 @@
                     [availbleSegmentChannelIndexPaths addObject:[[NSIndexPath indexPathWithIndex:segmentControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
                 }
             }
-            NSLog(@"segment:%d of %d\tloudnessmax:%f\tloudnesss:%f\tchannels:%d", currentSegmentIndex, (int)[segments count], segmentLoudness, [[segment objectForKey:@"loudness_start"] floatValue],numberOfChannelsToUse);
+            NSLog(@"segment:%d of %d\tloudness:%f\tloudnesssmax:%f\tchannels:%d", currentSegmentIndex, (int)[segments count], segmentLoudness, [[segment objectForKey:@"loudness_max"] floatValue],numberOfChannelsToUse);
             
             // Create the commands for this segment
             for(int i = 0; i < numberOfChannelsToUse; i ++)
