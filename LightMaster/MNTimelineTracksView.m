@@ -548,6 +548,7 @@
 - (void)drawCommandClustersAtTrackIndex:(int)trackIndex tracksTall:(int)tracksTall parentIndex:(int)parentIndex parentIsControlBox:(BOOL)isControlBox
 {
     NSRect superViewFrame = [[self superview] frame];
+    NSRect visibleRect = [(NSClipView *)[self superview] documentVisibleRect];
     float timeSpan = [data xToTime:[data timeToX:[data timeAtLeftEdgeOfTimelineView]] + superViewFrame.size.width] - [data timeAtLeftEdgeOfTimelineView];
     float timeAtLeftEdge = [data timeAtLeftEdgeOfTimelineView];
     float timeAtRightEdge = timeAtLeftEdge + timeSpan;
@@ -557,14 +558,16 @@
         NSMutableDictionary *currentCommandCluster = [data commandClusterForCurrentSequenceAtIndex:i];
         float startTime = [data startTimeForCommandCluster:currentCommandCluster];
         float endTime = [data endTimeForCommandCluster:currentCommandCluster];
+        float clusterYCoordinate = self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - tracksTall * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1;
+        float clusterHeight = TRACK_ITEM_HEIGHT * tracksTall - 2;
         
         // Command Cluster is for this controlBox/channelGroup
         if((isControlBox ? [[data controlBoxFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data controlBoxFilePathAtIndex:parentIndex forSequence:[data currentSequence]]] : [[data channelGroupFilePathForCommandCluster:currentCommandCluster] isEqualToString:[data channelGroupFilePathAtIndex:parentIndex forSequence:[data currentSequence]]]))
         {
             // Check to see if this commandCluster is in the visible range
-            if((startTime > timeAtLeftEdge && startTime < timeAtRightEdge) || (endTime > timeAtLeftEdge && endTime < timeAtRightEdge) || (startTime <= timeAtLeftEdge && endTime >= timeAtRightEdge))
+            if(((startTime > timeAtLeftEdge && startTime < timeAtRightEdge) || (endTime > timeAtLeftEdge && endTime < timeAtRightEdge) || (startTime <= timeAtLeftEdge && endTime >= timeAtRightEdge)) && ((clusterYCoordinate > visibleRect.origin.y && clusterYCoordinate < visibleRect.origin.y + visibleRect.size.height) || (clusterYCoordinate + clusterHeight > visibleRect.origin.y && clusterYCoordinate + clusterHeight < visibleRect.origin.y + visibleRect.size.height) || (clusterYCoordinate <= visibleRect.origin.y && clusterYCoordinate + clusterHeight >= visibleRect.origin.y + visibleRect.size.height)))
             {
-                NSRect commandClusterRect = NSMakeRect([data timeToX:startTime], self.frame.size.height - trackIndex * TRACK_ITEM_HEIGHT - tracksTall * TRACK_ITEM_HEIGHT - TOP_BAR_HEIGHT + 1, [data widthForTimeInterval:endTime - startTime], TRACK_ITEM_HEIGHT * tracksTall - 2);
+                NSRect commandClusterRect = NSMakeRect([data timeToX:startTime], clusterYCoordinate, [data widthForTimeInterval:endTime - startTime], clusterHeight);
                 
                 // There is a mouse event within the bounds of the commandCluster
                 if(mouseEvent != nil && ([[NSBezierPath bezierPathWithRect:commandClusterRect] containsPoint:currentMousePoint] || ((mouseDraggingEvent == MNControlBoxCommandClusterMouseDrag || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragStartTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragEndTime || mouseDraggingEvent == MNControlBoxCommandClusterMouseDragBetweenChannels) && (mouseDraggingEventObjectIndex == -1 || mouseDraggingEventObjectIndex == i))))
