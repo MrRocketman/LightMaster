@@ -80,6 +80,7 @@ enum
     NSSound *emptySound;
     
     float autogenIntensity; // Must be between 0 and 1.0
+    float autogenv2Intensity; 
     BOOL shouldAutosave;
 }
 
@@ -99,6 +100,7 @@ enum
 @property() BOOL shouldDrawSegments;
 @property() BOOL shouldDrawTime;
 @property() float autogenIntensity;
+@property() float autogenv2Intensity;
 
 #pragma mark - Other Methods
 // Other Methods

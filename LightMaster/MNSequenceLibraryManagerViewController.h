@@ -49,6 +49,9 @@
     
     IBOutlet NSButton *autogenSequenceButton;
     IBOutlet NSSlider *autogenIntensitySlider;
+    
+    IBOutlet NSButton *autogenv2SequenceButton;
+    IBOutlet NSSlider *autogenv2IntensitySlider;
 }
 
 @property (weak) NSMutableDictionary *sequence;
@@ -69,5 +72,8 @@
 
 - (IBAction)autogenSequenceButtonPress:(id)sender;
 - (IBAction)autogenIntensitySliderChange:(id)sender;
+
+- (IBAction)autogenv2SequenceButtonPress:(id)sender;
+- (IBAction)autogenv2IntensitySliderChange:(id)sender;
 
 @end

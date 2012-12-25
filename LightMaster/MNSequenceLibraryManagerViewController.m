@@ -68,6 +68,8 @@
         [addAudioClipToSequenceButton setEnabled:YES];
         [autogenSequenceButton setEnabled:YES];
         [autogenIntensitySlider setEnabled:YES];
+        [autogenv2SequenceButton setEnabled:YES];
+        [autogenv2IntensitySlider setEnabled:YES];
         
         [descriptionTextField setStringValue:[data descriptionForSequence:sequence]];
         [startTimeTextField setStringValue:[NSString stringWithFormat:@"%.3f", [data startTimeForSequence:sequence]]];
@@ -89,6 +91,8 @@
         [deleteAudioClipFromSequenceButton setEnabled:NO];
         [autogenSequenceButton setEnabled:NO];
         [autogenIntensitySlider setEnabled:NO];
+        [autogenv2SequenceButton setEnabled:NO];
+        [autogenv2IntensitySlider setEnabled:NO];
         
         [descriptionTextField setStringValue:@""];
         [startTimeTextField setStringValue:@""];
@@ -225,12 +229,22 @@
 
 - (IBAction)autogenSequenceButtonPress:(id)sender
 {
-    [data autogenv2ForCurrentSequence];
+    [data autogenCurrentSequence];
 }
 
 - (IBAction)autogenIntensitySliderChange:(id)sender
 {
     [data setAutogenIntensity:[autogenIntensitySlider floatValue]];
+}
+
+- (IBAction)autogenv2SequenceButtonPress:(id)sender
+{
+    [data autogenv2ForCurrentSequence];
+}
+
+- (IBAction)autogenv2IntensitySliderChange:(id)sender
+{
+    [data setAutogenv2Intensity:[autogenv2IntensitySlider floatValue]];
 }
 
 #pragma mark - NSTableViewDataSource Methods
