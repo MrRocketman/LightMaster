@@ -1759,7 +1759,7 @@
             // Calculate the number of channels per pitch
             NSLog(@"availableChannels:%d", numberOfAvailableChannelsForSegments);
             NSLog(@"pitchesToUseCount:%d", pitchesToUseCount);
-            channelsPerPitch = (float)numberOfAvailableChannelsForSegments / pitchesToUseCount * autogenIntensity;
+            //channelsPerPitch = (float)numberOfAvailableChannelsForSegments / pitchesToUseCount * autogenIntensity; // Use this to spread out the pitches between all channels, see below for just boxes
             //NSLog(@"channelsPerPitch:%f", channelsPerPitch);
             
             // Make a 2D array of the availble channels for segment commands for easy command insertion (controlBoxIndex at index 0, channelIndex at index 1)
@@ -1774,6 +1774,10 @@
             int channelsAssignedTotal = 0;
             for(int i = 0; i < segmentControlBoxesCount; i ++)
             {
+                channelsPerPitch = (float)[self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]] / pitchesToUseCount * autogenIntensity; // Use this to assign all pitches to each box
+                currentPitchIndex = pitchesToUse[0]; // Also use these 3 lines to assign all pitches to each box
+                pitchCounter = 0;
+                channelsAssignedTotal = 0;
                 for(int i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]]; i2 ++)
                 {
                     [[segmentChannelIndexPathArrays objectAtIndex:currentPitchIndex] addObject:[[NSIndexPath indexPathWithIndex:segmentControlBoxIndexes[i]] indexPathByAddingIndex:i2]];
@@ -1846,13 +1850,13 @@
                                 if(nextPitchValue <= currentPitchValue)
                                 {
                                     // Note lasts at least 2 segments
-                                    if((nextPitchValue <= currentPitchValue && nextPitchValue >= 0.3 && [[nextNextSegment objectForKey:@"confidence"] floatValue] >= 0.3) || (currentPitchValue - nextNextPitchValue <= 0.1 &&[[nextSegment objectForKey:@"confidence"] floatValue] < 0.3))
+                                    if((nextPitchValue <= currentPitchValue && nextPitchValue >= 0.3 && [[nextSegment objectForKey:@"confidence"] floatValue] >= 0.3) || (currentPitchValue - nextPitchValue <= 0.1 && currentPitchValue - nextPitchValue >= 0.0 && [[nextSegment objectForKey:@"confidence"] floatValue] < 0.3))
                                     {
                                         // Note lasts three segments
-                                        if((nextNextPitchValue <= nextPitchValue && nextNextPitchValue >= 0.3 && [[nextNextSegment objectForKey:@"confidence"] floatValue] >= 0.3) || (nextPitchValue - nextNextPitchValue <= 0.1 && [[nextNextSegment objectForKey:@"confidence"] floatValue] < 0.3))
+                                        if((nextNextPitchValue <= nextPitchValue && nextNextPitchValue >= 0.3 && [[nextNextSegment objectForKey:@"confidence"] floatValue] >= 0.3) || (nextPitchValue - nextNextPitchValue <= 0.1 && nextPitchValue - nextNextPitchValue >= 0.0 && [[nextNextSegment objectForKey:@"confidence"] floatValue] < 0.3))
                                         {
                                             NSLog(@"three segments");
-                                            newCommandEndTime = currentSegmentStartTime + ([[nextNextSegment objectForKey:@"start"] floatValue] - currentSegmentStartTime) + [[nextNextSegment objectForKey:@"duration"] floatValue];
+                                            newCommandEndTime = currentSegmentStartTime + ([[nextNextSegment objectForKey:@"start"] floatValue] - currentSegmentStartTime) + [[nextNextSegment objectForKey:@"duration"] floatValue] - 0.1;
                                         }
                                         // Note lasts two segments but the third segment is a new note
                                         else if(nextNextPitchValue >= nextPitchValue + 0.1 && nextPitchValue >= 0.2)
@@ -1892,7 +1896,7 @@
                         float tatumStartTime = [[tatum objectForKey:@"start"] floatValue];
                         
                         // This tatum should have commands added
-                        if(tatumStartTime >= currentSegmentStartTime && tatumStartTime < currentSegmentEndTime)
+                        if(tatumStartTime >= currentSegmentStartTime && tatumStartTime < currentSegmentEndTime && [[tatum objectForKey:@"confidence"] floatValue] >= 0.10)
                         {
                             //int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForTatums * 0.20) - (int)(numberOfAvailableChannelsForTatums * 0.10); // Add/subtract a 10% variation to the numberOfChannels
                             int numberOfChannelsToUse = ((currentSegmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForTatums / 2;// + numberOfChannelsVariation;
@@ -1951,7 +1955,7 @@
                         float beatStartTime = [[beat objectForKey:@"start"] floatValue];
                         
                         // This beat should have commands added
-                        if(beatStartTime >= currentSegmentStartTime && beatStartTime < currentSegmentEndTime)
+                        if(beatStartTime >= currentSegmentStartTime && beatStartTime < currentSegmentEndTime && [[beat objectForKey:@"confidence"] floatValue] >= 0.10)
                         {
                             //int numberOfChannelsVariation = arc4random() % (int)(numberOfAvailableChannelsForBeats * 0.20) - (int)(numberOfAvailableChannelsForBeats * 0.10); // Add/subtract a 10% variation to the numberOfChannels
                             int numberOfChannelsToUse = ((currentSegmentLoudness - minLoudness) / loudnessRange) * autogenIntensity * numberOfAvailableChannelsForBeats / 2;// + numberOfChannelsVariation;

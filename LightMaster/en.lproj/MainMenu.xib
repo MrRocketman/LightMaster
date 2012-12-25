@@ -26611,6 +26611,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="chooseAudioFileButton">NSButton</string>
 						<string key="chooseAudioFileFromLibraryButton">NSButton</string>
+						<string key="data">MNData</string>
 						<string key="descriptionTextField">NSTextField</string>
 						<string key="endFadeTimeTextField">NSTextField</string>
 						<string key="endTimeTextField">NSTextField</string>
@@ -26627,6 +26628,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="IBToOneOutletInfo" key="chooseAudioFileFromLibraryButton">
 							<string key="name">chooseAudioFileFromLibraryButton</string>
 							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="data">
+							<string key="name">data</string>
+							<string key="candidateClassName">MNData</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="descriptionTextField">
 							<string key="name">descriptionTextField</string>
