@@ -192,7 +192,7 @@
 {
     [self loadOpenPanel];
     
-    NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", [data libraryFolder]];
+    //NSString *audioClipLibraryDirectory = [NSString stringWithFormat:@"%@/audioClipLibrary", [data libraryFolder]];
     [openPanel setDirectoryURL:[NSURL fileURLWithPathComponents:@[@"~", @"Library", @"Application Support", @"Light Master", @"audioClipLibrary"]]];
     
     [openPanel beginWithCompletionHandler:^(NSInteger result)

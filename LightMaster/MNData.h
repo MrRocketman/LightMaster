@@ -111,7 +111,8 @@ enum
 - (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count;
 - (void)playNextPlaylistItem;
 - (void)stopPlaylist;
-- (void)autogenCurrentSequence;
+- (void)autogenCurrentSequence; // Uses loudness to determine number of channels to use. Randomly creates commands. Assigns boxes to either beats, tatums, or segments for duration of song.
+- (void)autogenv2ForCurrentSequence;
 // Quick access to data
 - (NSMutableDictionary *)controlBoxForCurrentSequenceAtIndex:(int)i;
 - (NSMutableDictionary *)commandClusterForCurrentSequenceAtIndex:(int)i;

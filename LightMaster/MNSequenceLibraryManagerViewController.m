@@ -225,7 +225,7 @@
 
 - (IBAction)autogenSequenceButtonPress:(id)sender
 {
-    [data autogenCurrentSequence];
+    [data autogenv2ForCurrentSequence];
 }
 
 - (IBAction)autogenIntensitySliderChange:(id)sender
