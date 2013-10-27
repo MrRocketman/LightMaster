@@ -235,6 +235,7 @@
 - (IBAction)autogenIntensitySliderChange:(id)sender
 {
     [data setAutogenIntensity:[autogenIntensitySlider floatValue]];
+    NSLog(@"intensityV1:%f", [data autogenIntensity]);
 }
 
 - (IBAction)autogenv2SequenceButtonPress:(id)sender
@@ -245,6 +246,7 @@
 - (IBAction)autogenv2IntensitySliderChange:(id)sender
 {
     [data setAutogenv2Intensity:[autogenv2IntensitySlider floatValue]];
+    NSLog(@"intensityV2:%f", [data autogenv2Intensity]);
 }
 
 #pragma mark - NSTableViewDataSource Methods

@@ -1562,8 +1562,8 @@
         int *controlBoxesBeingUsed = malloc(controlBoxesCount * sizeof(int));
         memset(controlBoxesBeingUsed, 0, controlBoxesCount * sizeof(int));
         int controlBoxesAvailable = controlBoxesCount;
-        int numberOfBoxesToUseForBeat = arc4random() % 2 + 1; // 1 or 2
-        int numberOfBoxesToUseForTatum = 1; // just 1 for now
+        int numberOfBoxesToUseForBeat = (controlBoxesAvailable > 2 ? arc4random() % 2 + 1 : 0); // 1 or 2
+        int numberOfBoxesToUseForTatum = (controlBoxesAvailable > 2 ? 1 : 0); // just 1 for now
         
         int numberOfAvailableChannelsForBeats = 0;
         int numberOfAvailableChannelsForTatums = 0;
@@ -1733,7 +1733,14 @@
             // Determine how many controlBoxes to use
             numberOfControlBoxesToUseForSegments = (int)((averageLoudnessForSection - minLoudness) / loudnessRange * autogenv2Intensity * tempControlBoxesAvailable + 0.5);
             if(numberOfControlBoxesToUseForSegments == 0)
+            {
                 numberOfControlBoxesToUseForSegments = 1;
+            }
+            // If we are using 2 or fewer boxes, assign all boxes to segment data
+            if(numberOfBoxesToUseForBeat == 0 && numberOfBoxesToUseForTatum == 0)
+            {
+                numberOfControlBoxesToUseForSegments = tempControlBoxesAvailable;
+            }
             
             // Now randomly assign boxes to use for the segments
             for(int i = 0; i < numberOfControlBoxesToUseForSegments; i ++)
@@ -1760,8 +1767,13 @@
             // Calculate the number of channels per pitch
             NSLog(@"availableChannels:%d", numberOfAvailableChannelsForSegments);
             NSLog(@"pitchesToUseCount:%d", pitchesToUseCount);
-            //channelsPerPitch = (float)numberOfAvailableChannelsForSegments / pitchesToUseCount * autogenv2Intensity; // Use this to spread out the pitches between all channels, see below for just boxes
-            //NSLog(@"channelsPerPitch:%f", channelsPerPitch);
+            channelsPerPitch = -1;
+            // If 2 or less boxes are being used, spread out the pitches
+            /*if(numberOfBoxesToUseForBeat == 0 && numberOfBoxesToUseForTatum == 0)
+            {
+                channelsPerPitch = (float)numberOfAvailableChannelsForSegments / pitchesToUseCount * autogenv2Intensity; // Use this to spread out the pitches between all channels, see below for just boxes
+                NSLog(@"channelsPerPitch:%f", channelsPerPitch);
+            }*/
             
             // Make a 2D array of the availble channels for segment commands for easy command insertion (controlBoxIndex at index 0, channelIndex at index 1)
             NSMutableArray *segmentChannelIndexPathArrays = [[NSMutableArray alloc] init];
@@ -1776,6 +1788,7 @@
             for(int i = 0; i < segmentControlBoxesCount; i ++)
             {
                 channelsPerPitch = (float)[self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]] / pitchesToUseCount * autogenv2Intensity; // Use this to assign all pitches to each box
+                NSLog(@"channels:%d, pitchesToUse:%d, intensity:%f, channelsPerPitch:%f", [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:segmentControlBoxIndexes[i]]], pitchesToUseCount, autogenv2Intensity, channelsPerPitch);
                 currentPitchIndex = pitchesToUse[0]; // Also use these 3 lines to assign all pitches to each box
                 pitchCounter = 0;
                 channelsAssignedTotal = 0;
@@ -1785,13 +1798,16 @@
                     NSLog(@"channel:%d assigned to pitch:%d", i2, currentPitchIndex);
                     
                     channelsAssignedTotal ++;
-                    //NSLog(@"channelsAssignedTotal:%d", channelsAssignedTotal);
-                    //NSLog(@"p*p:%f", channelsPerPitch * currentPitchIndex);
+                    NSLog(@"channelsAssignedTotal:%d RH:%d, pitchCounter:%d", channelsAssignedTotal, (int)(channelsPerPitch * (pitchCounter + 1)), pitchCounter);
                     if(channelsAssignedTotal >= (int)(channelsPerPitch * (pitchCounter + 1)))
                     {
                         pitchCounter ++;
                         currentPitchIndex = pitchesToUse[pitchCounter];
                         //NSLog(@"currentPitchIndex:%d", currentPitchIndex);
+                        
+                        // If all of the pitches have been assigned, we are done
+                        if(pitchCounter >= pitchesToUseCount)
+                            break;
                     }
                 }
             }
