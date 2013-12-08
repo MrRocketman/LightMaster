@@ -407,6 +407,7 @@
 			children = (
 				1A37E893163CC86C000105B5 /* MNAppDelegate.h */,
 				1A37E894163CC86C000105B5 /* MNAppDelegate.m */,
+				1A7AD4411852E89700EFDF68 /* XBee */,
 				1AD64DDD167A9DD300A89D5A /* EchoNest */,
 				1A37E8791634ECD9000105B5 /* Serial */,
 				1A028A8D161CD38400B97A5B /* Data */,
@@ -539,6 +540,13 @@
 				1A487312163A542900820C1D /* ORSSerialPortManager.m */,
 			);
 			name = Serial;
+			sourceTree = "<group>";
+		};
+		1A7AD4411852E89700EFDF68 /* XBee */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = XBee;
 			sourceTree = "<group>";
 		};
 		1A818A8F1624C8FB0054936E /* ChannelGroupLibrary */ = {
