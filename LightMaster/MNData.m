@@ -988,12 +988,22 @@
         {
             uint8_t commandCharacters[128] = {0};
             NSString *controlBoxID = [self controlBoxIDForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
-            NSMutableString *command = [NSMutableString stringWithFormat:@"%@", controlBoxID];
+            ////NSLog(@"id char:%c hex:%02x", (char)[controlBoxID intValue], (char)[controlBoxID intValue]);
+            ////NSLog(@"cmd char:%c hex:%02x", 0x04, 0x04);
+            uint8_t command[64];
+            int charCount = 0;
+            //NSMutableString *command = [NSMutableString stringWithFormat:@"%c%c", (char)[controlBoxID intValue], 0x04];
+            command[charCount] = (char)[controlBoxID intValue];
+            charCount ++;
+            command[charCount] = 0x04;
+            charCount ++;
             BOOL shouldSendCommand = NO;
             
             // Loop through each channel to build the command
             int i2;
-            for(i2 = 0; i2 < [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]]; i2 ++)
+            int numberOfChannels = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
+            int extraBytes = (numberOfChannels / 8) + 1;
+            for(i2 = 0; i2 < numberOfChannels; i2 ++)
             {
                 // If there was a change, we need to send out a command
                 if(!shouldSendCommand && ((channelState[i][i2] == YES && previousChannelState[i][i2] == NO) || (channelState[i][i2] == NO && previousChannelState[i][i2] == YES)))
@@ -1016,22 +1026,38 @@
                 // Add each command character to the command string as it is completed
                 if(i2 % 8 == 7)
                 {
-                    [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
-                    //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                    //[command insertString:[NSString stringWithFormat:@"%c", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                    //[command appendFormat:@"%c", commandCharacters[i2 / 8]];
+                    
+                    // Round up to 8 bytes, add 1 for the board id and command type (insert the byte from right to left)
+                    command[extraBytes + 1] = commandCharacters[i2 / 8];
+                    extraBytes --;
+                    charCount ++;
+                    ////NSLog(@"dat char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
                 }
             }
             
             // Add the final command character if neccessary
             if(i2 % 8 != 0)
             {
-                [command insertString:[NSString stringWithFormat:@"%02x", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
-                //[command appendFormat:@"%02x", commandCharacters[i2 / 8]];
+                //[command insertString:[NSString stringWithFormat:@"%c", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
+                //[command appendFormat:@"%c", commandCharacters[i2 / 8]];
+                command[extraBytes + 1] = commandCharacters[i2 / 8];
+                extraBytes --;
+                charCount ++;
+                ////NSLog(@"dt2 char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
             }
             
             // Send the command!
             if(shouldSendCommand)
             {
-                [self sendStringToSerialPort:[NSString stringWithFormat:@"%@`", command]];
+                ////NSLog(@"esc char:%c hex:%02x", 0xFF, 0xFF);
+                //[self sendStringToSerialPort:[NSString stringWithFormat:@"%@%c", command, (char)255]];
+                //[self sendStringToSerialPort:[NSString stringWithFormat:@"%@%c", command, 0xFF]];
+                ////NSLog(@"charCount:%d", charCount);
+                command[charCount] = 0xFF; // End of command character
+                charCount ++;
+                [self sendPacketToSerialPort:command packetLength:charCount];
             }
         }
         
@@ -2115,6 +2141,24 @@
 
 #pragma mark - SerialPort
 
+- (void)sendPacketToSerialPort:(uint8_t *)packet packetLength:(int)length
+{
+    if([self.serialPort isOpen])
+	{
+		//NSLog(@"Writing:%@:", text);
+        [serialPort sendData:[NSData dataWithBytes:packet length:length]];
+	}
+	else
+    {
+        //NSLog(@"Can't send:%@", [NSString stringWithCString:packet encoding:NSStringEncodingConversionAllowLossy]);
+        for(int i = 0; i < length; i ++)
+        {
+            NSLog(@"can't send c:%c d:%d h:%02x", packet[i], packet[i], packet[i]);
+        }
+        //NSLog(@"Couldn't send. Not connected");
+    }
+}
+
 - (void)sendStringToSerialPort:(NSString *)text
 {
 	if([self.serialPort isOpen])
@@ -2125,6 +2169,10 @@
 	else
     {
         NSLog(@"Can't send:%@", text);
+        for(int i = 0; i < [text length]; i ++)
+        {
+            NSLog(@"c:%c d:%d h:%x", [text characterAtIndex:i], [text characterAtIndex:i], [text characterAtIndex:i]);
+        }
     }
 }
 
@@ -2147,6 +2195,12 @@
     {
 		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 		NSLog(@"Serial Port Data Received: %@",receivedText);
+        for(int i = 0; i < [receivedText length]; i ++)
+        {
+            char character = [receivedText characterAtIndex:i];
+            int characterValue = (int)character;
+            NSLog(@"c:%c v:%i", character, characterValue);
+        }
         
         // ToDo: Do something with received text
 	}

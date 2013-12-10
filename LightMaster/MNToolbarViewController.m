@@ -87,7 +87,7 @@
     // Open the new port
     ORSSerialPort *serialPort = [ORSSerialPort serialPortWithPath:[[serialPortsPopUpButton selectedItem] title]];
     [serialPort setDelegate:data];
-    [serialPort setBaudRate:@115200];
+    [serialPort setBaudRate:@57600];
     [serialPort open];
     data.serialPort = serialPort;
 }
