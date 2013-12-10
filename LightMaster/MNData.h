@@ -132,6 +132,7 @@ enum
 
 #pragma mark - SerialPort
 
+- (void)sendPacketToSerialPort:(uint8_t *)packet packetLength:(int)length;
 - (void)sendStringToSerialPort:(NSString *)text;
 
 #pragma mark - Sequence Library Methods

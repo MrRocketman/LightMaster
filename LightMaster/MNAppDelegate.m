@@ -22,10 +22,35 @@
 {
     NSLog(@"Terminate");
     
-    for(int i = 0; i < 10; i ++)
+    for(uint8_t i = 0; i < 25; i ++)
     {
         // Send the command!
-        [data sendStringToSerialPort:[NSString stringWithFormat:@"%d0000`", i]];
+        uint8_t command[64];
+        int charCount = 0;
+        command[charCount] = i;
+        charCount ++;
+        command[charCount] = 0x04;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0x00;
+        charCount ++;
+        command[charCount] = 0xFF;
+        charCount ++;
+        
+        [data sendPacketToSerialPort:command packetLength:charCount];
     }
     
 	NSArray *ports = [[data serialPortManager] availablePorts];

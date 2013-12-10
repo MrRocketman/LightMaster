@@ -1002,7 +1002,6 @@
             // Loop through each channel to build the command
             int i2;
             int numberOfChannels = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
-            int extraBytes = (numberOfChannels / 8) + 1;
             for(i2 = 0; i2 < numberOfChannels; i2 ++)
             {
                 // If there was a change, we need to send out a command
@@ -1030,8 +1029,7 @@
                     //[command appendFormat:@"%c", commandCharacters[i2 / 8]];
                     
                     // Round up to 8 bytes, add 1 for the board id and command type (insert the byte from right to left)
-                    command[extraBytes + 1] = commandCharacters[i2 / 8];
-                    extraBytes --;
+                    command[charCount] = commandCharacters[i2 / 8];
                     charCount ++;
                     ////NSLog(@"dat char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
                 }
@@ -1042,8 +1040,7 @@
             {
                 //[command insertString:[NSString stringWithFormat:@"%c", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
                 //[command appendFormat:@"%c", commandCharacters[i2 / 8]];
-                command[extraBytes + 1] = commandCharacters[i2 / 8];
-                extraBytes --;
+                command[charCount] = commandCharacters[i2 / 8];
                 charCount ++;
                 ////NSLog(@"dt2 char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
             }
