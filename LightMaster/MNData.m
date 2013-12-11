@@ -2244,6 +2244,12 @@
     [self setDescription:@"New Sequence" forSequence:newSequence];
     [self setEndTime:1.0 forSequence:newSequence];
     
+    // Add all of the control boxes to the sequence
+    for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
+    {
+        [self addControlBoxFilePath:[self controlBoxFilePathAtIndex:i] forSequence:newSequence];
+    }
+    
     return filePath;
 }
 
@@ -2473,6 +2479,12 @@
         [self saveDictionaryToItsFilePath:sequence];
     
     [self addBeingUsedInSequenceFilePath:[self filePathForSequence:sequence] forDictionary:[self dictionaryFromFilePath:filePath]];
+    
+    // Set the sequence end time to the audio clip end time.
+    NSMutableDictionary *audioClip = [self audioClipFromFilePath:filePath];
+    [self setEndTime:[self endTimeForAudioClip:audioClip] forSequence:sequence];
+    // Set the sequence description to the audio clip description
+    [self setDescription:[self descriptionForAudioClip:audioClip] forSequence:sequence];
     
     // Load the NSSound
     if([[self filePathForSequence:sequence] isEqualToString:[self filePathForSequence:currentSequence]])
@@ -3820,6 +3832,7 @@
     
     [newAudioClip writeToFile:[NSString stringWithFormat:@"%@/%@", libraryFolder, filePath] atomically:YES];
     [self setVersionNumber:DATA_VERSION_NUMBER forAudioClip:newAudioClip];
+    [self setUploadProgress:0 ForAudioClip:newAudioClip];
     [self setDescription:@"New AudioClip" forAudioClip:newAudioClip];
     [self setFilePathToAudioFile:@"" forAudioClip:newAudioClip];
     
@@ -4061,15 +4074,19 @@
     // Search EchoNest for analysis
     if([filePath length] > 1)
     {
-        ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
-        NSData *fileData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], filePath]];
-        NSString *md5 = [fileData enapi_MD5];
-        [enRequest setValue:md5 forParameter:@"md5"];
-        [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
-        [enRequest setUserInfo:@{@"filePath" : filePath, @"audioClip" : audioClip}];
-        [enRequest setDelegate:self];
-        [enRequests addObject:enRequest];
-        [enRequest startAsynchronous];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"AudioClipUploadProgressUpdate" object:audioClip];
+        if([self uploadProgressForAudioClip:audioClip] < 0.99)
+        {
+            ENAPIRequest *enRequest = [ENAPIRequest requestWithEndpoint:@"track/profile"];
+            NSData *fileData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [self libraryFolder], filePath]];
+            NSString *md5 = [fileData enapi_MD5];
+            [enRequest setValue:md5 forParameter:@"md5"];
+            [enRequest setValue:@"audio_summary" forParameter:@"bucket"];
+            [enRequest setUserInfo:@{@"filePath" : filePath, @"audioClip" : audioClip}];
+            [enRequest setDelegate:self];
+            [enRequests addObject:enRequest];
+            [enRequest startAsynchronous];
+        }
     }
 }
 
@@ -4185,6 +4202,17 @@
             // Only set the summary if we don't already have one
             if(![self audioSummaryForAudioClip:[[request userInfo] objectForKey:@"audioClip"]])
             {
+                // Validate the Audio Summary
+                if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"acousticness"] == [NSNull null])
+                {
+                    [[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] setObject:@-1 forKey:@"acousticness"];
+                }
+                //if([[[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"valence"] isEqualToString:@"<null>"])
+                if([[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"valence"] == [NSNull null])
+                {
+                    [[[[response objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] setObject:@-1 forKey:@"valence"];
+                }
+                
                 // Store the audioSummary
                 [self setAudioSummary:response forAudioClip:[[request userInfo] objectForKey:@"audioClip"]];
             }
