@@ -92,9 +92,36 @@
         emptySound = [[NSSound alloc] initWithContentsOfFile:pathForEmptySound byReference:NO];
         [emptySound setLoops:YES];
         [emptySound play];
+        
+        webSocket = [[MBWebSocketServer alloc] initWithPort:21012 delegate:self];
+        NSLog(@"Listening on port 21012");
     }
     
     return self;
+}
+
+#pragma mark - WebSocket Methods
+
+- (void)webSocketServer:(MBWebSocketServer *)webSocketServer didAcceptConnection:(GCDAsyncSocket *)connection
+{
+    NSLog(@"Connected to a client, we accept multiple connections");
+}
+
+- (void)webSocketServer:(MBWebSocketServer *)webSocket didReceiveData:(NSData *)data fromConnection:(GCDAsyncSocket *)connection
+{
+    NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    
+    [connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
+}
+
+- (void)webSocketServer:(MBWebSocketServer *)webSocketServer clientDisconnected:(GCDAsyncSocket *)connection
+{
+    NSLog(@"Disconnected from client: %@", connection);
+}
+
+- (void)webSocketServer:(MBWebSocketServer *)webSocketServer couldNotParseRawData:(NSData *)rawData fromConnection:(GCDAsyncSocket *)connection error:(NSError *)error
+{
+    NSLog(@"MBWebSocketServer error: %@", error);
 }
 
 #pragma mark - Private Methods

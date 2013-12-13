@@ -138,6 +138,8 @@
 		1AFA92601623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA925F1623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.m */; };
 		1AFA92631623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA92621623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m */; };
 		1AFA92691623DADE000E13B7 /* MNSequenceAudioClipSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFA92681623DADE000E13B7 /* MNSequenceAudioClipSelectorViewController.m */; };
+		1AFE20D0185A998200C28BF5 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFE20CD185A998200C28BF5 /* GCDAsyncSocket.m */; };
+		1AFE20D1185A998200C28BF5 /* MBWebSocketServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AFE20CF185A998200C28BF5 /* MBWebSocketServer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -324,6 +326,10 @@
 		1AFA92621623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNSequenceCommandClusterSelectorViewController.m; sourceTree = "<group>"; };
 		1AFA92671623DADE000E13B7 /* MNSequenceAudioClipSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNSequenceAudioClipSelectorViewController.h; sourceTree = "<group>"; };
 		1AFA92681623DADE000E13B7 /* MNSequenceAudioClipSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNSequenceAudioClipSelectorViewController.m; sourceTree = "<group>"; };
+		1AFE20CC185A998200C28BF5 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		1AFE20CD185A998200C28BF5 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		1AFE20CE185A998200C28BF5 /* MBWebSocketServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBWebSocketServer.h; sourceTree = "<group>"; };
+		1AFE20CF185A998200C28BF5 /* MBWebSocketServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBWebSocketServer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -407,6 +413,7 @@
 			children = (
 				1A37E893163CC86C000105B5 /* MNAppDelegate.h */,
 				1A37E894163CC86C000105B5 /* MNAppDelegate.m */,
+				1AFE20D2185A998600C28BF5 /* WebSocket */,
 				1A7AD4411852E89700EFDF68 /* XBee */,
 				1AD64DDD167A9DD300A89D5A /* EchoNest */,
 				1A37E8791634ECD9000105B5 /* Serial */,
@@ -734,6 +741,17 @@
 			name = SequenceLibrary;
 			sourceTree = "<group>";
 		};
+		1AFE20D2185A998600C28BF5 /* WebSocket */ = {
+			isa = PBXGroup;
+			children = (
+				1AFE20CC185A998200C28BF5 /* GCDAsyncSocket.h */,
+				1AFE20CD185A998200C28BF5 /* GCDAsyncSocket.m */,
+				1AFE20CE185A998200C28BF5 /* MBWebSocketServer.h */,
+				1AFE20CF185A998200C28BF5 /* MBWebSocketServer.m */,
+			);
+			name = WebSocket;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -897,6 +915,7 @@
 				1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */,
 				1A37E895163CC86C000105B5 /* MNAppDelegate.m in Sources */,
 				1AD64DE1167A9E2600A89D5A /* ENAPI.m in Sources */,
+				1AFE20D0185A998200C28BF5 /* GCDAsyncSocket.m in Sources */,
 				1AD64DF2167A9E3500A89D5A /* ENSigner.m in Sources */,
 				1AD64DF4167A9E3500A89D5A /* ENAPIRequest.m in Sources */,
 				1AD64DF6167A9E3500A89D5A /* ENAPIPostRequest.m in Sources */,
@@ -925,6 +944,7 @@
 				1AD64E88167AA82100A89D5A /* SBJsonWriter.m in Sources */,
 				1AEF7BA1167BFD6A007230A4 /* MNCheckboxBackground.m in Sources */,
 				1AEF7BA5167BFDEC007230A4 /* MNCheckboxBackground1.m in Sources */,
+				1AFE20D1185A998200C28BF5 /* MBWebSocketServer.m in Sources */,
 				1AEF7BA8167BFDF9007230A4 /* MNCheckboxBackground2.m in Sources */,
 				1AEF7BAB167BFE05007230A4 /* MNCheckboxBackground3.m in Sources */,
 				1AEF7BAE167BFE1A007230A4 /* MNCheckboxBackground4.m in Sources */,

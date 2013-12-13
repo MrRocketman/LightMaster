@@ -11,6 +11,7 @@
 #import "ORSSerialPortManager.h"
 #import "ENAPIPostRequest.h"
 #import "ENAPIRequest.h"
+#import "MBWebSocketServer.h"
 
 // See 'MNData_Model_Description'
 
@@ -33,7 +34,7 @@ enum
     MNSegment
 };
 
-@interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate>
+@interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate, MBWebSocketServerDelegate>
 {
     NSMutableDictionary *sequenceLibrary;
     NSMutableDictionary *controlBoxLibrary;
@@ -82,6 +83,8 @@ enum
     float autogenIntensity; // Must be between 0 and 1.0
     float autogenv2Intensity; 
     BOOL shouldAutosave;
+    
+    MBWebSocketServer *webSocket;
 }
 
 @property() NSString *libraryFolder;
