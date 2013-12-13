@@ -22,7 +22,7 @@
 {
     NSLog(@"Terminate");
     
-    for(uint8_t i = 0; i < 25; i ++)
+    for(uint8_t i = 0; i <= [data controlBoxFilePathsCount]; i ++)
     {
         // Send the command!
         uint8_t command[64];

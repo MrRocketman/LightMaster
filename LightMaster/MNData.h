@@ -86,6 +86,9 @@ enum
     BOOL shouldAutosave;
     
     MBWebSocketServer *webSocket;
+    int channelsOnlinePerBox[100];
+    uint8_t checkingBoxIndex;
+    NSMutableString *receivedText;
 }
 
 @property() NSString *libraryFolder;

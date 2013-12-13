@@ -93,6 +93,9 @@
         [emptySound setLoops:YES];
         [emptySound play];
         
+        receivedText = [[NSMutableString alloc] init];
+        memset(channelsOnlinePerBox, -1, 100);
+        
         webSocket = [[MBWebSocketServer alloc] initWithPort:21012 delegate:self];
         NSLog(@"Listening on port 21012");
     }
@@ -194,38 +197,48 @@
     NSMutableArray *objects = [[NSMutableArray alloc] init];
     NSMutableArray *keys = [[NSMutableArray alloc] init];
     
-    // Channel Information
+    // Channel/Box Information
     NSMutableArray *boxes = [[NSMutableArray alloc] init];
     NSMutableArray *boxesKeys = [[NSMutableArray alloc] init];
     
+    int boxesCount = 0;
+    
     for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
     {
-        NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]];
-        
-        NSMutableArray *boxDetails = [[NSMutableArray alloc] init];
-        NSMutableArray *boxDetailsKeys = [[NSMutableArray alloc] init];
-        
-        [boxDetailsKeys addObject:@"channels"];
-        [boxDetails addObject:[NSString stringWithFormat:@"%d", [self channelsCountForControlBox:controlBox]]];
-        [boxDetailsKeys addObject:@"description"];
-        [boxDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:controlBox]]];
-        [boxDetailsKeys addObject:@"boxID"];
-        [boxDetails addObject:[NSString stringWithFormat:@"%@", [self controlBoxIDForControlBox:controlBox]]];
-        
-        NSDictionary *boxesDetailsDict = [NSDictionary dictionaryWithObjects:boxDetails forKeys:boxDetailsKeys];
-        [boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
-        [boxes addObject:boxesDetailsDict];
+        if(channelsOnlinePerBox[i + 1] > -1)
+        {
+            NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]];
+            
+            NSMutableArray *boxDetails = [[NSMutableArray alloc] init];
+            NSMutableArray *boxDetailsKeys = [[NSMutableArray alloc] init];
+            
+            [boxDetailsKeys addObject:@"channels"];
+            //[boxDetails addObject:[NSString stringWithFormat:@"%d", [self channelsCountForControlBox:controlBox]]];
+            [boxDetails addObject:[NSString stringWithFormat:@"%d", channelsOnlinePerBox[i + 1]]];
+            [boxDetailsKeys addObject:@"description"];
+            [boxDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:controlBox]]];
+            [boxDetailsKeys addObject:@"boxID"];
+            [boxDetails addObject:[NSString stringWithFormat:@"%@", [self controlBoxIDForControlBox:controlBox]]];
+            
+            NSDictionary *boxesDetailsDict = [NSDictionary dictionaryWithObjects:boxDetails forKeys:boxDetailsKeys];
+            //[boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
+            [boxesKeys addObject:[NSString stringWithFormat:@"%d", boxesCount]];
+            [boxes addObject:boxesDetailsDict];
+            
+            boxesCount ++;
+        }
     }
     
     NSDictionary *boxesDict = [NSDictionary dictionaryWithObjects:boxes forKeys:boxesKeys];
     
     [keys addObject:@"boxesCount"];
-    [objects addObject:[NSNumber numberWithInt:[self controlBoxFilePathsCount]]];
+    //[objects addObject:[NSNumber numberWithInt:[self controlBoxFilePathsCount]]];
+    [objects addObject:[NSNumber numberWithInt:boxesCount]];
     
     [keys addObject:@"boxDetails"];
     [objects addObject:boxesDict];
     
-    // Channel Information
+    // Song Information
     NSMutableArray *songs = [[NSMutableArray alloc] init];
     NSMutableArray *songsKeys = [[NSMutableArray alloc] init];
     
@@ -282,13 +295,29 @@
     [socket writeWebSocketFrame:jsonData];
 }
 
-/*- (void)sendPlaylistToAllSockets
- {
- for(int i = 0; i < [connectedSockets count]; i ++)
- {
- [self sendPlaylistToSocket:[connectedSockets objectAtIndex:i]];
- }
- }*/
+- (void)updateAllSockets
+{
+    for(int i = 0; i < [webSocket clientCount]; i ++)
+    {
+        [self sendInformationToSocket:[webSocket clientAtIndex:i]];
+    }
+}
+
+- (void)checkBoxIsOnline:(uint8_t)boxID
+{
+    // Send the command!
+    uint8_t command[8];
+    memset(command, 0, 8);
+    int charCount = 0;
+    command[charCount] = boxID; // Board ID
+    charCount ++;
+    command[charCount] = 0xF1; // Request board status
+    charCount ++;
+    command[charCount] = 0xFF;
+    charCount ++;
+    
+    [self sendPacketToSerialPort:command packetLength:charCount];
+}
 
 #pragma mark - Private Methods
 
@@ -2318,6 +2347,10 @@
     if([self.serialPort isOpen])
 	{
 		//NSLog(@"Writing:%@:", text);
+        for(int i = 0; i < length; i ++)
+        {
+            NSLog(@"sending c:%c d:%d h:%02x", packet[i], packet[i], packet[i]);
+        }
         [serialPort sendData:[NSData dataWithBytes:packet length:length]];
 	}
 	else
@@ -2353,6 +2386,28 @@
 - (void)serialPortWasOpened:(ORSSerialPort *)serialPort
 {
 	//self.openCloseButton.title = @"Close";
+    
+    checkingBoxIndex = 1;
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkBoxesTimerFired:) userInfo:nil repeats:YES];
+}
+
+- (void)checkBoxesTimerFired:(NSTimer *)timer
+{
+    if(checkingBoxIndex > [self controlBoxFilePathsCount])
+    {
+        [timer invalidate];
+        
+        [self updateAllSockets];
+        
+        checkingBoxIndex = 0;
+        
+    }
+    else
+    {
+        [self checkBoxIsOnline:checkingBoxIndex];
+    }
+    
+    checkingBoxIndex ++;
 }
 
 - (void)serialPortWasClosed:(ORSSerialPort *)serialPort
@@ -2365,17 +2420,48 @@
     // This method is called if data arrives
 	if ([data length] > 0)
     {
-		NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-		NSLog(@"Serial Port Data Received: %@",receivedText);
-        for(int i = 0; i < [receivedText length]; i ++)
+		NSString *newText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if(newText != nil)
         {
-            char character = [receivedText characterAtIndex:i];
+            [receivedText appendString:newText];
+        }
+        
+		NSLog(@"Serial Port Data Received: %@",newText);
+        
+        // Print out the received data byte by byte
+        for(int i = 0; i < [newText length]; i ++)
+        {
+            char character = [newText characterAtIndex:i];
             int characterValue = (int)character;
             NSLog(@"c:%c v:%i", character, characterValue);
         }
         
-        // ToDo: Do something with received text
-	}
+        // The string is complete. Now do something with it.
+        if([receivedText rangeOfString:@"\r\n"].location != NSNotFound)
+        {
+            if([receivedText rangeOfString:@"Boards Connected:"].location != NSNotFound)
+            {
+                // set someting showing channels connected
+                
+                receivedText = (NSMutableString *)[receivedText stringByReplacingOccurrencesOfString:@"LD:" withString:@""];
+                int boxID = [receivedText intValue];
+                NSLog(@"boxID:%d", boxID);
+                receivedText = (NSMutableString *)[receivedText stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:@""];
+                receivedText = (NSMutableString *)[receivedText stringByReplacingOccurrencesOfString:@",Boards Connected:" withString:@""];
+                int channelsOnline = [receivedText intValue] * 8;
+                NSLog(@"channels:%d", channelsOnline);
+                channelsOnlinePerBox[boxID] = channelsOnline;
+                
+                // If we receive data without polling for iti (board gets rebooted), update the sockets
+                if(checkingBoxIndex == 0)
+                {
+                    [self updateAllSockets];
+                }
+            }
+            
+            [receivedText setString:@""];
+        }
+    }
     // Port closed
     else
     { 

@@ -43,6 +43,11 @@ static unsigned long long ntohll(unsigned long long v) {
     return connections.count;
 }
 
+- (GCDAsyncSocket *)clientAtIndex:(int)index
+{
+    return [connections objectAtIndex:index];
+}
+
 - (void)send:(id)object {
     id payload = [object webSocketFrameData];
     for (GCDAsyncSocket *connection in connections)

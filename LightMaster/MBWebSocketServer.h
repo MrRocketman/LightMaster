@@ -25,6 +25,7 @@
 @property (nonatomic, readonly) NSUInteger port;
 @property (nonatomic, weak) id<MBWebSocketServerDelegate> delegate;
 @property (nonatomic, readonly) NSUInteger clientCount;
+- (GCDAsyncSocket *)clientAtIndex:(int)index;
 @end
 
 
