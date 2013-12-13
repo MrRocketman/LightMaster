@@ -201,39 +201,39 @@
     NSMutableArray *boxes = [[NSMutableArray alloc] init];
     NSMutableArray *boxesKeys = [[NSMutableArray alloc] init];
     
-    int boxesCount = 0;
+    //int boxesCount = 0;
     
     for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
     {
-        if(channelsOnlinePerBox[i + 1] > -1)
-        {
+        //if(channelsOnlinePerBox[i + 1] > -1)
+        //{
             NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]];
             
             NSMutableArray *boxDetails = [[NSMutableArray alloc] init];
             NSMutableArray *boxDetailsKeys = [[NSMutableArray alloc] init];
             
             [boxDetailsKeys addObject:@"channels"];
-            //[boxDetails addObject:[NSString stringWithFormat:@"%d", [self channelsCountForControlBox:controlBox]]];
-            [boxDetails addObject:[NSString stringWithFormat:@"%d", channelsOnlinePerBox[i + 1]]];
+            [boxDetails addObject:[NSString stringWithFormat:@"%d", [self channelsCountForControlBox:controlBox]]];
+        //[boxDetails addObject:[NSString stringWithFormat:@"%d", channelsOnlinePerBox[i + 1]]];
             [boxDetailsKeys addObject:@"description"];
             [boxDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:controlBox]]];
             [boxDetailsKeys addObject:@"boxID"];
             [boxDetails addObject:[NSString stringWithFormat:@"%@", [self controlBoxIDForControlBox:controlBox]]];
             
             NSDictionary *boxesDetailsDict = [NSDictionary dictionaryWithObjects:boxDetails forKeys:boxDetailsKeys];
-            //[boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
-            [boxesKeys addObject:[NSString stringWithFormat:@"%d", boxesCount]];
+            [boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
+        //[boxesKeys addObject:[NSString stringWithFormat:@"%d", boxesCount]];
             [boxes addObject:boxesDetailsDict];
             
-            boxesCount ++;
-        }
+        //boxesCount ++;
+        //}
     }
     
     NSDictionary *boxesDict = [NSDictionary dictionaryWithObjects:boxes forKeys:boxesKeys];
     
     [keys addObject:@"boxesCount"];
-    //[objects addObject:[NSNumber numberWithInt:[self controlBoxFilePathsCount]]];
-    [objects addObject:[NSNumber numberWithInt:boxesCount]];
+    [objects addObject:[NSNumber numberWithInt:[self controlBoxFilePathsCount]]];
+    //[objects addObject:[NSNumber numberWithInt:boxesCount]];
     
     [keys addObject:@"boxDetails"];
     [objects addObject:boxesDict];
