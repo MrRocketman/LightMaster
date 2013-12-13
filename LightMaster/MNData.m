@@ -109,9 +109,49 @@
 
 - (void)webSocketServer:(MBWebSocketServer *)webSocket didReceiveData:(NSData *)data fromConnection:(GCDAsyncSocket *)connection
 {
-    NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    NSString *receivedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    //NSLog(@"%@", receivedData);
     
-    [connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
+    if([receivedData isEqualToString:@"Info"])
+    {
+        [self sendInformationToSocket:connection];
+    }
+    else if([receivedData rangeOfString:@"control"].location != NSNotFound)
+    {
+        NSString *bytes = [receivedData stringByReplacingOccurrencesOfString:@"control" withString:@""];
+        //NSLog(@"bytes:%@", bytes);
+        
+        /*for(int i = 0; i < [bytes length]; i ++)
+        {
+            NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
+        }*/
+        
+        uint8_t command[64];
+        memset(command, 0, 64);
+        int charCount = 0;
+        // Board ID
+        command[charCount] = [bytes characterAtIndex:0];
+        charCount ++;
+        // Command ID
+        command[charCount] = [bytes characterAtIndex:1];
+        charCount ++;
+        
+        // Loop through each channel to build the command
+        int i2;
+        for(i2 = 3; i2 < [bytes length]; i2 ++)
+        {
+            command[charCount] = [bytes characterAtIndex:i2];
+            charCount ++;
+            ////NSLog(@"dat char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
+        }
+        
+        command[charCount] = 0xFF; // End of command character
+        charCount ++;
+        
+        [self sendPacketToSerialPort:command packetLength:charCount];
+    }
+    
+    //[connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
 }
 
 - (void)webSocketServer:(MBWebSocketServer *)webSocketServer clientDisconnected:(GCDAsyncSocket *)connection
@@ -123,6 +163,107 @@
 {
     NSLog(@"MBWebSocketServer error: %@", error);
 }
+
+- (void)sendInformationToSocket:(GCDAsyncSocket *)socket
+{
+    NSMutableArray *objects = [[NSMutableArray alloc] init];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
+    
+    // Channel Information
+    NSMutableArray *boxes = [[NSMutableArray alloc] init];
+    NSMutableArray *boxesKeys = [[NSMutableArray alloc] init];
+    
+    for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
+    {
+        NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]];
+        
+        NSMutableArray *boxDetails = [[NSMutableArray alloc] init];
+        NSMutableArray *boxDetailsKeys = [[NSMutableArray alloc] init];
+        
+        [boxDetailsKeys addObject:@"channels"];
+        [boxDetails addObject:[NSString stringWithFormat:@"%d", [self channelsCountForControlBox:controlBox]]];
+        [boxDetailsKeys addObject:@"description"];
+        [boxDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:controlBox]]];
+        [boxDetailsKeys addObject:@"boxID"];
+        [boxDetails addObject:[NSString stringWithFormat:@"%@", [self controlBoxIDForControlBox:controlBox]]];
+        
+        NSDictionary *boxesDetailsDict = [NSDictionary dictionaryWithObjects:boxDetails forKeys:boxDetailsKeys];
+        [boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
+        [boxes addObject:boxesDetailsDict];
+    }
+    
+    NSDictionary *boxesDict = [NSDictionary dictionaryWithObjects:boxes forKeys:boxesKeys];
+    
+    [keys addObject:@"boxesCount"];
+    [objects addObject:[NSNumber numberWithInt:[self controlBoxFilePathsCount]]];
+    
+    [keys addObject:@"boxDetails"];
+    [objects addObject:boxesDict];
+    
+    // Channel Information
+    NSMutableArray *songs = [[NSMutableArray alloc] init];
+    NSMutableArray *songsKeys = [[NSMutableArray alloc] init];
+    
+    for(int i = currentPlaylistIndex; i < numberOfPlaylistSongs; i ++)
+    {
+        NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:playlistIndexes[i]]];
+        
+        NSMutableArray *songDetails = [[NSMutableArray alloc] init];
+        NSMutableArray *songDetailsKeys = [[NSMutableArray alloc] init];
+        
+        [songDetailsKeys addObject:@"description"];
+        [songDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForSequence:sequence]]];
+        [songDetailsKeys addObject:@"songID"];
+        [songDetails addObject:[NSString stringWithFormat:@"%d", i]];
+        
+        NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
+        [songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
+        [songs addObject:songsDetailsDict];
+    }
+    
+    if(currentPlaylistIndex > 0)
+    {
+        for(int i = 0; i < currentPlaylistIndex; i ++)
+        {
+            NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:playlistIndexes[i]]];
+            
+            NSMutableArray *songDetails = [[NSMutableArray alloc] init];
+            NSMutableArray *songDetailsKeys = [[NSMutableArray alloc] init];
+            
+            [songDetailsKeys addObject:@"description"];
+            [songDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForSequence:sequence]]];
+            [songDetailsKeys addObject:@"songID"];
+            [songDetails addObject:[NSString stringWithFormat:@"%d", i]];
+            
+            NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
+            [songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
+            [songs addObject:songsDetailsDict];
+        }
+    }
+    
+    [keys addObject:@"songsCount"];
+    [objects addObject:[NSNumber numberWithInt:numberOfPlaylistSongs]];
+    
+    NSDictionary *songsDict = [NSDictionary dictionaryWithObjects:songs forKeys:songsKeys];
+    [keys addObject:@"songDetails"];
+    [objects addObject:songsDict];
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    //NSString* channelsString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    [socket writeWebSocketFrame:jsonData];
+}
+
+/*- (void)sendPlaylistToAllSockets
+ {
+ for(int i = 0; i < [connectedSockets count]; i ++)
+ {
+ [self sendPlaylistToSocket:[connectedSockets objectAtIndex:i]];
+ }
+ }*/
 
 #pragma mark - Private Methods
 
