@@ -113,7 +113,7 @@
 - (void)webSocketServer:(MBWebSocketServer *)webSocket didReceiveData:(NSData *)data fromConnection:(GCDAsyncSocket *)connection
 {
     NSString *receivedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    //NSLog(@"%@", receivedData);
+    NSLog(@"received:%@", receivedData);
     
     if([receivedData isEqualToString:@"Info"])
     {
@@ -178,6 +178,18 @@
             }
         }
     }
+    else if([receivedData rangeOfString:@"song"].location != NSNotFound)
+    {
+        NSString *bytes = [receivedData stringByReplacingOccurrencesOfString:@"song" withString:@""];
+        //NSLog(@"bytes:%@", bytes);
+        
+        /*for(int i = 0; i < [bytes length]; i ++)
+         {
+         NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
+         }*/
+        
+        char songID = [bytes characterAtIndex:0];
+    }
     
     //[connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
 }
@@ -241,30 +253,14 @@
     // Song Information
     NSMutableArray *songs = [[NSMutableArray alloc] init];
     NSMutableArray *songsKeys = [[NSMutableArray alloc] init];
+    int songCount = 0;
     
-    for(int i = currentPlaylistIndex; i < numberOfPlaylistSongs; i ++)
+    for(int i = 0; i < [self sequenceFilePathsCount]; i ++)
     {
-        NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:playlistIndexes[i]]];
+        NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:i]];
         
-        NSMutableArray *songDetails = [[NSMutableArray alloc] init];
-        NSMutableArray *songDetailsKeys = [[NSMutableArray alloc] init];
-        
-        [songDetailsKeys addObject:@"description"];
-        [songDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForSequence:sequence]]];
-        [songDetailsKeys addObject:@"songID"];
-        [songDetails addObject:[NSString stringWithFormat:@"%d", i]];
-        
-        NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
-        [songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
-        [songs addObject:songsDetailsDict];
-    }
-    
-    if(currentPlaylistIndex > 0)
-    {
-        for(int i = 0; i < currentPlaylistIndex; i ++)
+        if([self audioClipFilePathsCountForSequence:sequence] > 0)
         {
-            NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:playlistIndexes[i]]];
-            
             NSMutableArray *songDetails = [[NSMutableArray alloc] init];
             NSMutableArray *songDetailsKeys = [[NSMutableArray alloc] init];
             
@@ -274,13 +270,17 @@
             [songDetails addObject:[NSString stringWithFormat:@"%d", i]];
             
             NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
-            [songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
+            //[songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
+            [songsKeys addObject:[NSString stringWithFormat:@"%d", songCount]];
             [songs addObject:songsDetailsDict];
+            
+            songCount ++;
         }
     }
     
     [keys addObject:@"songsCount"];
-    [objects addObject:[NSNumber numberWithInt:numberOfPlaylistSongs]];
+    //[objects addObject:[NSNumber numberWithInt:[self sequenceFilePathsCount]]];
+    [objects addObject:[NSNumber numberWithInt:songCount]];
     
     NSDictionary *songsDict = [NSDictionary dictionaryWithObjects:songs forKeys:songsKeys];
     [keys addObject:@"songDetails"];
@@ -2388,7 +2388,7 @@
 	//self.openCloseButton.title = @"Close";
     
     checkingBoxIndex = 1;
-    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(checkBoxesTimerFired:) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(checkBoxesTimerFired:) userInfo:nil repeats:YES];
 }
 
 - (void)checkBoxesTimerFired:(NSTimer *)timer
