@@ -19,6 +19,7 @@
 #define PIXEL_TO_ZOOM_RATIO 25
 #define setBit(var, mask)   ((var) |= (uint16_t)(1 << mask))
 #define clearBit(var, mask)   ((var) &= (uint16_t)~(1 << mask))
+#define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 
 enum
 {

@@ -127,28 +127,53 @@
         }*/
         
         uint8_t command[64];
-        memset(command, 0, 64);
         int charCount = 0;
-        // Board ID
-        command[charCount] = [bytes characterAtIndex:0];
-        charCount ++;
-        // Command ID
-        command[charCount] = [bytes characterAtIndex:1];
-        charCount ++;
+        char currentByte = 0;
+        char boardID = [bytes characterAtIndex:0];
+        char commandID = [bytes characterAtIndex:1];
         
-        // Loop through each channel to build the command
-        int i2;
-        for(i2 = 3; i2 < [bytes length]; i2 ++)
+        // All channels on/off
+        if(commandID == 0x04)
         {
-            command[charCount] = [bytes characterAtIndex:i2];
-            charCount ++;
-            ////NSLog(@"dat char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
+            // Loop through each channel to build the command
+            for(int i = 2; i < [bytes length]; i ++)
+            {
+                currentByte = [bytes characterAtIndex:i];
+                for(int i2 = 0; i2 < 8; i2 ++)
+                {
+                    if(CHECK_BIT(currentByte, i2))
+                    {
+                        memset(command, 0, 64);
+                        charCount = 0;
+                        
+                        command[charCount] = boardID; // Set the boardID
+                        charCount ++;
+                        command[charCount] = 0x01; // Turn a channel on command
+                        charCount ++;
+                        command[charCount] = (char)((i - 1) * i2); // Set which channel
+                        charCount ++;
+                        command[charCount] = 0xFF; // End of command char
+                        charCount ++;
+                        [self sendPacketToSerialPort:command packetLength:charCount];
+                    }
+                    else
+                    {
+                        memset(command, 0, 64);
+                        charCount = 0;
+                        
+                        command[charCount] = boardID; // Set the boardID
+                        charCount ++;
+                        command[charCount] = 0x02; // Turn a channel off command
+                        charCount ++;
+                        command[charCount] = (char)((i - 1) * i2); // Set which channel
+                        charCount ++;
+                        command[charCount] = 0xFF; // End of command char
+                        charCount ++;
+                        [self sendPacketToSerialPort:command packetLength:charCount];
+                    }
+                }
+            }
         }
-        
-        command[charCount] = 0xFF; // End of command character
-        charCount ++;
-        
-        [self sendPacketToSerialPort:command packetLength:charCount];
     }
     
     //[connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
@@ -1154,17 +1179,10 @@
         // Send out the necessary commands over the serial port
         for(int i = 0; i < [self controlBoxFilePathsCountForSequence:currentSequence]; i ++)
         {
-            uint8_t commandCharacters[128] = {0};
             NSString *controlBoxID = [self controlBoxIDForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
-            ////NSLog(@"id char:%c hex:%02x", (char)[controlBoxID intValue], (char)[controlBoxID intValue]);
-            ////NSLog(@"cmd char:%c hex:%02x", 0x04, 0x04);
+            char boardID = (char)[controlBoxID intValue];
             uint8_t command[64];
             int charCount = 0;
-            //NSMutableString *command = [NSMutableString stringWithFormat:@"%c%c", (char)[controlBoxID intValue], 0x04];
-            command[charCount] = (char)[controlBoxID intValue];
-            charCount ++;
-            command[charCount] = 0x04;
-            charCount ++;
             BOOL shouldSendCommand = NO;
             
             // Loop through each channel to build the command
@@ -1172,57 +1190,46 @@
             int numberOfChannels = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:i]];
             for(i2 = 0; i2 < numberOfChannels; i2 ++)
             {
+                shouldSendCommand = NO;
                 // If there was a change, we need to send out a command
-                if(!shouldSendCommand && ((channelState[i][i2] == YES && previousChannelState[i][i2] == NO) || (channelState[i][i2] == NO && previousChannelState[i][i2] == YES)))
+                if(((channelState[i][i2] == YES && previousChannelState[i][i2] == NO) || (channelState[i][i2] == NO && previousChannelState[i][i2] == YES)))
                 {
                     shouldSendCommand = YES;
                 }
                 
-                // Create the command
-                if(channelState[i][i2] == YES)
+                if(shouldSendCommand)
                 {
-                    //NSLog(@"on i:%d i2:%d", i, i2);
-                    setBit(commandCharacters[i2 / 8], i2 % 8);
+                    if(channelState[i][i2] == YES)
+                    {
+                        memset(command, 0, 64);
+                        charCount = 0;
+                        
+                        command[charCount] = boardID; // Set the boardID
+                        charCount ++;
+                        command[charCount] = 0x01; // Turn a channel on command
+                        charCount ++;
+                        command[charCount] = (char)(i2); // Set which channel
+                        charCount ++;
+                        command[charCount] = 0xFF; // End of command char
+                        charCount ++;
+                        [self sendPacketToSerialPort:command packetLength:charCount];
+                    }
+                    else
+                    {
+                        memset(command, 0, 64);
+                        charCount = 0;
+                        
+                        command[charCount] = boardID; // Set the boardID
+                        charCount ++;
+                        command[charCount] = 0x02; // Turn a channel off command
+                        charCount ++;
+                        command[charCount] = (char)(i2); // Set which channel
+                        charCount ++;
+                        command[charCount] = 0xFF; // End of command char
+                        charCount ++;
+                        [self sendPacketToSerialPort:command packetLength:charCount];
+                    }
                 }
-                else if(channelState[i][i2] == NO)
-                {
-                    //NSLog(@"off i:%d i2:%d", i, i2);
-                    clearBit(commandCharacters[i2 / 8], i2 % 8);
-                }
-                
-                // Add each command character to the command string as it is completed
-                if(i2 % 8 == 7)
-                {
-                    //[command insertString:[NSString stringWithFormat:@"%c", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
-                    //[command appendFormat:@"%c", commandCharacters[i2 / 8]];
-                    
-                    // Round up to 8 bytes, add 1 for the board id and command type (insert the byte from right to left)
-                    command[charCount] = commandCharacters[i2 / 8];
-                    charCount ++;
-                    ////NSLog(@"dat char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
-                }
-            }
-            
-            // Add the final command character if neccessary
-            if(i2 % 8 != 0)
-            {
-                //[command insertString:[NSString stringWithFormat:@"%c", commandCharacters[i2 / 8]] atIndex:[controlBoxID length]];
-                //[command appendFormat:@"%c", commandCharacters[i2 / 8]];
-                command[charCount] = commandCharacters[i2 / 8];
-                charCount ++;
-                ////NSLog(@"dt2 char:%c hex:%02x", commandCharacters[i2 / 8], commandCharacters[i2 / 8]);
-            }
-            
-            // Send the command!
-            if(shouldSendCommand)
-            {
-                ////NSLog(@"esc char:%c hex:%02x", 0xFF, 0xFF);
-                //[self sendStringToSerialPort:[NSString stringWithFormat:@"%@%c", command, (char)255]];
-                //[self sendStringToSerialPort:[NSString stringWithFormat:@"%@%c", command, 0xFF]];
-                ////NSLog(@"charCount:%d", charCount);
-                command[charCount] = 0xFF; // End of command character
-                charCount ++;
-                [self sendPacketToSerialPort:command packetLength:charCount];
             }
         }
         
