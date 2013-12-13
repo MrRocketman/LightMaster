@@ -87,8 +87,8 @@
     for(int i = 0; i < [data controlBoxFilePathsCountForSequence:[data currentSequence]]; i ++)
     {
         thisTrackItemsCount = [data channelsCountForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]];
-        
-        [self drawTrackWithStyle:MNControlBoxStyle text:[data descriptionForControlBox:[data controlBoxForCurrentSequenceAtIndex:i]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
+        NSMutableDictionary *controlBox = [data controlBoxForCurrentSequenceAtIndex:i];
+        [self drawTrackWithStyle:MNControlBoxStyle text:[NSString stringWithFormat:@"%@ (%@)", [data descriptionForControlBox:controlBox], [data controlBoxIDForControlBox:controlBox]] trackIndex:trackItemsCount trackItemsCount:thisTrackItemsCount andDataIndex:i];
         
         trackItemsCount += thisTrackItemsCount;
     }
