@@ -14,6 +14,15 @@
 #define LIBRARY_VERSION_NUMBER 1.0
 #define DATA_VERSION_NUMBER 1.0
 
+#define WELCOME_MSG  0
+#define ECHO_MSG     1
+#define WARNING_MSG  2
+#define PLAYLIST_MSG 3
+#define CHANNEL_MSG 3
+
+#define READ_TIMEOUT 1.0
+//#define READ_TIMEOUT_EXTENSION 1.0
+
 @interface MNData()
 
 - (NSString *)findOrCreateDirectory:(NSSearchPathDirectory)searchPathDirectory inDomain:(NSSearchPathDomainMask)domainMask appendPathComponent:(NSString *)appendComponent error:(NSError **)errorOut;
@@ -88,13 +97,256 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(convertRBCFile) name:@"ConvertRBC" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(splitMostRecentlySelectedCommandClusterAtCurrentTime:) name:@"SplitCommandCluster" object:nil];
         
+        // Get the sound system up and running
         NSString *pathForEmptySound = [[NSBundle mainBundle] pathForResource:@"Empty" ofType:@"m4a"];
         emptySound = [[NSSound alloc] initWithContentsOfFile:pathForEmptySound byReference:NO];
         [emptySound setLoops:YES];
         [emptySound play];
+        
+        
+        // Listen for internet commands
+        
+        // Setup our socket.
+		// The socket will invoke our delegate methods using the usual delegate paradigm.
+		// However, it will invoke the delegate methods on a specified GCD delegate dispatch queue.
+		//
+		// Now we can configure the delegate dispatch queues however we want.
+		// We could simply use the main dispatc queue, so the delegate methods are invoked on the main thread.
+		// Or we could use a dedicated dispatch queue, which could be helpful if we were doing a lot of processing.
+		//
+		// The best approach for your application will depend upon convenience, requirements and performance.
+		
+		socketQueue = dispatch_queue_create("socketQueue", NULL);
+		
+		listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:socketQueue];
+		
+		// Setup an array to store all accepted client connections
+		connectedSockets = [[NSMutableArray alloc] initWithCapacity:100];
+        
+        //listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+        
+        NSError *error = nil;
+        if (![listenSocket acceptOnPort:21012 error:&error])
+        {
+            NSLog(@"I goofed: %@", error);
+        }
+        else
+        {
+            NSLog(@"listening for remote commands");
+        }
     }
     
     return self;
+}
+
+#pragma mark GCDAsyncSocketDeletgate Methods
+
+- (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
+{
+	// This method is executed on the socketQueue (not the main thread)
+	
+	@synchronized(connectedSockets)
+	{
+		[connectedSockets addObject:newSocket];
+	}
+	
+	NSString *host = [newSocket connectedHost];
+	UInt16 port = [newSocket connectedPort];
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		@autoreleasepool {
+            
+			NSLog(@"Accepted client %@:%hu", host, port);
+            
+		}
+	});
+	
+	/*NSString *welcomeMsg = @"Welcome to the LightMaster Echo Server\r\n";
+	NSData *welcomeData = [welcomeMsg dataUsingEncoding:NSUTF8StringEncoding];
+	
+	[newSocket writeData:welcomeData withTimeout:-1 tag:WELCOME_MSG];*/
+    
+    //[self sendInformationToSocket:newSocket];
+    
+    [newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:READ_TIMEOUT tag:0];
+}
+
+- (void)sendInformationToSocket:(GCDAsyncSocket *)socket
+{
+    NSMutableArray *objects = [[NSMutableArray alloc] init];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
+    
+    // Channel Information
+    NSMutableArray *boxes = [[NSMutableArray alloc] init];
+    NSMutableArray *boxesKeys = [[NSMutableArray alloc] init];
+    
+    for(int i = 0; i < [self controlBoxFilePathsCount]; i ++)
+    {
+        NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:i]];
+        
+        NSMutableArray *boxDetails = [[NSMutableArray alloc] init];
+        NSMutableArray *boxDetailsKeys = [[NSMutableArray alloc] init];
+        
+        [boxDetailsKeys addObject:@"Channels"];
+        [boxDetails addObject:[NSString stringWithFormat:@"%d", [self channelsCountForControlBox:controlBox]]];
+        [boxDetailsKeys addObject:@"Description"];
+        [boxDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:controlBox]]];
+        [boxDetailsKeys addObject:@"BoxID"];
+        [boxDetails addObject:[NSString stringWithFormat:@"%@", [self controlBoxIDForControlBox:controlBox]]];
+        
+        NSDictionary *boxesDetailsDict = [NSDictionary dictionaryWithObjects:boxDetails forKeys:boxDetailsKeys];
+        [boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
+        [boxes addObject:boxesDetailsDict];
+    }
+    
+    NSDictionary *boxesDict = [NSDictionary dictionaryWithObjects:boxes forKeys:boxesKeys];
+    
+    [keys addObject:@"BoxesDetails"];
+    [objects addObject:boxesDict];
+    
+    // Channel Information
+    NSMutableArray *songs = [[NSMutableArray alloc] init];
+    NSMutableArray *songsKeys = [[NSMutableArray alloc] init];
+    
+    for(int i = currentPlaylistIndex; i < numberOfPlaylistSongs; i ++)
+    {
+        NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:playlistIndexes[i]]];
+        
+        NSMutableArray *songDetails = [[NSMutableArray alloc] init];
+        NSMutableArray *songDetailsKeys = [[NSMutableArray alloc] init];
+        
+        [songDetailsKeys addObject:@"Description"];
+        [songDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForSequence:sequence]]];
+        [songDetailsKeys addObject:@"SongID"];
+        [songDetails addObject:[NSString stringWithFormat:@"%d", i]];
+        
+        NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
+        [songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
+        [songs addObject:songsDetailsDict];
+    }
+    
+    if(currentPlaylistIndex > 0)
+    {
+        for(int i = 0; i < currentPlaylistIndex; i ++)
+        {
+            NSMutableDictionary *sequence = [self sequenceFromFilePath:[self sequenceFilePathAtIndex:playlistIndexes[i]]];
+            
+            NSMutableArray *songDetails = [[NSMutableArray alloc] init];
+            NSMutableArray *songDetailsKeys = [[NSMutableArray alloc] init];
+            
+            [songDetailsKeys addObject:@"Description"];
+            [songDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForSequence:sequence]]];
+            [songDetailsKeys addObject:@"SongID"];
+            [songDetails addObject:[NSString stringWithFormat:@"%d", i]];
+            
+            NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
+            [songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
+            [songs addObject:songsDetailsDict];
+        }
+    }
+    
+    NSDictionary *songsDict = [NSDictionary dictionaryWithObjects:songs forKeys:songsKeys];
+    [keys addObject:@"SongDetails"];
+    [objects addObject:songsDict];
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    //NSString* channelsString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    [socket writeData:jsonData withTimeout:01 tag:CHANNEL_MSG];
+}
+
+/*- (void)sendPlaylistToAllSockets
+{
+    for(int i = 0; i < [connectedSockets count]; i ++)
+    {
+        [self sendPlaylistToSocket:[connectedSockets objectAtIndex:i]];
+    }
+}*/
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+	// This method is executed on the socketQueue (not the main thread)
+	
+	/*if (tag == ECHO_MSG)
+	{
+		[sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:READ_TIMEOUT tag:0];
+	}*/
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
+{
+	// This method is executed on the socketQueue (not the main thread)
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		@autoreleasepool {
+            
+			NSData *strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
+			NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
+			if (msg)
+			{
+				NSLog(@"read:%@", msg);
+                if([msg isEqualToString:@"Info"])
+                {
+                    [self sendInformationToSocket:sock];
+                }
+			}
+			else
+			{
+				NSLog(@"Error converting received data into UTF-8 String");
+			}
+            
+		}
+	});
+    
+    // Keep listening for data
+    [sock readDataToData:[GCDAsyncSocket CRLFData] withTimeout:READ_TIMEOUT tag:0];
+	
+	// Echo message back to client
+	//[sock writeData:data withTimeout:-1 tag:ECHO_MSG];
+}
+
+/**
+ * This method is called if a read has timed out.
+ * It allows us to optionally extend the timeout.
+ * We use this method to issue a warning to the user prior to disconnecting them.
+ **/
+- (NSTimeInterval)socket:(GCDAsyncSocket *)sock shouldTimeoutReadWithTag:(long)tag
+                 elapsed:(NSTimeInterval)elapsed
+               bytesDone:(NSUInteger)length
+{
+	/*if (elapsed <= READ_TIMEOUT)
+	{
+		NSString *warningMsg = @"Are you still there?\r\n";
+		NSData *warningData = [warningMsg dataUsingEncoding:NSUTF8StringEncoding];
+		
+		[sock writeData:warningData withTimeout:-1 tag:WARNING_MSG];
+		
+		return READ_TIMEOUT_EXTENSION;
+	}*/
+	
+	return 0.0;
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+{
+	if (sock != listenSocket)
+	{
+		dispatch_async(dispatch_get_main_queue(), ^{
+			@autoreleasepool {
+                
+                NSLog(@"Client Disconnected");
+                
+			}
+		});
+		
+		@synchronized(connectedSockets)
+		{
+			[connectedSockets removeObject:sock];
+		}
+	}
 }
 
 #pragma mark - Private Methods
@@ -1201,6 +1453,15 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ResetScrollPoint" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+    
+    // Update all the sockets
+    /*dispatch_async(socketQueue, ^{
+		@autoreleasepool {
+            
+			[self sendPlaylistToAllSockets];
+            
+		}
+	});*/
 }
 
 - (void)stopPlaylist

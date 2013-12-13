@@ -52,6 +52,8 @@
 		1A487315163A543000820C1D /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487310163A542900820C1D /* ORSSerialPort.m */; };
 		1A487316163A543400820C1D /* ORSSerialPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487312163A542900820C1D /* ORSSerialPortManager.m */; };
 		1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */; };
+		1A4DBF18185A5FE7008748D0 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4DBF15185A5FE7008748D0 /* GCDAsyncSocket.m */; };
+		1A4DBF19185A5FE7008748D0 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4DBF17185A5FE7008748D0 /* GCDAsyncUdpSocket.m */; };
 		1A68DC7D163F2F4000A0D6FD /* Stars.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC7C163F2F4000A0D6FD /* Stars.icns */; };
 		1A68DC80163F2F6700A0D6FD /* Stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC7E163F2F6700A0D6FD /* Stars.png */; };
 		1A68DC81163F2F6700A0D6FD /* Stars.artx in Resources */ = {isa = PBXBuildFile; fileRef = 1A68DC7F163F2F6700A0D6FD /* Stars.artx */; };
@@ -219,6 +221,10 @@
 		1A487312163A542900820C1D /* ORSSerialPortManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORSSerialPortManager.m; sourceTree = "<group>"; };
 		1A4B7908161CF76B004D9E1C /* MNLibrariesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNLibrariesViewController.h; sourceTree = "<group>"; };
 		1A4B7909161CF76B004D9E1C /* MNLibrariesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNLibrariesViewController.m; sourceTree = "<group>"; };
+		1A4DBF14185A5FE7008748D0 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		1A4DBF15185A5FE7008748D0 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		1A4DBF16185A5FE7008748D0 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		1A4DBF17185A5FE7008748D0 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		1A68DC7C163F2F4000A0D6FD /* Stars.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Stars.icns; path = ../Stars.icns; sourceTree = "<group>"; };
 		1A68DC7E163F2F6700A0D6FD /* Stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Stars.png; sourceTree = "<group>"; };
 		1A68DC7F163F2F6700A0D6FD /* Stars.artx */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Stars.artx; sourceTree = "<group>"; };
@@ -407,6 +413,7 @@
 			children = (
 				1A37E893163CC86C000105B5 /* MNAppDelegate.h */,
 				1A37E894163CC86C000105B5 /* MNAppDelegate.m */,
+				1A4DBF1A185A5FED008748D0 /* AsyncSocket */,
 				1A7AD4411852E89700EFDF68 /* XBee */,
 				1AD64DDD167A9DD300A89D5A /* EchoNest */,
 				1A37E8791634ECD9000105B5 /* Serial */,
@@ -540,6 +547,17 @@
 				1A487312163A542900820C1D /* ORSSerialPortManager.m */,
 			);
 			name = Serial;
+			sourceTree = "<group>";
+		};
+		1A4DBF1A185A5FED008748D0 /* AsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				1A4DBF14185A5FE7008748D0 /* GCDAsyncSocket.h */,
+				1A4DBF15185A5FE7008748D0 /* GCDAsyncSocket.m */,
+				1A4DBF16185A5FE7008748D0 /* GCDAsyncUdpSocket.h */,
+				1A4DBF17185A5FE7008748D0 /* GCDAsyncUdpSocket.m */,
+			);
+			name = AsyncSocket;
 			sourceTree = "<group>";
 		};
 		1A7AD4411852E89700EFDF68 /* XBee */ = {
@@ -887,6 +905,7 @@
 				1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */,
 				1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */,
 				1A4B790A161CF76B004D9E1C /* MNLibrariesViewController.m in Sources */,
+				1A4DBF19185A5FE7008748D0 /* GCDAsyncUdpSocket.m in Sources */,
 				1AFA925B1623DA64000E13B7 /* MNSequenceControlBoxSelectorViewController.m in Sources */,
 				1AFA92601623DAB3000E13B7 /* MNSequenceChannelGroupSelectorViewController.m in Sources */,
 				1AFA92631623DAC1000E13B7 /* MNSequenceCommandClusterSelectorViewController.m in Sources */,
@@ -897,6 +916,7 @@
 				1AAA04A2162547B70052A779 /* MNCommandChannelSelectorViewController.m in Sources */,
 				1A37E895163CC86C000105B5 /* MNAppDelegate.m in Sources */,
 				1AD64DE1167A9E2600A89D5A /* ENAPI.m in Sources */,
+				1A4DBF18185A5FE7008748D0 /* GCDAsyncSocket.m in Sources */,
 				1AD64DF2167A9E3500A89D5A /* ENSigner.m in Sources */,
 				1AD64DF4167A9E3500A89D5A /* ENAPIRequest.m in Sources */,
 				1AD64DF6167A9E3500A89D5A /* ENAPIPostRequest.m in Sources */,

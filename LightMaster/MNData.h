@@ -11,6 +11,7 @@
 #import "ORSSerialPortManager.h"
 #import "ENAPIPostRequest.h"
 #import "ENAPIRequest.h"
+#import "GCDAsyncSocket.h"
 
 // See 'MNData_Model_Description'
 
@@ -33,7 +34,7 @@ enum
     MNSegment
 };
 
-@interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate>
+@interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate, GCDAsyncSocketDelegate>
 {
     NSMutableDictionary *sequenceLibrary;
     NSMutableDictionary *controlBoxLibrary;
@@ -82,6 +83,10 @@ enum
     float autogenIntensity; // Must be between 0 and 1.0
     float autogenv2Intensity; 
     BOOL shouldAutosave;
+    
+    dispatch_queue_t socketQueue;
+	GCDAsyncSocket *listenSocket;
+	NSMutableArray *connectedSockets;
 }
 
 @property() NSString *libraryFolder;
