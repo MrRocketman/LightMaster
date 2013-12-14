@@ -249,22 +249,27 @@
 
 - (IBAction)playPlaylistButtonPress:(id)sender
 {
-    if(playingPlaylist == NO)
+    if(data.playlistButtonClick == NO)
     {
-        playingPlaylist = YES;
+        data.playlistButtonClick = YES;
         
         NSUInteger selectedRows[999];
         NSRange range;
         range.length = 999;
         range.location = 0;
         int count = (int)[[libraryDataSelectionTableView selectedRowIndexes] getIndexes:selectedRows maxCount:999 inIndexRange:&range];
+        if(count == 0)
+        {
+            [libraryDataSelectionTableView selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [libraryDataSelectionTableView numberOfRows])] byExtendingSelection:NO];
+            count = (int)[[libraryDataSelectionTableView selectedRowIndexes] getIndexes:selectedRows maxCount:999 inIndexRange:&range];
+        }
         [data playPlaylistOfSequenceIndexes:selectedRows indexCount:count];
         
         [playPlaylistButton setTitle:@"Stop Playlist"];
     }
     else
     {
-        playingPlaylist = NO;
+        data.playlistButtonClick = NO;
         
         [data stopPlaylist];
         

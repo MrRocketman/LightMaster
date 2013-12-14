@@ -89,6 +89,9 @@ enum
     int channelsOnlinePerBox[100];
     uint8_t checkingBoxIndex;
     NSMutableString *receivedText;
+    int sequencesWithAudioCount;
+    BOOL playlistButtonClick;
+    int currentSequenceIndex;
 }
 
 @property() NSString *libraryFolder;
@@ -108,6 +111,9 @@ enum
 @property() BOOL shouldDrawTime;
 @property() float autogenIntensity;
 @property() float autogenv2Intensity;
+
+@property() BOOL playlistButtonClick;
+@property() int currentSequenceIndex;
 
 #pragma mark - Other Methods
 // Other Methods

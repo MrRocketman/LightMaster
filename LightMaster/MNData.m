@@ -58,7 +58,7 @@
 
 @implementation MNData
 
-@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager, shouldDrawSections, shouldDrawBars, shouldDrawBeats, shouldDrawTatums, shouldDrawSegments, shouldDrawTime, autogenIntensity, autogenv2Intensity;
+@synthesize currentSequence, libraryFolder, timeAtLeftEdgeOfTimelineView, zoomLevel, currentSequenceIsPlaying, mostRecentlySelectedCommandClusterIndex, serialPort, serialPortManager, shouldDrawSections, shouldDrawBars, shouldDrawBeats, shouldDrawTatums, shouldDrawSegments, shouldDrawTime, autogenIntensity, autogenv2Intensity, playlistButtonClick, currentSequenceIndex;
 
 #pragma mark - System
 
@@ -183,12 +183,31 @@
         NSString *bytes = [receivedData stringByReplacingOccurrencesOfString:@"song" withString:@""];
         //NSLog(@"bytes:%@", bytes);
         
-        /*for(int i = 0; i < [bytes length]; i ++)
-         {
-         NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
-         }*/
+        for(int i = 0; i < [bytes length]; i ++)
+        {
+            NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
+        }
         
-        char songID = [bytes characterAtIndex:0];
+        int songID = [bytes intValue];
+        
+        NSUInteger playlist[sequencesWithAudioCount];
+        
+        playlist[0] = (NSUInteger)songID;
+        NSLog(@"playing song:%d", songID);
+        int currentSongID = songID + 1;
+        
+        if(currentSongID > [self sequenceFilePathsCount])
+        {
+            currentSongID = 0; // Cause we have to 'songs' flash and solid
+        }
+        
+        for(int i = 1; i < sequencesWithAudioCount; i ++)
+        {
+            playlist[i] = currentSongID;
+            currentSongID ++;
+        }
+        
+        [self playWebPlaylistOfSequenceIndexes:playlist indexCount:sequencesWithAudioCount];
     }
     
     //[connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
@@ -253,7 +272,7 @@
     // Song Information
     NSMutableArray *songs = [[NSMutableArray alloc] init];
     NSMutableArray *songsKeys = [[NSMutableArray alloc] init];
-    int songCount = 0;
+    sequencesWithAudioCount = 0;
     
     for(int i = 0; i < [self sequenceFilePathsCount]; i ++)
     {
@@ -271,20 +290,31 @@
             
             NSDictionary *songsDetailsDict = [NSDictionary dictionaryWithObjects:songDetails forKeys:songDetailsKeys];
             //[songsKeys addObject:[NSString stringWithFormat:@"%d", i]];
-            [songsKeys addObject:[NSString stringWithFormat:@"%d", songCount]];
+            [songsKeys addObject:[NSString stringWithFormat:@"%d", sequencesWithAudioCount]];
             [songs addObject:songsDetailsDict];
             
-            songCount ++;
+            sequencesWithAudioCount ++;
         }
     }
     
     [keys addObject:@"songsCount"];
     //[objects addObject:[NSNumber numberWithInt:[self sequenceFilePathsCount]]];
-    [objects addObject:[NSNumber numberWithInt:songCount]];
+    [objects addObject:[NSNumber numberWithInt:sequencesWithAudioCount]];
     
     NSDictionary *songsDict = [NSDictionary dictionaryWithObjects:songs forKeys:songsKeys];
     [keys addObject:@"songDetails"];
     [objects addObject:songsDict];
+    
+    [keys addObject:@"currentSongID"];
+    if(self.currentSequenceIsPlaying)
+    {
+        NSLog(@"csq:%d", currentSequenceIndex);
+        [objects addObject:[NSNumber numberWithInt:currentSequenceIndex]];
+    }
+    else
+    {
+        [objects addObject:[NSNumber numberWithInt:-1]];
+    }
     
     NSDictionary *dict = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
     NSError *error;
@@ -1370,6 +1400,22 @@
     return nil;
 }
 
+- (void)playWebPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count
+{
+    numberOfPlaylistSongs = count;
+    currentPlaylistIndex = -1;
+    memset(playlistIndexes, 0, 999);
+    for(int i = 0; i < numberOfPlaylistSongs; i ++)
+    {
+        playlistIndexes[i] = (int)indexes[i];
+    }
+    
+    [self playNextPlaylistItem];
+    
+    if(playlistButtonClick)
+    NSLog(@"playing:%d", self.currentSequenceIsPlaying);
+}
+
 - (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count
 {
     numberOfPlaylistSongs = count;
@@ -1387,6 +1433,7 @@
 {
     currentPlaylistIndex ++;
     
+    // Loop back to the start
     if(currentPlaylistIndex >= numberOfPlaylistSongs)
     {
         currentPlaylistIndex = 0;
@@ -1394,17 +1441,21 @@
     }
     
     // Pause the current sequence
-    if(currentPlaylistIndex > 0)
+    if(self.currentSequenceIsPlaying)
     {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
     }
     // Load the new sequence and play it
     [self setCurrentSequence:[self sequenceFromFilePath:[self sequenceFilePathAtIndex:(int)playlistIndexes[currentPlaylistIndex]]]];
+    self.currentSequenceIndex = (int)playlistIndexes[currentPlaylistIndex];
     [self setCurrentTime:0.0];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"SetSequence" object:currentSequence];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateGraphics" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ResetScrollPoint" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+    
+    // So they know which song is playing
+    [self updateAllSockets];
 }
 
 - (void)stopPlaylist
@@ -2347,19 +2398,19 @@
     if([self.serialPort isOpen])
 	{
 		//NSLog(@"Writing:%@:", text);
-        for(int i = 0; i < length; i ++)
+        /*for(int i = 0; i < length; i ++)
         {
             NSLog(@"sending c:%c d:%d h:%02x", packet[i], packet[i], packet[i]);
-        }
+        }*/
         [serialPort sendData:[NSData dataWithBytes:packet length:length]];
 	}
 	else
     {
         //NSLog(@"Can't send:%@", [NSString stringWithCString:packet encoding:NSStringEncodingConversionAllowLossy]);
-        for(int i = 0; i < length; i ++)
+        /*for(int i = 0; i < length; i ++)
         {
             NSLog(@"can't send c:%c d:%d h:%02x", packet[i], packet[i], packet[i]);
-        }
+        }*/
         //NSLog(@"Couldn't send. Not connected");
     }
 }
