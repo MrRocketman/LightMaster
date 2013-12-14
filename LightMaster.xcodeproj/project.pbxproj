@@ -212,8 +212,8 @@
 		1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTracksView.m; sourceTree = "<group>"; };
 		1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineTrackHeadersView.h; sourceTree = "<group>"; };
 		1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTrackHeadersView.m; sourceTree = "<group>"; };
-		1A1290F6185D0B4E0052DC6F /* index.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = index.php; sourceTree = "<group>"; };
-		1A1290F7185D0B4E0052DC6F /* lightmaster.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = lightmaster.js; sourceTree = "<group>"; };
+		1A1290F9185D0B9F0052DC6F /* index.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; name = index.php; path = ../../../../../../../../Applications/MAMP/htdocs/mrrocketman/index.php; sourceTree = "<group>"; };
+		1A1290FA185D0B9F0052DC6F /* lightmaster.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = lightmaster.js; path = ../../../../../../../../Applications/MAMP/htdocs/mrrocketman/lightmaster.js; sourceTree = "<group>"; };
 		1A37E893163CC86C000105B5 /* MNAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNAppDelegate.h; sourceTree = "<group>"; };
 		1A37E894163CC86C000105B5 /* MNAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNAppDelegate.m; sourceTree = "<group>"; };
 		1A487306163A44D000820C1D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -544,8 +544,8 @@
 		1A1290F8185D0B540052DC6F /* Website */ = {
 			isa = PBXGroup;
 			children = (
-				1A1290F6185D0B4E0052DC6F /* index.php */,
-				1A1290F7185D0B4E0052DC6F /* lightmaster.js */,
+				1A1290F9185D0B9F0052DC6F /* index.php */,
+				1A1290FA185D0B9F0052DC6F /* lightmaster.js */,
 			);
 			name = Website;
 			sourceTree = "<group>";
