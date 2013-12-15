@@ -258,37 +258,37 @@ function addControlBoxTable()
     boxCell = boxRow.insertCell(0);
     var tableHeaderCell = document.createElement("span");
     var tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Zone";
+    tableHeaderBold.innerHTML = "# Of Channels";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(1);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# Of Channels";
+    tableHeaderBold.innerHTML = "# Of Lights";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(2);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# Of Lights";
+    tableHeaderBold.innerHTML = "# of Volts";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(3);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Volts";
+    tableHeaderBold.innerHTML = "# of Amps";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(4);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Amps";
+    tableHeaderBold.innerHTML = "# of Watts";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(5);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Watts";
+    tableHeaderBold.innerHTML = "Zone";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(6);
@@ -312,22 +312,22 @@ function addControlBoxTable()
         boxRow = boxTable.insertRow(i + 1);
         
         boxCell = boxRow.insertCell(0);
-        addBoxName(box.description);
-        
-        boxCell = boxRow.insertCell(1);
         addBoxChannels(i);
         
-        boxCell = boxRow.insertCell(2);
+        boxCell = boxRow.insertCell(1);
         addBoxLights(box.boxID);
         
-        boxCell = boxRow.insertCell(3);
+        boxCell = boxRow.insertCell(2);
         addBoxVolts(box.boxID);
         
-        boxCell = boxRow.insertCell(4);
+        boxCell = boxRow.insertCell(3);
         addBoxAmps(box.boxID);
         
-        boxCell = boxRow.insertCell(5);
+        boxCell = boxRow.insertCell(4);
         addBoxPower(box.boxID);
+        
+        boxCell = boxRow.insertCell(5);
+        addBoxName(box.description);
         
         boxCell = boxRow.insertCell(6);
         addBoxOnButton(box.description, box.boxID, i);
@@ -341,44 +341,41 @@ function addControlBoxTable()
     // Add the table footer
     boxRow = boxTable.insertRow(json.boxesCount + 1);
     boxCell = boxRow.insertCell(0);
-    var tableFooterCell = document.createElement("span");
-    var tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = "Totals";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(1);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = totalChannels + " Channels";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(2);
+    boxCell = boxRow.insertCell(1);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = (mapleTreeLights + flagPoleTreeLights + houseLights + frontYardLights + mimosaTreeLights + southYardLights + pianoLights + tesLights) + " Lights";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(3);
+    boxCell = boxRow.insertCell(2);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML =  "Volts";
+    tableFooterBold.innerHTML =  "-";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(4);
+    boxCell = boxRow.insertCell(3);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = (mapleTreeAmps + flagPoleTreeAmps + houseAmps + frontYardAmps + mimosaTreeAmps + southYardAmps + pianoAmps + tesAmps) + " Amps";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(5);
+    boxCell = boxRow.insertCell(4);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = (mapleTreePower + flagPoleTreePower + housePower + frontYardPower + mimosaTreePower + southYardPower + pianoPower + tesPower) + " Watts";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    
-    
-    
+    boxCell = boxRow.insertCell(5);
+    var tableFooterCell = document.createElement("span");
+    var tableFooterBold = document.createElement("b");
+    tableFooterBold.innerHTML = "Everything!!!";
+    tableFooterCell.appendChild(tableFooterBold);
+    boxCell.appendChild(tableFooterCell);
     //Create the on button
     boxCell = boxRow.insertCell(6);
     tableFooterCell = document.createElement("input");
@@ -403,21 +400,6 @@ function addControlBoxTable()
         websocket.send(this.id);
     }
     boxCell.appendChild(tableFooterCell);
-    
-    
-    
-    /*boxCell = boxRow.insertCell(6);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = "";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(7);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = "";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);*/
     
     
     // Add the table to the page
