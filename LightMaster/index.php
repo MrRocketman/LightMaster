@@ -20,10 +20,10 @@
             <div id="output"></div>
             <div id="connection"></div>
             <div id="clients"></div>
-            <h2>Pick The Song!</h2>
-            <div id="songs"></div>
             <h2>Control The Lights!</h2>
             <div id="boxOnOff"></div>
+            <h2>Pick The Song!</h2>
+            <div id="songs"></div>
             
             <div id="disqus_thread"></div>
             <script type="text/javascript">
