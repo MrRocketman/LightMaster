@@ -45,6 +45,8 @@
 		1A028AC8161CDA2A00B97A5B /* MNSynchronizedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028AC7161CDA2A00B97A5B /* MNSynchronizedScrollView.m */; };
 		1A028ACB161CDA4A00B97A5B /* MNTimelineTracksView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */; };
 		1A028ACE161CDA7600B97A5B /* MNTimelineTrackHeadersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */; };
+		1A1290FD185E3CE40052DC6F /* index.php in Resources */ = {isa = PBXBuildFile; fileRef = 1A1290FB185E3CE40052DC6F /* index.php */; };
+		1A1290FE185E3CE40052DC6F /* lightmaster.js in Sources */ = {isa = PBXBuildFile; fileRef = 1A1290FC185E3CE40052DC6F /* lightmaster.js */; };
 		1A37E895163CC86C000105B5 /* MNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A37E894163CC86C000105B5 /* MNAppDelegate.m */; };
 		1A487307163A44D000820C1D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A487306163A44D000820C1D /* IOKit.framework */; };
 		1A487313163A542900820C1D /* ORSSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A487310163A542900820C1D /* ORSSerialPort.m */; };
@@ -212,8 +214,8 @@
 		1A028ACA161CDA4A00B97A5B /* MNTimelineTracksView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTracksView.m; sourceTree = "<group>"; };
 		1A028ACC161CDA7600B97A5B /* MNTimelineTrackHeadersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNTimelineTrackHeadersView.h; sourceTree = "<group>"; };
 		1A028ACD161CDA7600B97A5B /* MNTimelineTrackHeadersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNTimelineTrackHeadersView.m; sourceTree = "<group>"; };
-		1A1290F9185D0B9F0052DC6F /* index.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; name = index.php; path = ../../../../../../../../Applications/MAMP/htdocs/mrrocketman/index.php; sourceTree = "<group>"; };
-		1A1290FA185D0B9F0052DC6F /* lightmaster.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = lightmaster.js; path = ../../../../../../../../Applications/MAMP/htdocs/mrrocketman/lightmaster.js; sourceTree = "<group>"; };
+		1A1290FB185E3CE40052DC6F /* index.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = index.php; sourceTree = "<group>"; };
+		1A1290FC185E3CE40052DC6F /* lightmaster.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = lightmaster.js; sourceTree = "<group>"; };
 		1A37E893163CC86C000105B5 /* MNAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNAppDelegate.h; sourceTree = "<group>"; };
 		1A37E894163CC86C000105B5 /* MNAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNAppDelegate.m; sourceTree = "<group>"; };
 		1A487306163A44D000820C1D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -544,8 +546,8 @@
 		1A1290F8185D0B540052DC6F /* Website */ = {
 			isa = PBXGroup;
 			children = (
-				1A1290F9185D0B9F0052DC6F /* index.php */,
-				1A1290FA185D0B9F0052DC6F /* lightmaster.js */,
+				1A1290FB185E3CE40052DC6F /* index.php */,
+				1A1290FC185E3CE40052DC6F /* lightmaster.js */,
 			);
 			name = Website;
 			sourceTree = "<group>";
@@ -843,6 +845,7 @@
 				1A028A78161CD36E00B97A5B /* FastForwardAlternate.tiff in Resources */,
 				1A028A79161CD36E00B97A5B /* PlayAlternate.tiff in Resources */,
 				1A028A7A161CD36E00B97A5B /* RecordAlternate.tiff in Resources */,
+				1A1290FD185E3CE40052DC6F /* index.php in Resources */,
 				1A028A7B161CD36E00B97A5B /* RewindAlternate.tiff in Resources */,
 				1A028A7C161CD36E00B97A5B /* SkipBackAlternate.tiff in Resources */,
 				1A028A7D161CD36E00B97A5B /* Record.tiff in Resources */,
@@ -942,6 +945,7 @@
 				1AD64E4C167AA70800A89D5A /* ASIHTTPRequest.m in Sources */,
 				1AD64E4E167AA70800A89D5A /* ASIInputStream.m in Sources */,
 				1AD64E50167AA70800A89D5A /* ASINetworkQueue.m in Sources */,
+				1A1290FE185E3CE40052DC6F /* lightmaster.js in Sources */,
 				1AD64E72167AA82100A89D5A /* NSObject+SBJson.m in Sources */,
 				1AD64E74167AA82100A89D5A /* SBJsonParser.m in Sources */,
 				1AD64E76167AA82100A89D5A /* SBJsonStreamParser.m in Sources */,
