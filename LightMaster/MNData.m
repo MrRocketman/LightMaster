@@ -107,7 +107,9 @@
 
 - (void)webSocketServer:(MBWebSocketServer *)webSocketServer didAcceptConnection:(GCDAsyncSocket *)connection
 {
-    NSLog(@"Connected to a client, we accept multiple connections");
+    NSLog(@"Connected to a client %@, we accept multiple connections", connection);
+    
+    [self updateAllSocketsWithClientCount];
 }
 
 - (void)webSocketServer:(MBWebSocketServer *)webSocket didReceiveData:(NSData *)data fromConnection:(GCDAsyncSocket *)connection
@@ -115,60 +117,115 @@
     NSString *receivedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"received:%@", receivedData);
     
-    if([receivedData isEqualToString:@"Info"])
+    // The string is complete. Now do something with it.
+    if([receivedData rangeOfString:@"\r\n"].location != NSNotFound)
     {
-        [self sendInformationToSocket:connection];
-    }
-    else if([receivedData rangeOfString:@"control"].location != NSNotFound)
-    {
-        NSString *bytes = [receivedData stringByReplacingOccurrencesOfString:@"control" withString:@""];
-        //NSLog(@"bytes:%@", bytes);
+        receivedData = [receivedData stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
         
-        /*for(int i = 0; i < [bytes length]; i ++)
+        if([receivedData isEqualToString:@"Info"])
         {
-            NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
-        }*/
-        
-        uint8_t command[64];
-        int charCount = 0;
-        char currentByte = 0;
-        char boardID = [bytes characterAtIndex:0];
-        char commandID = [bytes characterAtIndex:1];
-        
-        // All channels on/off
-        if(commandID == 0x04)
+            [self sendInformationToSocket:connection];
+        }
+        else if([receivedData rangeOfString:@"control"].location != NSNotFound)
         {
-            // Loop through each channel to build the command
-            for(int i = 2; i < [bytes length]; i ++)
+            receivedData = [receivedData stringByReplacingOccurrencesOfString:@"control" withString:@""];
+            
+            uint8_t command[64];
+            int charCount = 0;
+            int boxIndex = [receivedData intValue];
+            
+            if([receivedData rangeOfString:@"All"].location != NSNotFound)
             {
-                currentByte = [bytes characterAtIndex:i];
-                for(int i2 = 0; i2 < 8; i2 ++)
+                receivedData = [receivedData stringByReplacingOccurrencesOfString:@"All" withString:@""];
+                
+                BOOL on = NO;
+                
+                if([receivedData rangeOfString:@"On"].location != NSNotFound)
                 {
-                    if(CHECK_BIT(currentByte, i2))
+                    receivedData = [receivedData stringByReplacingOccurrencesOfString:@"On" withString:@""];
+                    
+                    on = YES;
+                }
+                else if([receivedData rangeOfString:@"Off"].location != NSNotFound)
+                {
+                    receivedData = [receivedData stringByReplacingOccurrencesOfString:@"Off" withString:@""];
+                    
+                    on = NO;
+                }
+                
+                // Get the box information
+                NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:boxIndex]];
+                int channels = [self channelsCountForControlBox:controlBox];
+                char boardID = (char)[[self controlBoxIDForControlBox:controlBox] intValue];
+                
+                // Loop through each channel
+                for(int i = 0; i < channels; i ++)
+                {
+                    memset(command, 0, 64);
+                    charCount = 0;
+                    
+                    command[charCount] = boardID; // Set the boardID
+                    charCount ++;
+                    if(on)
                     {
-                        memset(command, 0, 64);
-                        charCount = 0;
-                        
-                        command[charCount] = boardID; // Set the boardID
-                        charCount ++;
                         command[charCount] = 0x01; // Turn a channel on command
-                        charCount ++;
-                        command[charCount] = (char)((i - 1) * i2); // Set which channel
-                        charCount ++;
-                        command[charCount] = 0xFF; // End of command char
-                        charCount ++;
-                        [self sendPacketToSerialPort:command packetLength:charCount];
                     }
                     else
                     {
+                        command[charCount] = 0x02; // Turn a channel off command
+                    }
+                    charCount ++;
+                    command[charCount] = (char)(i); // Set which channel
+                    charCount ++;
+                    command[charCount] = 0xFF; // End of command char
+                    charCount ++;
+                    [self sendPacketToSerialPort:command packetLength:charCount];
+                }
+            }
+            else if([receivedData rangeOfString:@"Everything"].location != NSNotFound)
+            {
+                receivedData = [receivedData stringByReplacingOccurrencesOfString:@"Everything" withString:@""];
+                
+                BOOL on = NO;
+                
+                if([receivedData rangeOfString:@"On"].location != NSNotFound)
+                {
+                    receivedData = [receivedData stringByReplacingOccurrencesOfString:@"On" withString:@""];
+                    
+                    on = YES;
+                }
+                else if([receivedData rangeOfString:@"Off"].location != NSNotFound)
+                {
+                    receivedData = [receivedData stringByReplacingOccurrencesOfString:@"Off" withString:@""];
+                    
+                    on = NO;
+                }
+                
+                for(int b = 0; b < [self controlBoxFilePathsCount]; b ++)
+                {
+                    // Get the box information
+                    NSMutableDictionary *controlBox = [self controlBoxFromFilePath:[self controlBoxFilePathAtIndex:b]];
+                    int channels = [self channelsCountForControlBox:controlBox];
+                    char boardID = (char)[[self controlBoxIDForControlBox:controlBox] intValue];
+                    
+                    // Loop through each channel
+                    for(int i = 0; i < channels; i ++)
+                    {
                         memset(command, 0, 64);
                         charCount = 0;
                         
                         command[charCount] = boardID; // Set the boardID
                         charCount ++;
-                        command[charCount] = 0x02; // Turn a channel off command
+                        if(on)
+                        {
+                            command[charCount] = 0x01; // Turn a channel on command
+                        }
+                        else
+                        {
+                            command[charCount] = 0x02; // Turn a channel off command
+                        }
                         charCount ++;
-                        command[charCount] = (char)((i - 1) * i2); // Set which channel
+                        command[charCount] = (char)(i); // Set which channel
                         charCount ++;
                         command[charCount] = 0xFF; // End of command char
                         charCount ++;
@@ -177,37 +234,37 @@
                 }
             }
         }
-    }
-    else if([receivedData rangeOfString:@"song"].location != NSNotFound)
-    {
-        NSString *bytes = [receivedData stringByReplacingOccurrencesOfString:@"song" withString:@""];
-        //NSLog(@"bytes:%@", bytes);
-        
-        for(int i = 0; i < [bytes length]; i ++)
+        else if([receivedData rangeOfString:@"song"].location != NSNotFound)
         {
-            NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
+            NSString *bytes = [receivedData stringByReplacingOccurrencesOfString:@"song" withString:@""];
+            //NSLog(@"bytes:%@", bytes);
+            
+            for(int i = 0; i < [bytes length]; i ++)
+            {
+                NSLog(@"c:%c d:%d h:%02x", [bytes characterAtIndex:i], [bytes characterAtIndex:i], [bytes characterAtIndex:i]);
+            }
+            
+            int songID = [bytes intValue];
+            
+            NSUInteger playlist[sequencesWithAudioCount];
+            
+            playlist[0] = (NSUInteger)songID;
+            NSLog(@"playing song:%d", songID);
+            int currentSongID = songID + 1;
+            
+            if(currentSongID > [self sequenceFilePathsCount])
+            {
+                currentSongID = 0; // Cause we have to 'songs' flash and solid
+            }
+            
+            for(int i = 1; i < sequencesWithAudioCount; i ++)
+            {
+                playlist[i] = currentSongID;
+                currentSongID ++;
+            }
+            
+            [self playWebPlaylistOfSequenceIndexes:playlist indexCount:sequencesWithAudioCount];
         }
-        
-        int songID = [bytes intValue];
-        
-        NSUInteger playlist[sequencesWithAudioCount];
-        
-        playlist[0] = (NSUInteger)songID;
-        NSLog(@"playing song:%d", songID);
-        int currentSongID = songID + 1;
-        
-        if(currentSongID > [self sequenceFilePathsCount])
-        {
-            currentSongID = 0; // Cause we have to 'songs' flash and solid
-        }
-        
-        for(int i = 1; i < sequencesWithAudioCount; i ++)
-        {
-            playlist[i] = currentSongID;
-            currentSongID ++;
-        }
-        
-        [self playWebPlaylistOfSequenceIndexes:playlist indexCount:sequencesWithAudioCount];
     }
     
     //[connection writeWebSocketFrame:@"Thanks for the data!"]; // you can write NSStrings or NSDatas
@@ -216,6 +273,8 @@
 - (void)webSocketServer:(MBWebSocketServer *)webSocketServer clientDisconnected:(GCDAsyncSocket *)connection
 {
     NSLog(@"Disconnected from client: %@", connection);
+    
+    [self updateAllSocketsWithClientCount];
 }
 
 - (void)webSocketServer:(MBWebSocketServer *)webSocketServer couldNotParseRawData:(NSData *)rawData fromConnection:(GCDAsyncSocket *)connection error:(NSError *)error
@@ -249,7 +308,7 @@
             [boxDetailsKeys addObject:@"description"];
             [boxDetails addObject:[NSString stringWithFormat:@"%@", [self descriptionForControlBox:controlBox]]];
             [boxDetailsKeys addObject:@"boxID"];
-            [boxDetails addObject:[NSString stringWithFormat:@"%@", [self controlBoxIDForControlBox:controlBox]]];
+            [boxDetails addObject:[NSString stringWithFormat:@"%d", i]];
             
             NSDictionary *boxesDetailsDict = [NSDictionary dictionaryWithObjects:boxDetails forKeys:boxDetailsKeys];
             [boxesKeys addObject:[NSString stringWithFormat:@"%d", i]];
@@ -325,11 +384,36 @@
     [socket writeWebSocketFrame:jsonData];
 }
 
+- (void)sendClientCountToSocket:(GCDAsyncSocket *)socket
+{
+    NSMutableArray *objects = [[NSMutableArray alloc] init];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
+    
+    [objects addObject:[NSString stringWithFormat:@"%lu", (unsigned long)[webSocket clientCount]]];
+    [keys addObject:@"clientCount"];
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    //NSString* channelsString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    [socket writeWebSocketFrame:jsonData];
+}
+
 - (void)updateAllSockets
 {
     for(int i = 0; i < [webSocket clientCount]; i ++)
     {
         [self sendInformationToSocket:[webSocket clientAtIndex:i]];
+    }
+}
+
+- (void)updateAllSocketsWithClientCount
+{
+    for(int i = 0; i < [webSocket clientCount]; i ++)
+    {
+        [self sendClientCountToSocket:[webSocket clientAtIndex:i]];
     }
 }
 
