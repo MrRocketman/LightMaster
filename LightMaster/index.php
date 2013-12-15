@@ -15,7 +15,7 @@
         
         <div id="main">
             <h1>Welcome to MrRocketman.com</h1>
-            <p>Enjoy the lights from 5PM to 10:30PM daily</p>
+<p>Enjoy the lights from 5PM to 10:30PM daily</p>
             
             <div id="output"></div>
             <div id="connection"></div>

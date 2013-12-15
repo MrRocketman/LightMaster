@@ -190,14 +190,31 @@ function addSongButtons()
     songTable.width = 400;
     
     var songIDForPlayingSong = json.currentSongID;
-    console.log("playing:" + songIDForPlayingSong);
+    //console.log("playing:" + songIDForPlayingSong);
+    
+    // Add the table header
+    songRow = songTable.insertRow(0);
+    
+    songCell = songRow.insertCell(0);
+    var songHeaderCell = document.createElement("span");
+    var songHeaderBold = document.createElement("b");
+    songHeaderBold.innerHTML = "Play";
+    songHeaderCell.appendChild(songHeaderBold);
+    songCell.appendChild(songHeaderCell);
+    
+    songCell = songRow.insertCell(1);
+    songHeaderCell = document.createElement("span");
+    songHeaderBold = document.createElement("b");
+    songHeaderBold.innerHTML = "Song Name";
+    songHeaderCell.appendChild(songHeaderBold);
+    songCell.appendChild(songHeaderCell);
     
     // Make the song buttons
     for(var i = 0; i < json.songsCount; i++)
     {
         var song = json.songDetails[i];
         
-        songRow = songTable.insertRow(i);
+        songRow = songTable.insertRow(i + 1);
         
         if(song.songID == songIDForPlayingSong)
         {
@@ -205,10 +222,10 @@ function addSongButtons()
         }
         
         songCell = songRow.insertCell(0);
-        addSongName(song.description);
+        createSongButton(song.description, song.songID, i);
         
         songCell = songRow.insertCell(1);
-        createSongButton(song.description, song.songID, i);
+        addSongName(song.description);
     }
     
     songs.appendChild(songTable);
@@ -255,52 +272,60 @@ function addControlBoxTable()
     
     // Add the table header
     boxRow = boxTable.insertRow(0);
+    
     boxCell = boxRow.insertCell(0);
     var tableHeaderCell = document.createElement("span");
     var tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Channels";
+    tableHeaderBold.innerHTML = "On";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
+    
     boxCell = boxRow.insertCell(1);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Lights";
+    tableHeaderBold.innerHTML = "Off";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
-    /*boxCell = boxRow.insertCell(2);
-    tableHeaderCell = document.createElement("span");
-    tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Volts";
-    tableHeaderCell.appendChild(tableHeaderBold);
-    boxCell.appendChild(tableHeaderCell);*/
+    
     boxCell = boxRow.insertCell(2);
-    tableHeaderCell = document.createElement("span");
-    tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Amps";
-    tableHeaderCell.appendChild(tableHeaderBold);
-    boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(3);
-    tableHeaderCell = document.createElement("span");
-    tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Watts";
-    tableHeaderCell.appendChild(tableHeaderBold);
-    boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(4);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "Zone";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
+    
+    boxCell = boxRow.insertCell(3);
+    tableHeaderCell = document.createElement("span");
+    tableHeaderBold = document.createElement("b");
+    tableHeaderBold.innerHTML = "Channels";
+    tableHeaderCell.appendChild(tableHeaderBold);
+    boxCell.appendChild(tableHeaderCell);
+    
+    boxCell = boxRow.insertCell(4);
+    tableHeaderCell = document.createElement("span");
+    tableHeaderBold = document.createElement("b");
+    tableHeaderBold.innerHTML = "Lights";
+    tableHeaderCell.appendChild(tableHeaderBold);
+    boxCell.appendChild(tableHeaderCell);
+    
+    //boxCell = boxRow.insertCell(2);
+    //tableHeaderCell = document.createElement("span");
+    //tableHeaderBold = document.createElement("b");
+    //tableHeaderBold.innerHTML = "Volts";
+    //tableHeaderCell.appendChild(tableHeaderBold);
+    //boxCell.appendChild(tableHeaderCell);
+    
     boxCell = boxRow.insertCell(5);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "On";
+    tableHeaderBold.innerHTML = "Amps";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
+    
     boxCell = boxRow.insertCell(6);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "Off";
+    tableHeaderBold.innerHTML = "Watts";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     
@@ -312,73 +337,38 @@ function addControlBoxTable()
         boxRow = boxTable.insertRow(i + 1);
         
         boxCell = boxRow.insertCell(0);
-        addBoxChannels(i);
+        addBoxOnButton(box.description, box.boxID, i);
         
         boxCell = boxRow.insertCell(1);
+        addBoxOffButton(box.description, box.boxID, i);
+        
+        boxCell = boxRow.insertCell(2);
+        addBoxName(box.description);
+        
+        boxCell = boxRow.insertCell(3);
+        addBoxChannels(i);
+        
+        boxCell = boxRow.insertCell(4);
         addBoxLights(box.boxID);
         
         //boxCell = boxRow.insertCell(2);
         //addBoxVolts(box.boxID);
         
-        boxCell = boxRow.insertCell(2);
+        boxCell = boxRow.insertCell(5);
         addBoxAmps(box.boxID);
         
-        boxCell = boxRow.insertCell(3);
-        addBoxPower(box.boxID);
-        
-        boxCell = boxRow.insertCell(4);
-        addBoxName(box.description);
-        
-        boxCell = boxRow.insertCell(5);
-        addBoxOnButton(box.description, box.boxID, i);
-        
         boxCell = boxRow.insertCell(6);
-        addBoxOffButton(box.description, box.boxID, i);
+        addBoxPower(box.boxID);
         
         totalChannels += parseInt(box.channels);
     }
     
     // Add the table footer
     boxRow = boxTable.insertRow(json.boxesCount + 1);
-    boxCell = boxRow.insertCell(0);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = totalChannels + " Channels";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(1);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = number_format((mapleTreeLights + flagPoleTreeLights + houseLights + frontYardLights + mimosaTreeLights + southYardLights + pianoLights + tesLights), 0, '.', ',') + " Lights";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    /*boxCell = boxRow.insertCell(2);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML =  "";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);*/
-    boxCell = boxRow.insertCell(2);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = number_format((mapleTreeAmps + flagPoleTreeAmps + houseAmps + frontYardAmps + mimosaTreeAmps + southYardAmps + pianoAmps + tesAmps), 2, '.', ',') + " Amps";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(3);
-    tableFooterCell = document.createElement("span");
-    tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = number_format((mapleTreePower + flagPoleTreePower + housePower + frontYardPower + mimosaTreePower + southYardPower + pianoPower + tesPower), 2, '.', ',') + " Watts";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(4);
-    var tableFooterCell = document.createElement("span");
-    var tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = "Everything!!!";
-    tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
+    
     //Create the on button
-    boxCell = boxRow.insertCell(5);
-    tableFooterCell = document.createElement("input");
+    boxCell = boxRow.insertCell(0);
+    var tableFooterCell = document.createElement("input");
     controlString = "controlEverythingOn\r\n";
     tableFooterCell.id = controlString;
     tableFooterCell.type = "button";
@@ -388,8 +378,9 @@ function addControlBoxTable()
         websocket.send(this.id);
     }
     boxCell.appendChild(tableFooterCell);
+    
     //Create the off button
-    boxCell = boxRow.insertCell(6);
+    boxCell = boxRow.insertCell(1);
     tableFooterCell = document.createElement("input");
     controlString = "controlEverythingOff\r\n";
     tableFooterCell.id = controlString;
@@ -401,6 +392,47 @@ function addControlBoxTable()
     }
     boxCell.appendChild(tableFooterCell);
     
+    boxCell = boxRow.insertCell(2);
+    tableFooterCell = document.createElement("span");
+    var tableFooterBold = document.createElement("b");
+    tableFooterBold.innerHTML = "Everything!!!";
+    tableFooterCell.appendChild(tableFooterBold);
+    boxCell.appendChild(tableFooterCell);
+    
+    boxCell = boxRow.insertCell(3);
+    tableFooterCell = document.createElement("span");
+    tableFooterBold = document.createElement("b");
+    tableFooterBold.innerHTML = totalChannels + " Channels";
+    tableFooterCell.appendChild(tableFooterBold);
+    boxCell.appendChild(tableFooterCell);
+    
+    boxCell = boxRow.insertCell(4);
+    tableFooterCell = document.createElement("span");
+    tableFooterBold = document.createElement("b");
+    tableFooterBold.innerHTML = number_format((mapleTreeLights + flagPoleTreeLights + houseLights + frontYardLights + mimosaTreeLights + southYardLights + pianoLights + tesLights), 0, '.', ',') + " Lights";
+    tableFooterCell.appendChild(tableFooterBold);
+    boxCell.appendChild(tableFooterCell);
+    
+     //boxCell = boxRow.insertCell(2);
+     //tableFooterCell = document.createElement("span");
+     //tableFooterBold = document.createElement("b");
+     //tableFooterBold.innerHTML =  "";
+     //tableFooterCell.appendChild(tableFooterBold);
+     //boxCell.appendChild(tableFooterCell);
+    
+    boxCell = boxRow.insertCell(5);
+    tableFooterCell = document.createElement("span");
+    tableFooterBold = document.createElement("b");
+    tableFooterBold.innerHTML = number_format((mapleTreeAmps + flagPoleTreeAmps + houseAmps + frontYardAmps + mimosaTreeAmps + southYardAmps + pianoAmps + tesAmps), 2, '.', ',') + " Amps";
+    tableFooterCell.appendChild(tableFooterBold);
+    boxCell.appendChild(tableFooterCell);
+    
+    boxCell = boxRow.insertCell(6);
+    tableFooterCell = document.createElement("span");
+    tableFooterBold = document.createElement("b");
+    tableFooterBold.innerHTML = number_format((mapleTreePower + flagPoleTreePower + housePower + frontYardPower + mimosaTreePower + southYardPower + pianoPower + tesPower), 2, '.', ',') + " Watts";
+    tableFooterCell.appendChild(tableFooterBold);
+    boxCell.appendChild(tableFooterCell);
     
     // Add the table to the page
     boxOnOff.appendChild(boxTable);
