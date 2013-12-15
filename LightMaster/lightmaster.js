@@ -227,7 +227,7 @@ function addControlBoxTable()
         boxCell = boxRow.insertCell(3);
         addBoxOffButton(box.description, box.boxID, i);
         
-        totalChannels += box.channels
+        totalChannels += parseInt(box.channels);
     }
     
     // Make a row for the everything controller
@@ -241,7 +241,7 @@ function addControlBoxTable()
     boxCell = boxRow.insertCell(1);
     var everythingChannels = document.createElement("span");
     //everythingChannels.innerHTML = "(" + totalChannels + " Channels)";
-    everythingChannels.innerHTML = "(184 Channels)";
+    everythingChannels.innerHTML = "(" + totalChannels + " Channels)";
     boxCell.appendChild(everythingChannels);
     
     //Create the on button
