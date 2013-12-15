@@ -23,12 +23,12 @@ var tesID = 7;
 
 var mapleTreeLights = 9000;
 var flagPoleTreeLights = 3450;
-var houseLights = 1500;
-var frontYardLights = 2000;
+var houseLights = 1800;
+var frontYardLights = 2300;
 var mimosaTreeLights = 1600;
-var southYardLights = 2500;
-var pianoLights = 5400;
-var tesLights = 3200;
+var southYardLights = 3150;
+var pianoLights = 4500;
+var tesLights = 3100;
 
 var mapleTreeVolts = 120;
 var flagPoleTreeVolts = 120;
@@ -258,31 +258,31 @@ function addControlBoxTable()
     boxCell = boxRow.insertCell(0);
     var tableHeaderCell = document.createElement("span");
     var tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# Of Channels";
+    tableHeaderBold.innerHTML = "Channels";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(1);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# Of Lights";
+    tableHeaderBold.innerHTML = "Lights";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(2);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# of Volts";
+    tableHeaderBold.innerHTML = "Volts";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(3);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# of Amps";
+    tableHeaderBold.innerHTML = "Amps";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(4);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
-    tableHeaderBold.innerHTML = "# of Watts";
+    tableHeaderBold.innerHTML = "Watts";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
     boxCell = boxRow.insertCell(5);
@@ -349,25 +349,25 @@ function addControlBoxTable()
     boxCell = boxRow.insertCell(1);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = (mapleTreeLights + flagPoleTreeLights + houseLights + frontYardLights + mimosaTreeLights + southYardLights + pianoLights + tesLights) + " Lights";
+    tableFooterBold.innerHTML = number_format((mapleTreeLights + flagPoleTreeLights + houseLights + frontYardLights + mimosaTreeLights + southYardLights + pianoLights + tesLights), 0, '.', ',') + " Lights";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
     boxCell = boxRow.insertCell(2);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML =  "-";
+    tableFooterBold.innerHTML =  "";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
     boxCell = boxRow.insertCell(3);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = (mapleTreeAmps + flagPoleTreeAmps + houseAmps + frontYardAmps + mimosaTreeAmps + southYardAmps + pianoAmps + tesAmps) + " Amps";
+    tableFooterBold.innerHTML = number_format((mapleTreeAmps + flagPoleTreeAmps + houseAmps + frontYardAmps + mimosaTreeAmps + southYardAmps + pianoAmps + tesAmps), 2, '.', ',') + " Amps";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
     boxCell = boxRow.insertCell(4);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
-    tableFooterBold.innerHTML = (mapleTreePower + flagPoleTreePower + housePower + frontYardPower + mimosaTreePower + southYardPower + pianoPower + tesPower) + " Watts";
+    tableFooterBold.innerHTML = number_format((mapleTreePower + flagPoleTreePower + housePower + frontYardPower + mimosaTreePower + southYardPower + pianoPower + tesPower), 2, '.', ',') + " Watts";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
     boxCell = boxRow.insertCell(5);
@@ -469,7 +469,7 @@ function addBoxLights(boxID)
     {
         lights = tesLights;
     }
-    element.innerHTML = lights;
+    element.innerHTML = number_format(lights, 0, '.', ',');
     
     //Append the element in page (in span).
     boxCell.appendChild(element);
@@ -559,7 +559,7 @@ function addBoxAmps(boxID)
     {
         amps = tesAmps;
     }
-    element.innerHTML = amps;
+    element.innerHTML = number_format(amps, 2, '.', ',');
     
     //Append the element in page (in span).
     boxCell.appendChild(element);
@@ -604,7 +604,7 @@ function addBoxPower(boxID)
     {
         power = tesPower;
     }
-    element.innerHTML = power;
+    element.innerHTML = number_format(power, 2, '.', ',');
     
     //Append the element in page (in span).
     boxCell.appendChild(element);
@@ -648,6 +648,71 @@ function addBoxOffButton(name, boxID, boxIndex)
     
     //Append the element in page (in span).
     boxCell.appendChild(element);
+}
+
+function number_format(number, decimals, dec_point, thousands_sep) {
+    // http://kevin.vanzonneveld.net
+    // +   original by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +     bugfix by: Michael White (http://getsprink.com)
+    // +     bugfix by: Benjamin Lupton
+    // +     bugfix by: Allan Jensen (http://www.winternet.no)
+    // +    revised by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
+    // +     bugfix by: Howard Yeend
+    // +    revised by: Luke Smith (http://lucassmith.name)
+    // +     bugfix by: Diogo Resende
+    // +     bugfix by: Rival
+    // +      input by: Kheang Hok Chin (http://www.distantia.ca/)
+    // +   improved by: davook
+    // +   improved by: Brett Zamir (http://brett-zamir.me)
+    // +      input by: Jay Klehr
+    // +   improved by: Brett Zamir (http://brett-zamir.me)
+    // +      input by: Amir Habibi (http://www.residence-mixte.com/)
+    // +     bugfix by: Brett Zamir (http://brett-zamir.me)
+    // +   improved by: Theriault
+    // *     example 1: number_format(1234.56);
+    // *     returns 1: '1,235'
+    // *     example 2: number_format(1234.56, 2, ',', ' ');
+    // *     returns 2: '1 234,56'
+    // *     example 3: number_format(1234.5678, 2, '.', '');
+    // *     returns 3: '1234.57'
+    // *     example 4: number_format(67, 2, ',', '.');
+    // *     returns 4: '67,00'
+    // *     example 5: number_format(1000);
+    // *     returns 5: '1,000'
+    // *     example 6: number_format(67.311, 2);
+    // *     returns 6: '67.31'
+    // *     example 7: number_format(1000.55, 1);
+    // *     returns 7: '1,000.6'
+    // *     example 8: number_format(67000, 5, ',', '.');
+    // *     returns 8: '67.000,00000'
+    // *     example 9: number_format(0.9, 0);
+    // *     returns 9: '1'
+    // *    example 10: number_format('1.20', 2);
+    // *    returns 10: '1.20'
+    // *    example 11: number_format('1.20', 4);
+    // *    returns 11: '1.2000'
+    // *    example 12: number_format('1.2000', 3);
+    // *    returns 12: '1.200'
+    var n = !isFinite(+number) ? 0 : +number,
+    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+    s = '',
+    toFixedFix = function (n, prec) {
+        var k = Math.pow(10, prec);
+        return '' + Math.round(n * k) / k;
+    };
+    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+        s[1] = s[1] || '';
+        s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
 }
 
 window.addEventListener("load", init, false);
