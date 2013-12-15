@@ -36,7 +36,7 @@ var houseVolts = 120;
 var frontYardVolts = 120;
 var mimosaTreeVolts = 120;
 var southYardVolts = 120;
-var pianoVolts = 12;
+var pianoVolts = 120;
 var tesVolts = 120;
 
 var mapleTreeAmps = mapleTreeLights * 0.002; // 2 milliamps per light
@@ -45,7 +45,7 @@ var houseAmps = houseLights * 0.002;
 var frontYardAmps = frontYardLights * 0.002;
 var mimosaTreeAmps = mimosaTreeLights * 0.002;
 var southYardAmps = southYardLights * 0.002;
-var pianoAmps = pianoLights * 0.00666; // 6.7 milliamps per light (LED's at 12Volts)
+var pianoAmps = pianoLights * 0.000666; // 0.067 milliamps per light (LED's at 12Volts)
 var tesAmps = tesLights * 0.002;
 
 var mapleTreePower = mapleTreeVolts * mapleTreeAmps; // 120V
@@ -267,37 +267,37 @@ function addControlBoxTable()
     tableHeaderBold.innerHTML = "Lights";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(2);
+    /*boxCell = boxRow.insertCell(2);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "Volts";
     tableHeaderCell.appendChild(tableHeaderBold);
-    boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(3);
+    boxCell.appendChild(tableHeaderCell);*/
+    boxCell = boxRow.insertCell(2);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "Amps";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(4);
+    boxCell = boxRow.insertCell(3);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "Watts";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(5);
+    boxCell = boxRow.insertCell(4);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "Zone";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(6);
+    boxCell = boxRow.insertCell(5);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "On";
     tableHeaderCell.appendChild(tableHeaderBold);
     boxCell.appendChild(tableHeaderCell);
-    boxCell = boxRow.insertCell(7);
+    boxCell = boxRow.insertCell(6);
     tableHeaderCell = document.createElement("span");
     tableHeaderBold = document.createElement("b");
     tableHeaderBold.innerHTML = "Off";
@@ -317,22 +317,22 @@ function addControlBoxTable()
         boxCell = boxRow.insertCell(1);
         addBoxLights(box.boxID);
         
-        boxCell = boxRow.insertCell(2);
-        addBoxVolts(box.boxID);
+        //boxCell = boxRow.insertCell(2);
+        //addBoxVolts(box.boxID);
         
-        boxCell = boxRow.insertCell(3);
+        boxCell = boxRow.insertCell(2);
         addBoxAmps(box.boxID);
         
-        boxCell = boxRow.insertCell(4);
+        boxCell = boxRow.insertCell(3);
         addBoxPower(box.boxID);
         
-        boxCell = boxRow.insertCell(5);
+        boxCell = boxRow.insertCell(4);
         addBoxName(box.description);
         
-        boxCell = boxRow.insertCell(6);
+        boxCell = boxRow.insertCell(5);
         addBoxOnButton(box.description, box.boxID, i);
         
-        boxCell = boxRow.insertCell(7);
+        boxCell = boxRow.insertCell(6);
         addBoxOffButton(box.description, box.boxID, i);
         
         totalChannels += parseInt(box.channels);
@@ -352,32 +352,32 @@ function addControlBoxTable()
     tableFooterBold.innerHTML = number_format((mapleTreeLights + flagPoleTreeLights + houseLights + frontYardLights + mimosaTreeLights + southYardLights + pianoLights + tesLights), 0, '.', ',') + " Lights";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(2);
+    /*boxCell = boxRow.insertCell(2);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML =  "";
     tableFooterCell.appendChild(tableFooterBold);
-    boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(3);
+    boxCell.appendChild(tableFooterCell);*/
+    boxCell = boxRow.insertCell(2);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = number_format((mapleTreeAmps + flagPoleTreeAmps + houseAmps + frontYardAmps + mimosaTreeAmps + southYardAmps + pianoAmps + tesAmps), 2, '.', ',') + " Amps";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(4);
+    boxCell = boxRow.insertCell(3);
     tableFooterCell = document.createElement("span");
     tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = number_format((mapleTreePower + flagPoleTreePower + housePower + frontYardPower + mimosaTreePower + southYardPower + pianoPower + tesPower), 2, '.', ',') + " Watts";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
-    boxCell = boxRow.insertCell(5);
+    boxCell = boxRow.insertCell(4);
     var tableFooterCell = document.createElement("span");
     var tableFooterBold = document.createElement("b");
     tableFooterBold.innerHTML = "Everything!!!";
     tableFooterCell.appendChild(tableFooterBold);
     boxCell.appendChild(tableFooterCell);
     //Create the on button
-    boxCell = boxRow.insertCell(6);
+    boxCell = boxRow.insertCell(5);
     tableFooterCell = document.createElement("input");
     controlString = "controlEverythingOn\r\n";
     tableFooterCell.id = controlString;
@@ -389,7 +389,7 @@ function addControlBoxTable()
     }
     boxCell.appendChild(tableFooterCell);
     //Create the off button
-    boxCell = boxRow.insertCell(7);
+    boxCell = boxRow.insertCell(6);
     tableFooterCell = document.createElement("input");
     controlString = "controlEverythingOff\r\n";
     tableFooterCell.id = controlString;
