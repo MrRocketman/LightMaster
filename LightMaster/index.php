@@ -15,9 +15,16 @@
         
         <div id="main">
             <h1>Welcome to MrRocketman.com</h1>
-<p>Enjoy the lights from 5PM to 10:30PM daily</p>
+            <p>Enjoy the lights from 5:15PM to 10:30PM daily, and all night Christmas Eve.</p>
             
             <div id="output"></div>
+            
+            <div id="livestream">
+                <h2>Livestream!</h2>
+                <p>The livestream is about 30 seconds behind. I Will improve the camera angle and auidio soon!</p>
+                <iframe src="//www.ustream.tv/embed/2132787?wmode=direct" style="border: 0 none transparent;" frameborder="no" width="480" height="302"></iframe><br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Live streaming video by Ustream</a>
+            </div>
+            
             <div id="connection"></div>
             <div id="clients"></div>
             <h2>Control The Lights!</h2>
