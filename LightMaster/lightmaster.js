@@ -270,7 +270,8 @@ function createSongButton(name, songID, i)
     //Assign different attributes to the element.
     controlString = "song" + songID + "\r\n";
     element.id = controlString;
-    element.type = "button";
+    element.type = "image";
+    element.src = "http://mrrocketman.com/files/public/other/silverPlayButton.png";
     element.value = "Play";
     element.onclick = function playSong()
     {
@@ -391,7 +392,8 @@ function addControlBoxTable()
     var tableFooterCell = document.createElement("input");
     controlString = "controlEverythingOn\r\n";
     tableFooterCell.id = controlString;
-    tableFooterCell.type = "button";
+    tableFooterCell.type = "image";
+    tableFooterCell.src = "http://mrrocketman.com/files/public/other/OnButtonBig.png";
     tableFooterCell.value = "ON";
     tableFooterCell.onclick = function turnOnEverything()
     {
@@ -404,7 +406,8 @@ function addControlBoxTable()
     tableFooterCell = document.createElement("input");
     controlString = "controlEverythingOff\r\n";
     tableFooterCell.id = controlString;
-    tableFooterCell.type = "button";
+    tableFooterCell.type = "image";
+    tableFooterCell.src = "http://mrrocketman.com/files/public/other/OffButtonBig.png";
     tableFooterCell.value = "OFF";
     tableFooterCell.onclick = function turnOffEverything()
     {
@@ -671,7 +674,8 @@ function addBoxOnButton(name, boxID, boxIndex)
     channels = json.boxDetails[boxIndex].channels;
     controlString = "control" + boxID + "AllOn\r\n";
     element.id = controlString;
-    element.type = "button";
+    element.type = "image";
+    element.src = "http://mrrocketman.com/files/public/other/OnButton.png";
     element.value = "ON";
     element.onclick = function turnOnBox()
     {
@@ -691,7 +695,8 @@ function addBoxOffButton(name, boxID, boxIndex)
     channels = json.boxDetails[boxIndex].channels;
     controlString = "control" + boxID + "AllOff\r\n";
     element.id = controlString;
-    element.type = "button";
+    element.type = "image";
+    element.src = "http://mrrocketman.com/files/public/other/OffButton.png";
     element.value = "OFF";
     element.onclick = function turnOffBox()
     {
