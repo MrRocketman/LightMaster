@@ -57,6 +57,9 @@ var southYardPower = southYardVolts * southYardAmps;
 var pianoPower = pianoVolts * pianoAmps; // 12V
 var tesPower = tesVolts * tesAmps;
 
+var ipInfo;
+//var jsonIPInfo;
+
 
 function init()
 {
@@ -66,7 +69,23 @@ function init()
     boxOnOff = document.getElementById("boxOnOff");
     songs = document.getElementById("songs");
     
+    // This part gets the IP
+    console.log("getting ip");
+    ipInfo = httpGet("http://ipinfo.io/json");
+    console.log("info: " + ipInfo);
+    //jsonIPInfo = JSON.parse(ipInfo);
+    
     testWebSocket();
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+    
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
 }
 
 function testWebSocket()
@@ -100,6 +119,7 @@ function onOpen(evt)
     //connection.appendChild(text);
     connection.innerHTML = '<h3>Connected <img src = "http://mrrocketman.com/minecraft/serverstatus/ping5.png"></h3>';
     doSend("Info\r\n");
+    doSend("IP" + ipInfo + "\r\n");
     
     // Stop the refresh
     if(refreshConnection != null)

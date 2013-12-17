@@ -124,7 +124,16 @@
         
         if([receivedData isEqualToString:@"Info"])
         {
+            receivedData = [receivedData stringByReplacingOccurrencesOfString:@"Info" withString:@""];
+            
             [self sendInformationToSocket:connection];
+        }
+        else if([receivedData rangeOfString:@"IP"].location != NSNotFound)
+        {
+            receivedData = [receivedData stringByReplacingOccurrencesOfString:@"IP" withString:@""];
+            
+            NSString *theIP = receivedData;
+            //NSLog(@"theIP:%@", theIP);
         }
         else if([receivedData rangeOfString:@"control"].location != NSNotFound)
         {
