@@ -15,7 +15,7 @@
         
         <div id="main">
             <h1>Welcome to MrRocketman.com Computer Controlled Christmas Lights Live!</h1>
-            <p>Enjoy the lights from 5:15PM to 10:30PM daily, and all night Christmas Eve.</p>
+            <p>Enjoy the lights from 5:15PM to 10:15PM (MDT) daily, and all night Christmas Eve.</p>
             
             <div id="output"></div>
             
@@ -25,10 +25,10 @@
                 <table>
                     <tr>
                         <td>
-                            <h3>Angle 1</h3>
+                            <h3>Angle 1 - To Be Determined</h3>
                         </td>
                         <td>
-                            <h3>Angle 2</h3>
+                            <h3>Angle 2 - Flag Pole Tree, TES, Front Yard</h3>
                         </td>
                     </tr>
                     <tr>
@@ -41,10 +41,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <h3>Angle 3</h3>
+                            <h3>Angle 3 - Mimosa Tree, Front Yard, Piano, House</h3>
                         </td>
                         <td>
-                            <h3>Angle 4</h3>
+                            <h3>Angle 4 - Maple Tree, House</h3>
                         </td>
                     </tr>
                     <tr>
