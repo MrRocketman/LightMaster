@@ -11,6 +11,7 @@ var songTable, songRow, songCell;
 
 var refreshConnection = null;
 var peopleCount;
+var totalHitsCount;
 
 var mapleTreeID = 0;
 var flagPoleID = 1;
@@ -181,6 +182,8 @@ function onMessage(evt)
     if(json.clientCount)
     {
         peopleCount = json.clientCount;
+        totalHitsCount = json.totalUsesCount;
+        console.log("totalHitsCount: " + totalHitsCount);
         console.log("peopleCount: " + peopleCount);
         updatePeopleCount();
     }
@@ -199,7 +202,7 @@ function onMessage(evt)
 
 function updatePeopleCount()
 {
-    clients.innerHTML = '<h4>People Controlling Lights ( ' + peopleCount + ' )</h4>';
+    clients.innerHTML = '<h4>People Controlling Lights Right Now ( ' + peopleCount + ' )</h4><h4>Total Hits ( ' + totalHitsCount + ' )</h4>';
 }
 
 function addSongButtons()

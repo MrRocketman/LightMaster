@@ -412,6 +412,8 @@
     
     [objects addObject:[NSString stringWithFormat:@"%lu", (unsigned long)[webSocket clientCount]]];
     [keys addObject:@"clientCount"];
+    [objects addObject:[NSString stringWithFormat:@"%lu", (unsigned long)[clientsThatHaveConnected count]]];
+    [keys addObject:@"totalUsesCount"];
     
     NSDictionary *dict = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
     NSError *error;
