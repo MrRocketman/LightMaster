@@ -92,6 +92,7 @@ enum
     int sequencesWithAudioCount;
     BOOL playlistButtonClick;
     int currentSequenceIndex;
+    BOOL playlistFromWeb;
 }
 
 @property() NSString *libraryFolder;

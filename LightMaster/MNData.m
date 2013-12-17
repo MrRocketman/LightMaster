@@ -245,25 +245,21 @@
             }
             
             int songID = [bytes intValue];
-            
             NSUInteger playlist[sequencesWithAudioCount];
+            int currentSongID = songID;
+            int playlistIndex = 0;
             
-            playlist[0] = (NSUInteger)songID;
-            NSLog(@"playing song:%d", songID);
-            int currentSongID = songID + 1;
-            
-            if(currentSongID > [self sequenceFilePathsCount])
+            while(currentSongID < [self sequenceFilePathsCount])
             {
-                currentSongID = 0; // Cause we have to 'songs' flash and solid
-            }
-            
-            for(int i = 1; i < sequencesWithAudioCount; i ++)
-            {
-                playlist[i] = currentSongID;
+                playlist[playlistIndex] = currentSongID;
                 currentSongID ++;
+                playlistIndex ++;
             }
             
-            [self playWebPlaylistOfSequenceIndexes:playlist indexCount:sequencesWithAudioCount];
+            NSLog(@"playing song:%d from web", songID);
+            playlistFromWeb = YES;
+            
+            [self playWebPlaylistOfSequenceIndexes:playlist indexCount:playlistIndex];
         }
     }
     
@@ -1497,7 +1493,7 @@
     [self playNextPlaylistItem];
     
     if(playlistButtonClick)
-    NSLog(@"playing:%d", self.currentSequenceIsPlaying);
+        NSLog(@"playing:%d", self.currentSequenceIsPlaying);
 }
 
 - (void)playPlaylistOfSequenceIndexes:(NSUInteger *)indexes indexCount:(int)count
@@ -1520,8 +1516,29 @@
     // Loop back to the start
     if(currentPlaylistIndex >= numberOfPlaylistSongs)
     {
-        currentPlaylistIndex = 0;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+        if(playlistFromWeb)
+        {
+            NSUInteger playlist[sequencesWithAudioCount];
+            
+            NSLog(@"Looping because of web playlist");
+            int currentSongID = 0;
+            int playlistIndex = 0;
+            while(currentSongID < [self sequenceFilePathsCount])
+            {
+                playlist[playlistIndex] = currentSongID;
+                currentSongID ++;
+                playlistIndex ++;
+            }
+            
+            playlistFromWeb = YES;
+            
+            [self playWebPlaylistOfSequenceIndexes:playlist indexCount:playlistIndex];
+        }
+        else
+        {
+            currentPlaylistIndex = 0;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"PlayButtonPress" object:nil];
+        }
     }
     
     // Pause the current sequence
