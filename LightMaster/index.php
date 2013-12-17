@@ -14,14 +14,14 @@
         <noscript>Please enable JavaScript to control the Christmas Lights</noscript>
         
         <div id="main">
-            <h1>Welcome to MrRocketman.com</h1>
+            <h1>Welcome to MrRocketman.com Computer Controlled Christmas Lights Live!</h1>
             <p>Enjoy the lights from 5:15PM to 10:30PM daily, and all night Christmas Eve.</p>
             
             <div id="output"></div>
             
             <div id="livestream">
                 <h2>Livestream!</h2>
-                <p>The livestream is about 30 seconds behind. I Will improve the camera angle and auidio soon!</p>
+                <p>The livestream is about 15-30 seconds behind. Please be patient if you are controlling things and trying to see the results in the livestream.</p>
                 <table>
                     <tr>
                         <td>
@@ -33,12 +33,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713785?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
-                            <br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Live streaming video by Ustream</a>
+                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713785?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
                         </td>
                         <td>
-                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713791?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
-                            <br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Live streaming video by Ustream</a>
+                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713791?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
                         </td>
                     </tr>
                     <tr>
@@ -51,12 +49,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713792?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
-                            <br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Live streaming video by Ustream</a>
+                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713792?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
                         </td>
                         <td>
-                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713793?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;">    </iframe>
-                            <br /><a href="http://www.ustream.tv/" style="padding: 2px 0px 4px; width: 400px; background: #ffffff; display: block; color: #000000; font-weight: normal; font-size: 10px; text-decoration: underline; text-align: center;" target="_blank">Live streaming video by Ustream</a>
+                            <iframe width="480" height="302" src="http://www.ustream.tv/embed/16713793?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
                         </td>
                     </tr>
                 </table>
