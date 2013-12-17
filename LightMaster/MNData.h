@@ -93,6 +93,7 @@ enum
     BOOL playlistButtonClick;
     int currentSequenceIndex;
     BOOL playlistFromWeb;
+    NSMutableArray *clientsThatHaveConnected;
 }
 
 @property() NSString *libraryFolder;

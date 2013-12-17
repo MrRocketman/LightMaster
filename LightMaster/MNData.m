@@ -96,6 +96,18 @@
         receivedText = [[NSMutableString alloc] init];
         memset(channelsOnlinePerBox, -1, 100);
         
+        // Load the clientsConnectedFile
+        NSString *filePath = [NSString stringWithFormat:@"%@/clientsThatHaveConnected.xml", libraryFolder];
+        BOOL isDirectory = NO;
+        if([[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory])
+        {
+            clientsThatHaveConnected = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        }
+        else
+        {
+            clientsThatHaveConnected = [[NSMutableArray alloc] init];
+        }
+        
         webSocket = [[MBWebSocketServer alloc] initWithPort:21012 delegate:self];
         NSLog(@"Listening on port 21012");
     }
@@ -134,6 +146,10 @@
             
             NSString *theIP = receivedData;
             //NSLog(@"theIP:%@", theIP);
+            
+            [clientsThatHaveConnected addObject:theIP];
+            NSString *filePath = [NSString stringWithFormat:@"%@/clientsThatHaveConnected.xml", libraryFolder];
+            [clientsThatHaveConnected writeToFile:filePath atomically:YES];
         }
         else if([receivedData rangeOfString:@"control"].location != NSNotFound)
         {
