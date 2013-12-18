@@ -35,6 +35,12 @@ enum
     MNSegment
 };
 
+enum
+{
+    MNDaisyPattern,
+    MNCyclePattern
+};
+
 @interface MNData : NSObject <ORSSerialPortDelegate, ENAPIPostRequestDelegate, ENAPIRequestDelegate, MBWebSocketServerDelegate>
 {
     NSMutableDictionary *sequenceLibrary;

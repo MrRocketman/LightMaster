@@ -108,7 +108,7 @@
             clientsThatHaveConnected = [[NSMutableArray alloc] init];
         }
         
-        webSocket = [[MBWebSocketServer alloc] initWithPort:21012 delegate:self];
+        webSocket = [[MBWebSocketServer alloc] initWithPort:21013 delegate:self];
         NSLog(@"Listening on port 21012");
     }
     
@@ -2016,30 +2016,23 @@
         // Pick controlBox indexes for the beat
         if(numberOfBoxesToUseForBeat >= 1)
         {
-            // Pick a random control box index
-            int controlBoxIndexToUse = arc4random() % controlBoxesCount;
-            NSLog(@"beat CB:%d", controlBoxIndexToUse);
-            controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
-            controlBoxesAvailable --;
-            
-            // Store it in the beats controls boxes array
-            beatControlBoxIndexes[beatControlBoxesCount] = controlBoxIndexToUse;
-            beatControlBoxesCount ++;
-        }
-        if(numberOfBoxesToUseForBeat >= 2)
-        {
-            // Pick a random control box index
-            int controlBoxIndexToUse = -1;
             do
             {
-                controlBoxIndexToUse = arc4random() % controlBoxesCount;
-            } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
-            controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
-            controlBoxesAvailable --;
-            
-            // Store it in the beats controls boxes array
-            beatControlBoxIndexes[beatControlBoxesCount] = controlBoxIndexToUse;
-            beatControlBoxesCount ++;
+                // Pick a random control box index that is not already in use
+                int controlBoxIndexToUse = -1;
+                do
+                {
+                    controlBoxIndexToUse = arc4random() % controlBoxesCount;
+                } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
+                NSLog(@"beat CB:%d", controlBoxIndexToUse);
+                
+                controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
+                controlBoxesAvailable --;
+                
+                // Store it in the beats controls boxes array
+                beatControlBoxIndexes[beatControlBoxesCount] = controlBoxIndexToUse;
+                beatControlBoxesCount ++;
+            } while(beatControlBoxesCount < numberOfBoxesToUseForBeat);
         }
         // Get the numberOfAvailableChannels for beatControlBoxes
         for(int i = 0; i < beatControlBoxesCount; i ++)
@@ -2050,18 +2043,22 @@
         // Pick a controlBox index for the tatum
         if(numberOfBoxesToUseForTatum >= 1)
         {
-            // Pick a random control box index
-            int controlBoxIndexToUse = -1;
             do
             {
-                controlBoxIndexToUse = arc4random() % controlBoxesCount;
-            } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
-            controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
-            controlBoxesAvailable --;
-            
-            // Store it in the beats controls boxes array
-            tatumControlBoxIndexes[tatumControlBoxesCount] = controlBoxIndexToUse;
-            tatumControlBoxesCount ++;
+                // Pick a random control box index
+                int controlBoxIndexToUse = -1;
+                do
+                {
+                    controlBoxIndexToUse = arc4random() % controlBoxesCount;
+                } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
+                
+                controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
+                controlBoxesAvailable --;
+                
+                // Store it in the beats controls boxes array
+                tatumControlBoxIndexes[tatumControlBoxesCount] = controlBoxIndexToUse;
+                tatumControlBoxesCount ++;
+            } while(tatumControlBoxesCount < numberOfBoxesToUseForTatum);
         }
         // Get the numberOfAvailableChannels for tatumControlBoxes
         for(int i = 0; i < tatumControlBoxesCount; i ++)
