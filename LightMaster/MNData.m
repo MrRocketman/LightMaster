@@ -2726,13 +2726,13 @@
             int patternForControlBox[tatumControlBoxesCount];
             BOOL **channelsInUseForEachBox = (BOOL **)malloc(tatumControlBoxesCount * sizeof(BOOL)); // make the array of boxes
             int channelsCountForEachBox[tatumControlBoxesCount];
-            NSLog(@"tatumControlBoxesCount:%i", tatumControlBoxesCount);
+            //NSLog(@"tatumControlBoxesCount:%i", tatumControlBoxesCount);
             for(int i = 0; i < tatumControlBoxesCount; i ++)
             {
                 channelsCountForEachBox[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
                 //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBox[i], tatumControlBoxIndexes[i]);
                 numberOfChannelsToUseForControlBoxForTatums[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBox[i];
-                NSLog(@"numberOfChannelsToUseForControlBoxForTatums:%d forBox:%i", numberOfChannelsToUseForControlBoxForTatums[i], tatumControlBoxIndexes[i]);
+                //NSLog(@"numberOfChannelsToUseForControlBoxForTatums:%d forBox:%i", numberOfChannelsToUseForControlBoxForTatums[i], tatumControlBoxIndexes[i]);
                 channelsInUseForEachBox[i] = (BOOL *)malloc(channelsCountForEachBox[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBox[i], 0, channelsCountForEachBox[i]);
                 
