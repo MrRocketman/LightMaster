@@ -154,7 +154,7 @@
         {
             receivedData = [receivedData stringByReplacingOccurrencesOfString:@"IP" withString:@""];
             
-            NSString *theIP = receivedData;
+            NSString *theIP = [NSString stringWithFormat:@"%@\nTime:%@", receivedData, [NSDate date]];
             //NSLog(@"theIP:%@", theIP);
             
             [clientsThatHaveConnected addObject:theIP];
