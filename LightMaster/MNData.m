@@ -2734,6 +2734,7 @@
             for(int i = 0; i < tatumControlBoxesCount; i ++)
             {
                 channelsCountForEachBox[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
+                //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBox[i], tatumControlBoxIndexes[i]);
                 numberOfChannelsToUseForControlBoxForTatums[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBox[i];
                 channelsInUseForEachBox[i] = (BOOL *)malloc(channelsCountForEachBox[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBox[i], 0, channelsCountForEachBox[i]);
@@ -2795,6 +2796,7 @@
             for(int i = 0; i < beatControlBoxesCount; i ++)
             {
                 channelsCountForEachBoxForBeats[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
+                //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBoxForBeats[i], tatumControlBoxIndexes[i]);
                 numberOfChannelsToUseForControlBoxForBeats[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBoxForBeats[i];
                 channelsInUseForEachBoxForBeats[i] = (BOOL *)malloc(channelsCountForEachBoxForBeats[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBoxForBeats[i], 0, channelsCountForEachBoxForBeats[i]);
@@ -2823,7 +2825,7 @@
                         }
                         
                         // Now create the commands based on the channelsInUseForEachBox
-                        for(int i2 = 0; i2 < channelsCountForEachBox[i]; i2 ++)
+                        for(int i2 = 0; i2 < channelsCountForEachBoxForBeats[i]; i2 ++)
                         {
                             // If the channel should be used, create the command
                             if(channelsInUseForEachBoxForBeats[i][i2] == YES)
