@@ -2532,14 +2532,9 @@
     if(audioAnalysis != nil)
     {
         // Set the intensity according to the energy of the song
-        NSLog(@"intensity:%f", self.autogenv2Intensity);
         NSLog(@"song tempo:%f", [[[audioAnalysis objectForKey:@"track"] objectForKey:@"tempo"] floatValue]);
-        self.autogenv2Intensity = [[[[[[self audioSummaryForAudioClip:[self audioClipForCurrentSequenceAtIndex:0]] objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"energy"] floatValue] * 2;
-        if(self.autogenv2Intensity > 0.99)
-        {
-            self.autogenv2Intensity = 1.0;
-        }
-        NSLog(@"intensityNow:%f", self.autogenv2Intensity);
+        self.autogenv2Intensity = [[[[[[self audioSummaryForAudioClip:[self audioClipForCurrentSequenceAtIndex:0]] objectForKey:@"response"] objectForKey:@"track"] objectForKey:@"audio_summary"] objectForKey:@"energy"] floatValue];
+        NSLog(@"intensity:%f", self.autogenv2Intensity);
         
         // Variables
         //NSDictionary *metaData = [audioAnalysis objectForKey:@"track"];
@@ -2559,7 +2554,7 @@
         int *controlBoxesBeingUsed = malloc(controlBoxesCount * sizeof(int));
         memset(controlBoxesBeingUsed, 0, controlBoxesCount * sizeof(int));
         int controlBoxesAvailable = controlBoxesCount;
-        int numberOfBoxesToUseForBeat = (controlBoxesAvailable > 3 ? (self.autogenv2Intensity > 0.5 ? 2 : 1) : 0); // 1 or 2
+        int numberOfBoxesToUseForBeat = (controlBoxesAvailable > 3 ? (self.autogenv2Intensity > 0.25 ? 2 : 1) : 0); // 1 or 2
         int numberOfBoxesToUseForTatum = (controlBoxesAvailable > 3 ? 1 : 0); // just 1 for now
         
         int numberOfAvailableChannelsForBeats = 0;
@@ -2731,11 +2726,13 @@
             int patternForControlBox[tatumControlBoxesCount];
             BOOL **channelsInUseForEachBox = (BOOL **)malloc(tatumControlBoxesCount * sizeof(BOOL)); // make the array of boxes
             int channelsCountForEachBox[tatumControlBoxesCount];
+            NSLog(@"tatumControlBoxesCount:%i", tatumControlBoxesCount);
             for(int i = 0; i < tatumControlBoxesCount; i ++)
             {
                 channelsCountForEachBox[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
                 //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBox[i], tatumControlBoxIndexes[i]);
                 numberOfChannelsToUseForControlBoxForTatums[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBox[i];
+                NSLog(@"numberOfChannelsToUseForControlBoxForTatums:%d forBox:%i", numberOfChannelsToUseForControlBoxForTatums[i], tatumControlBoxIndexes[i]);
                 channelsInUseForEachBox[i] = (BOOL *)malloc(channelsCountForEachBox[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBox[i], 0, channelsCountForEachBox[i]);
                 
@@ -2793,11 +2790,13 @@
             int patternForControlBoxForBeats[beatControlBoxesCount];
             BOOL **channelsInUseForEachBoxForBeats = (BOOL **)malloc(beatControlBoxesCount * sizeof(BOOL)); // make the array of boxes
             int channelsCountForEachBoxForBeats[beatControlBoxesCount];
+            //NSLog(@"beatControlBoxesCount:%i", beatControlBoxesCount);
             for(int i = 0; i < beatControlBoxesCount; i ++)
             {
                 channelsCountForEachBoxForBeats[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
                 //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBoxForBeats[i], tatumControlBoxIndexes[i]);
                 numberOfChannelsToUseForControlBoxForBeats[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBoxForBeats[i];
+                //NSLog(@"numberOfChannelsToUseForControlBoxForBeats:%d forBox:%i", numberOfChannelsToUseForControlBoxForBeats[i], beatControlBoxIndexes[i]);
                 channelsInUseForEachBoxForBeats[i] = (BOOL *)malloc(channelsCountForEachBoxForBeats[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBoxForBeats[i], 0, channelsCountForEachBoxForBeats[i]);
                 
@@ -2813,14 +2812,17 @@
                 // This beat should have commands added
                 if(beatStartTime >= sectionStartTime && beatStartTime <= sectionEndTime && [[beat objectForKey:@"confidence"] floatValue] >= 0.10)
                 {
+                    //NSLog(@"beatControlBoxesCount point2:%i", beatControlBoxesCount);
                     for(int i = 0; i < beatControlBoxesCount; i ++)
                     {
                         if(patternForControlBoxForBeats[i] == MNCyclePattern)
                         {
+                            //NSLog(@"cycle pattern for box:%d", beatControlBoxIndexes[i]);
                             [self cylcePatternWithChannelsArray:channelsInUseForEachBoxForBeats[i] channelsCount:channelsCountForEachBoxForBeats[i] numberOfChannelsToUseAtOnce:numberOfChannelsToUseForControlBoxForBeats[i]];
                         }
                         else if(patternForControlBoxForBeats[i] == MNDaisyPattern)
                         {
+                            //NSLog(@"daisy pattern for box:%d", beatControlBoxIndexes[i]);
                             [self daisyPatternWithChannelsArray:channelsInUseForEachBoxForBeats[i] channelsCount:channelsCountForEachBoxForBeats[i] numberOfChannelsToUseAtOnce:numberOfChannelsToUseForControlBoxForBeats[i]];
                         }
                         
@@ -2851,6 +2853,12 @@
             }
             
             // Boost the intensity for the segments
+            self.autogenv2Intensity *= 2.0;
+            if(self.autogenv2Intensity > 0.99)
+            {
+                self.autogenv2Intensity = 1.0;
+            }
+            // Keep boosting it until it's high
             if(self.autogenv2Intensity < 0.4)
             {
                 self.autogenv2Intensity *= 2.0;
@@ -2980,7 +2988,7 @@
                 if(currentSegmentIndex < [segments count] - 2)
                     nextNextSegment = [segments objectAtIndex:currentSegmentIndex + 2];
                 NSArray *nextNextSegmentPitches = [nextNextSegment objectForKey:@"pitches"];
-                float currentSegmentLoudness = [[currentSegment objectForKey:@"loudness_start"] floatValue];
+                //float currentSegmentLoudness = [[currentSegment objectForKey:@"loudness_start"] floatValue];
                 float currentSegmentStartTime = [[currentSegment objectForKey:@"start"] floatValue];
                 float currentSegmentEndTime = currentSegmentStartTime + [[currentSegment objectForKey:@"duration"] floatValue];
                 
@@ -3112,27 +3120,34 @@
 
 - (void)autogenCycleWithChannelsArray:(BOOL *)channelsInUseForBox channelsCount:(int)channelsCount
 {
-    BOOL firstIndexValue = channelsInUseForBox[0];
+    BOOL lastIndexValue = channelsInUseForBox[channelsCount - 1];
     
     // Turn on the next channels
-    for(int i = 0; i < channelsCount - 1; i ++)
+    for(int i = channelsCount - 1; i >= 1; i --)
     {
-        channelsInUseForBox[i] = channelsInUseForBox[i + 1];
+        channelsInUseForBox[i] = channelsInUseForBox[i - 1];
     }
     
-    channelsInUseForBox[channelsCount - 1] = firstIndexValue;
+    channelsInUseForBox[0] = lastIndexValue;
 }
 
 - (void)cylcePatternWithChannelsArray:(BOOL *)channelsInUseForBox channelsCount:(int)channelsCount numberOfChannelsToUseAtOnce:(int)numberOfChannelsToUseAtOnce
 {
     if([self autogenCycleNumberOfChannelsOnForChannelsArray:channelsInUseForBox channelsCount:channelsCount] < numberOfChannelsToUseAtOnce)
     {
+        /*printf("cycle ");
+        for (int i = 0; i < channelsCount; i++)
+        {
+            printf("%i,", channelsInUseForBox[i]);
+        }*/
         [self initialChannelsForCyclePattern:channelsInUseForBox channelsCount:channelsCount numberOfChannelsToUseAtOnce:numberOfChannelsToUseAtOnce];
         
-        for (int i = 0; i < channelsCount; i++) {
-            //printf("%i,", channelsInUseForBox[i]);
+        /*printf("after ");
+        for (int i = 0; i < channelsCount; i++)
+        {
+            printf("%i,", channelsInUseForBox[i]);
         }
-        //printf("\n");
+        printf("\n");*/
     }
     
     [self autogenCycleWithChannelsArray:channelsInUseForBox channelsCount:channelsCount];
@@ -3142,23 +3157,28 @@
 {
     if(numberOfChannelsToUseAtOnce == channelsCount)
     {
-        for (int i = 0; i < channelsCount; i++) {
+        for(int i = 0; i < channelsCount; i++)
+        {
             channelsInUseForBox[i] = YES;
         }
+        
+        return;
     }
+    
     if(numberOfChannelsToUseAtOnce <= channelsCount / 2)
     {
         int channelsRatio = ((float)channelsCount / numberOfChannelsToUseAtOnce) + 0.5;
         int ratioCounter = 0;
-        int numberOn = 0;
+        int numberOfChannelsOn = [self autogenCycleNumberOfChannelsOnForChannelsArray:channelsInUseForBox channelsCount:channelsCount];
         
-        for(int i = 0; i < channelsCount; i ++)
+        for(int i = channelsCount - 1; i >= 0; i --)
         {
             if(ratioCounter == 0)
             {
                 channelsInUseForBox[i] = YES;
-                numberOn ++;
-                if (numberOn == numberOfChannelsToUseAtOnce) {
+                numberOfChannelsOn ++;
+                if (numberOfChannelsOn == numberOfChannelsToUseAtOnce)
+                {
                     break;
                 }
             }
@@ -3175,9 +3195,9 @@
     {
         int channelsRatio = ((float)channelsCount / (numberOfChannelsToUseAtOnce != channelsCount ? channelsCount - numberOfChannelsToUseAtOnce : channelsCount)) + 0.5;
         int ratioCounter = 0;
-        int numberOn = 0;
+        int numberOfChannelsOn = [self autogenCycleNumberOfChannelsOnForChannelsArray:channelsInUseForBox channelsCount:channelsCount];
         
-        for(int i = 0; i < channelsCount; i ++)
+        for(int i = channelsCount - 1; i >= 0; i --)
         {
             ratioCounter ++;
             
@@ -3188,8 +3208,9 @@
             else
             {
                 channelsInUseForBox[i] = YES;
-                numberOn ++;
-                if (numberOn == numberOfChannelsToUseAtOnce) {
+                numberOfChannelsOn ++;
+                if (numberOfChannelsOn == numberOfChannelsToUseAtOnce)
+                {
                     break;
                 }
             }
@@ -3202,7 +3223,7 @@
     // Ramp up to the appropriate number of channels being used
     if([self autogenCycleNumberOfChannelsOnForChannelsArray:channelsInUseForBox channelsCount:channelsCount] < numberOfChannelsToUseAtOnce)
     {
-        for(int i = 0; i < channelsCount; i ++)
+        for(int i = channelsCount - 1; i >= 0; i --)
         {
             if(channelsInUseForBox[i] == NO)
             {
