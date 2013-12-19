@@ -2554,8 +2554,8 @@
         int *controlBoxesBeingUsed = malloc(controlBoxesCount * sizeof(int));
         memset(controlBoxesBeingUsed, 0, controlBoxesCount * sizeof(int));
         int controlBoxesAvailable = controlBoxesCount;
-        int numberOfBoxesToUseForBeat = (controlBoxesAvailable > 3 ? (self.autogenv2Intensity > 0.25 ? 2 : 1) : 0); // 1 or 2
-        int numberOfBoxesToUseForTatum = (controlBoxesAvailable > 3 ? 1 : 0); // just 1 for now
+        int numberOfBoxesToUseForBeat;// = (controlBoxesAvailable > 3 ? (self.autogenv2Intensity > 0.25 ? 2 : 1) : 0); // 1 or 2
+        int numberOfBoxesToUseForTatum;// = (controlBoxesAvailable > 3 ? 1 : 0); // just 1 for now
         
         int numberOfAvailableChannelsForBeats = 0;
         int numberOfAvailableChannelsForTatums = 0;
@@ -2599,61 +2599,6 @@
         }
         shouldAutosave = NO;
         
-        // Pick controlBox indexes for the beat
-        if(numberOfBoxesToUseForBeat >= 1)
-        {
-            do
-            {
-                // Pick a random control box index that is not already in use
-                int controlBoxIndexToUse = -1;
-                do
-                {
-                    controlBoxIndexToUse = arc4random() % controlBoxesCount;
-                } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
-                NSLog(@"beat box:%d", controlBoxIndexToUse);
-                
-                controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
-                controlBoxesAvailable --;
-                
-                // Store it in the beats controls boxes array
-                beatControlBoxIndexes[beatControlBoxesCount] = controlBoxIndexToUse;
-                beatControlBoxesCount ++;
-            } while(beatControlBoxesCount < numberOfBoxesToUseForBeat);
-        }
-        // Get the numberOfAvailableChannels for beatControlBoxes
-        for(int i = 0; i < beatControlBoxesCount; i ++)
-        {
-            numberOfAvailableChannelsForBeats += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
-        }
-        
-        // Pick a controlBox index for the tatum
-        if(numberOfBoxesToUseForTatum >= 1)
-        {
-            do
-            {
-                // Pick a random control box index
-                int controlBoxIndexToUse = -1;
-                do
-                {
-                    controlBoxIndexToUse = arc4random() % controlBoxesCount;
-                } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
-                
-                NSLog(@"tatum box:%d", controlBoxIndexToUse);
-                
-                controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
-                controlBoxesAvailable --;
-                
-                // Store it in the beats controls boxes array
-                tatumControlBoxIndexes[tatumControlBoxesCount] = controlBoxIndexToUse;
-                tatumControlBoxesCount ++;
-            } while(tatumControlBoxesCount < numberOfBoxesToUseForTatum);
-        }
-        // Get the numberOfAvailableChannels for tatumControlBoxes
-        for(int i = 0; i < tatumControlBoxesCount; i ++)
-        {
-            numberOfAvailableChannelsForTatums += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
-        }
-        
         // Main loop (looping through the sections, then segments, then beats and tatums)
         for(int currentSectionIndex = 0; currentSectionIndex < [sections count]; currentSectionIndex ++)
         {
@@ -2667,13 +2612,19 @@
             segmentControlBoxesCount = 0;
             numberOfAvailableChannelsForSegments = 0;
             
-            // Make a copy of the controlBoxes being used/available to assign to the segments
-            int tempControlBoxesAvailable = controlBoxesAvailable;
-            int tempControlBoxesBeingUsed[controlBoxesCount];
-            for(int i = 0; i < controlBoxesCount; i ++)
-            {
-                tempControlBoxesBeingUsed[i] = controlBoxesBeingUsed[i];
-            }
+            controlBoxesAvailable = controlBoxesCount;
+            memset(controlBoxesBeingUsed, 0, controlBoxesCount * sizeof(int));
+            segmentControlBoxesCount = 0;
+            beatControlBoxesCount = 0;
+            memset(beatControlBoxIndexes, 0, controlBoxesCount * sizeof(int));
+            tatumControlBoxesCount = 0;
+            memset(tatumControlBoxIndexes, 0, controlBoxesCount * sizeof(int));
+            numberOfBoxesToUseForBeat = (controlBoxesAvailable > 3 ? (self.autogenv2Intensity > 0.25 ? 2 : 1) : 0); // 1 if it's not intense, 2 if it is
+            numberOfBoxesToUseForTatum = (controlBoxesAvailable > 3 ? (((averageLoudnessForSection - minLoudness) / loudnessRange) > 0.6 ? 1 : 0) : 0); // 1 Box if the section is loud
+            
+            numberOfAvailableChannelsForBeats = 0;
+            numberOfAvailableChannelsForTatums = 0;
+            numberOfAvailableChannelsForSegments = 0;
             
             // Determine the average loudness for this section as well as what pitches to use
             for(int currentSegmentIndex = 1; currentSegmentIndex < [segments count]; currentSegmentIndex ++)
@@ -2721,6 +2672,70 @@
             //NSLog(@"averageLoudnessForSection[%d]:%f", currentSectionIndex, averageLoudnessForSection);
             //NSLog(@"controlBoxesAvailable:%d", controlBoxesAvailable);
             
+            // Pick controlBox indexes for the beat
+            if(numberOfBoxesToUseForBeat >= 1)
+            {
+                do
+                {
+                    // Pick a random control box index that is not already in use
+                    int controlBoxIndexToUse = -1;
+                    do
+                    {
+                        controlBoxIndexToUse = arc4random() % controlBoxesCount;
+                    } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
+                    //NSLog(@"beat box:%d", controlBoxIndexToUse);
+                    
+                    controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
+                    controlBoxesAvailable --;
+                    
+                    // Store it in the beats controls boxes array
+                    beatControlBoxIndexes[beatControlBoxesCount] = controlBoxIndexToUse;
+                    beatControlBoxesCount ++;
+                } while(beatControlBoxesCount < numberOfBoxesToUseForBeat);
+            }
+            // Get the numberOfAvailableChannels for beatControlBoxes
+            for(int i = 0; i < beatControlBoxesCount; i ++)
+            {
+                numberOfAvailableChannelsForBeats += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
+            }
+            
+            tatumControlBoxesCount = 0;
+            // Pick a controlBox index for the tatum
+            if(numberOfBoxesToUseForTatum >= 1)
+            {
+                do
+                {
+                    // Pick a random control box index
+                    int controlBoxIndexToUse = -1;
+                    do
+                    {
+                        controlBoxIndexToUse = arc4random() % controlBoxesCount;
+                    } while(controlBoxesBeingUsed[controlBoxIndexToUse] == 1);
+                    
+                    //NSLog(@"tatum box:%d", controlBoxIndexToUse);
+                    
+                    controlBoxesBeingUsed[controlBoxIndexToUse] = 1;
+                    controlBoxesAvailable --;
+                    
+                    // Store it in the beats controls boxes array
+                    tatumControlBoxIndexes[tatumControlBoxesCount] = controlBoxIndexToUse;
+                    tatumControlBoxesCount ++;
+                } while(tatumControlBoxesCount < numberOfBoxesToUseForTatum);
+            }
+            // Get the numberOfAvailableChannels for tatumControlBoxes
+            for(int i = 0; i < tatumControlBoxesCount; i ++)
+            {
+                numberOfAvailableChannelsForTatums += [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
+            }
+            
+            // Make a copy of the controlBoxes being used/available to assign to the segments
+            int tempControlBoxesAvailable = controlBoxesAvailable;
+            int tempControlBoxesBeingUsed[controlBoxesCount];
+            for(int i = 0; i < controlBoxesCount; i ++)
+            {
+                tempControlBoxesBeingUsed[i] = controlBoxesBeingUsed[i];
+            }
+            
             // setup the variables for the tatums
             int numberOfChannelsToUseForControlBoxForTatums[tatumControlBoxesCount];
             int patternForControlBox[tatumControlBoxesCount];
@@ -2731,7 +2746,8 @@
             {
                 channelsCountForEachBox[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:tatumControlBoxIndexes[i]]];
                 //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBox[i], tatumControlBoxIndexes[i]);
-                numberOfChannelsToUseForControlBoxForTatums[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBox[i];
+                //NSLog(@"section loudness percent:%f", ((averageLoudnessForSection - minLoudness) / loudnessRange));
+                numberOfChannelsToUseForControlBoxForTatums[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBox[i] * 0.5;
                 //NSLog(@"numberOfChannelsToUseForControlBoxForTatums:%d forBox:%i", numberOfChannelsToUseForControlBoxForTatums[i], tatumControlBoxIndexes[i]);
                 channelsInUseForEachBox[i] = (BOOL *)malloc(channelsCountForEachBox[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBox[i], 0, channelsCountForEachBox[i]);
@@ -2795,7 +2811,7 @@
             {
                 channelsCountForEachBoxForBeats[i] = [self channelsCountForControlBox:[self controlBoxForCurrentSequenceAtIndex:beatControlBoxIndexes[i]]];
                 //NSLog(@"channelsCount:%d forBox:%i", channelsCountForEachBoxForBeats[i], tatumControlBoxIndexes[i]);
-                numberOfChannelsToUseForControlBoxForBeats[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBoxForBeats[i];
+                numberOfChannelsToUseForControlBoxForBeats[i] = ((averageLoudnessForSection - minLoudness) / loudnessRange) * autogenv2Intensity * channelsCountForEachBoxForBeats[i] * 0.75;
                 //NSLog(@"numberOfChannelsToUseForControlBoxForBeats:%d forBox:%i", numberOfChannelsToUseForControlBoxForBeats[i], beatControlBoxIndexes[i]);
                 channelsInUseForEachBoxForBeats[i] = (BOOL *)malloc(channelsCountForEachBoxForBeats[i] * sizeof(BOOL)); // make the array of channels
                 memset(channelsInUseForEachBoxForBeats[i], 0, channelsCountForEachBoxForBeats[i]);
@@ -2869,6 +2885,7 @@
             }
             
             // Determine how many controlBoxes to use for the segments
+            //NSLog(@"tempControlBoxesAvailable:%d", tempControlBoxesAvailable);
             numberOfControlBoxesToUseForSegments = (int)((averageLoudnessForSection - minLoudness) / loudnessRange * autogenv2Intensity * tempControlBoxesAvailable + 0.5);
             if(numberOfControlBoxesToUseForSegments == 0)
             {
@@ -2879,6 +2896,7 @@
             {
                 numberOfControlBoxesToUseForSegments = tempControlBoxesAvailable;
             }
+            //NSLog(@"numberOfControlBoxesToUseForSegments:%d", numberOfControlBoxesToUseForSegments);
             
             // Now randomly assign boxes to use for the segments
             for(int i = 0; i < numberOfControlBoxesToUseForSegments; i ++)
@@ -2991,6 +3009,8 @@
                 //float currentSegmentLoudness = [[currentSegment objectForKey:@"loudness_start"] floatValue];
                 float currentSegmentStartTime = [[currentSegment objectForKey:@"start"] floatValue];
                 float currentSegmentEndTime = currentSegmentStartTime + [[currentSegment objectForKey:@"duration"] floatValue];
+                float currentSegmentLoudnessMax = ([[currentSegment objectForKey:@"loudness_max"] floatValue] - minLoudness) / loudnessRange;
+                //NSLog(@"loudnessMax:%f", currentSegmentLoudnessMax);
                 
                 //NSLog(@"currentSegmentIndex:%d", currentSegmentIndex);
                 
@@ -3008,7 +3028,7 @@
                         //NSLog(@"pitchIndex:%d currentPitch:%f previousPitch:%f", currentPitchIndex, currentPitchValue, previousPitchValue);
                         
                         // Create a new command (volume increased, therefore it has to be a new 'ding')
-                        if(currentPitchValue >= previousPitchValue + 0.1 && currentPitchValue >= 0.3) // && currentPitch > 0.5???
+                        if(currentPitchValue >= previousPitchValue + 0.1 && currentPitchValue >= 0.3 && currentSegmentLoudnessMax > 0.2) // && currentPitch > 0.5???
                         {
                             //NSLog(@"yes for pitch:%d", currentPitchIndex);
                             NSMutableArray *availbleSegmentChannelIndexPaths = [segmentChannelIndexPathArrays objectAtIndex:currentPitchIndex];
