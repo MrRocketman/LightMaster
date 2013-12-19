@@ -2805,9 +2805,9 @@
                 //NSLog(@"beat box[%i] pattern:%i", beatControlBoxIndexes[i], patternForControlBoxForBeats[i]);
             }
             
-            for(int currentTatumIndex = 0; (currentTatumIndex < [beats count] && beatControlBoxesCount > 0); currentTatumIndex ++)
+            for(int currentBeatIndex = 0; (currentBeatIndex < [beats count] && beatControlBoxesCount > 0); currentBeatIndex ++)
             {
-                NSDictionary *beat = [beats objectAtIndex:currentTatumIndex];
+                NSDictionary *beat = [beats objectAtIndex:currentBeatIndex];
                 float beatStartTime = [[beat objectForKey:@"start"] floatValue];
                 
                 // This beat should have commands added
@@ -2848,6 +2848,16 @@
                 {
                     break;
                 }
+            }
+            
+            // Boost the intensity for the segments
+            if(self.autogenv2Intensity < 0.4)
+            {
+                self.autogenv2Intensity *= 2.0;
+            }
+            else if(self.autogenv2Intensity >= 0.4 && self.autogenv2Intensity <= 0.75)
+            {
+                self.autogenv2Intensity *= 1.3;
             }
             
             // Determine how many controlBoxes to use for the segments
