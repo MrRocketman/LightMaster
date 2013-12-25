@@ -19,7 +19,7 @@
             
             <div id="output"></div>
             
-            <div id="livestream">
+            <!--<div id="livestream">
                 <h2>Livestream!</h2>
                 <p>The livestream is about 15-30 seconds behind. Please be patient if you are controlling things and trying to see the results in the livestream.</p>
                 <table>
@@ -56,7 +56,7 @@
                         </td>
                     </tr>
                 </table>
-            </div>
+            </div>-->
             
             <div id="connection"></div>
             <div id="clients"></div>
