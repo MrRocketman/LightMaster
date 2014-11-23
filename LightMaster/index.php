@@ -15,7 +15,7 @@
         
         <div id="main">
             <h1>Welcome to MrRocketman.com Computer Controlled Christmas Lights Live!</h1>
-            <p>Enjoy the lights from 5:15PM to 10:15PM (MDT) daily, and all night Christmas Eve.</p>
+            <p>Enjoy the lights from 5:15PM to 10:15PM (MDT) daily</p>
             
             <div id="output"></div>
             
