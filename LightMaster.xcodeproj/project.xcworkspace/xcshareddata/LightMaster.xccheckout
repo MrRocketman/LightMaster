@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>D246505C-66F7-4388-98DF-A348C3F2BAC1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LightMaster</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C3CA59204B37C773CA2343D68AE81B940C81233E</key>
+		<string>https://github.com/MrRocketman/LightMaster.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>LightMaster.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C3CA59204B37C773CA2343D68AE81B940C81233E</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/MrRocketman/LightMaster.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C3CA59204B37C773CA2343D68AE81B940C81233E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C3CA59204B37C773CA2343D68AE81B940C81233E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LightMaster</string>
+		</dict>
+	</array>
+</dict>
+</plist>
