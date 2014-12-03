@@ -2142,7 +2142,10 @@
 {
     if([self.serialPort isOpen])
 	{
-		//NSLog(@"Writing:%@:", text);
+        /*for(int i = 0; i < length; i ++)
+        {
+            NSLog(@"send:0x%02x", packet[i]);
+        }*/
         [serialPort sendData:[NSData dataWithBytes:packet length:length]];
 	}
 	else
